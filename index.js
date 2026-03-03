@@ -22,9 +22,6 @@ const localIP = getLocalIP();
 // Middleware
 app.use(express.json());
 
-// Servir arquivos estáticos
-app.use(express.static(__dirname));
-
 // --- Middlewares Utilitários ---
 const authenticate = (req, res, next) => {
   const userId = req.headers['user-id'];
@@ -264,29 +261,6 @@ app.delete('/api/goals/:id', authenticate, async (req, res, next) => {
   }
 });
 
-// --- Rotas de Páginas ---
-const pages = {
-  '/': 'index.html',
-  '/login': 'login.html',
-  '/dashboard': 'dashboard.html',
-  '/register-item': 'register-item.html',
-  '/transactions': 'transactions.html',
-  '/history': 'history.html',
-  '/goals': 'goals.html'
-};
-
-Object.entries(pages).forEach(([route, file]) => {
-  app.get(route, (req, res, next) => {
-    try {
-      res.sendFile(path.join(process.cwd(), file), (err) => {
-        if (err) next(err);
-      });
-    } catch (e) {
-      next(e);
-    }
-  });
-});
-
 // --- Middleware de Erro Centralizado ---
 app.use((err, req, res, next) => {
   console.error(`[SERVER ERROR] ${err.message}`);
@@ -299,6 +273,23 @@ app.use((err, req, res, next) => {
 
 // Start Server (only if not running as a function)
 if (require.main === module) {
+  // Configurações locais para testes (só roda no seu PC)
+  app.use(express.static(__dirname));
+
+  const pages = {
+    '/': 'index.html',
+    '/login': 'login.html',
+    '/dashboard': 'dashboard.html',
+    '/register-item': 'register-item.html',
+    '/transactions': 'transactions.html',
+    '/history': 'history.html',
+    '/goals': 'goals.html'
+  };
+
+  Object.entries(pages).forEach(([route, file]) => {
+    app.get(route, (req, res) => res.sendFile(path.join(__dirname, file)));
+  });
+
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n🚀 Horizonte Financeiro rodando em:`);
     console.log(`   - Local: http://localhost:${PORT}`);
