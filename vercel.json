@@ -6,17 +6,11 @@
             "use": "@vercel/node"
         }
     ],
-    "routes": [
+    "cleanUrls": true,
+    "rewrites": [
         {
-            "src": "/(css|js|images|ico|json|txt|html|api)/(.+)",
-            "dest": "/$1/$2",
-            "headers": {
-                "cache-control": "s-maxage=31536000, immutable"
-            }
-        },
-        {
-            "src": "/(.*)",
-            "dest": "index.js"
+            "source": "/api/(.*)",
+            "destination": "/index.js"
         }
     ]
 }
