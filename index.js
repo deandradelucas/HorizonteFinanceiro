@@ -276,7 +276,13 @@ const pages = {
 };
 
 Object.entries(pages).forEach(([route, file]) => {
-  app.get(route, (req, res) => res.sendFile(path.join(__dirname, file)));
+  app.get(route, (req, res) => {
+    try {
+      res.sendFile(path.join(process.cwd(), file));
+    } catch (e) {
+      next(e);
+    }
+  });
 });
 
 // --- Middleware de Erro Centralizado ---
