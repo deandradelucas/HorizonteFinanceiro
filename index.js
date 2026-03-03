@@ -50,7 +50,7 @@ app.post('/api/register', async (req, res, next) => {
   }
 });
 
-router.post('/api/login', async (req, res, next) => {
+app.post('/api/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await db.users.getAsync(
@@ -91,7 +91,7 @@ app.get('/api/transactions', authenticate, async (req, res, next) => {
   }
 });
 
-router.post('/api/transactions', authenticate, async (req, res, next) => {
+app.post('/api/transactions', authenticate, async (req, res, next) => {
   try {
     const { type, description, value, category, date, isRecurring } = req.body;
     const result = await db.transactions.query(
@@ -224,7 +224,7 @@ app.get('/api/goals', authenticate, async (req, res, next) => {
   }
 });
 
-router.post('/api/goals', authenticate, async (req, res, next) => {
+app.post('/api/goals', authenticate, async (req, res, next) => {
   try {
     const { title, targetValue, currentValue, deadline, category, icon, color } = req.body;
     const result = await db.goals.query(
