@@ -276,9 +276,11 @@ const pages = {
 };
 
 Object.entries(pages).forEach(([route, file]) => {
-  app.get(route, (req, res) => {
+  app.get(route, (req, res, next) => {
     try {
-      res.sendFile(path.join(process.cwd(), file));
+      res.sendFile(path.join(process.cwd(), file), (err) => {
+        if (err) next(err);
+      });
     } catch (e) {
       next(e);
     }
@@ -288,7 +290,11 @@ Object.entries(pages).forEach(([route, file]) => {
 // --- Middleware de Erro Centralizado ---
 app.use((err, req, res, next) => {
   console.error(`[SERVER ERROR] ${err.message}`);
-  res.status(500).json({ error: 'Erro interno do servidor.' });
+  res.status(500).json({
+    error: 'Erro interno do servidor.',
+    detalhe: err.message,
+    caminho_tentado: req.originalUrl
+  });
 });
 
 // Start Server (only if not running as a function)
