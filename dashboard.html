@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Horizonte Financeiro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="dashboard-body">
+    <script>
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    </script>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
+            <h2>Horizonte Financeiro</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-house"></i>
+                Início</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira</a>
+            <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>
+                Histórico</a>
+            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <button id="mobileMenuBtn" class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar transações...">
+            </div>
+            <div class="user-profile">
+                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <div>
+                    <h1>Visão Geral</h1>
+                    <p id="userWelcome" class="subtitle" style="margin-bottom: 0;">Bem-vindo(a) de volta! Aqui está o
+                        resumo das suas
+                        finanças.</p>
+                </div>
+                <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
+                    Lançamento</a>
+            </div>
+
+            <!-- Resumo Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-icon blue"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="card-info">
+                        <h3>Saldo Atual</h3>
+                        <p class="amount">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    <div class="card-info">
+                        <h3>Receitas</h3>
+                        <p class="amount">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    <div class="card-info">
+                        <h3>Despesas</h3>
+                        <p class="amount">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon purple"><i class="fa-solid fa-piggy-bank"></i></div>
+                    <div class="card-info">
+                        <h3>Economia</h3>
+                        <p class="amount">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recentes -->
+            <div class="recent-transactions">
+                <div class="section-header">
+                    <h3>Transações Recentes</h3>
+                    <a href="/transactions" class="view-all">Ver todas</a>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th style="text-align: right;">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                    <div style="font-size: 32px; margin-bottom: 12px;"><i
+                                            class="fa-solid fa-receipt"></i>
+                                    </div>
+                                    <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma
+                                        transação
+                                        encontrada</h3>
+                                    <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo Lançamento" para
+                                        adicionar sua
+                                        primeira transação.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>

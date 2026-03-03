@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Lançamento - Horizonte Financeiro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+
+            .form-grid .input-group {
+                grid-column: span 1 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+    <script>
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    </script>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
+            <h2>Horizonte Financeiro</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira</a>
+            <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <button id="mobileMenuBtn" class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <div class="user-profile">
+                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <div>
+                    <a href="/dashboard" class="back-link"><i class="fa-solid fa-arrow-left"></i>
+                        Voltar</a>
+                    <h1 style="margin-top: 10px;">Registrar Transação</h1>
+                    <p class="subtitle" style="margin-bottom: 0;">Adicione uma nova receita ou despesa ao seu histórico.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <form id="itemForm">
+                    <div class="type-selector">
+                        <label class="radio-card active" data-type="expense">
+                            <input type="radio" name="transactionType" value="expense" checked>
+                            <span class="icon red-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
+                            <span class="label">Despesa</span>
+                        </label>
+                        <label class="radio-card" data-type="income">
+                            <input type="radio" name="transactionType" value="income">
+                            <span class="icon green-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <span class="label">Receita</span>
+                        </label>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="itemDescription">Descrição</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-pen"></i>
+                                <input type="text" id="itemDescription" placeholder="Ex: Supermercado" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="itemValue">Valor (R$)</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-money-bill"></i>
+                                <input type="number" id="itemValue" step="0.01" placeholder="0.00" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="itemCategory">Categoria</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-tags"></i>
+                                <select id="itemCategory" required>
+                                    <option value="" disabled selected>Selecione uma categoria</option>
+                                    <option value="alimentacao">Alimentação</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="contas">Contas e Serviços</option>
+                                    <option value="lazer">Lazer</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="salario">Salário</option>
+                                    <option value="investimentos">Investimentos</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="itemDate">Data</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-calendar"></i>
+                                <input type="date" id="itemDate" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="grid-column: span 2;">
+                            <label class="checkbox-container"
+                                style="color: var(--text-main); font-weight: 500; font-size: 14px;">
+                                <input type="checkbox" id="itemRecurring">
+                                <span class="checkmark"></span>
+                                Esta é uma transação recorrente (Ex: Conta de luz, Mensalidade)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary"
+                            onclick="window.location.href='/dashboard'">Cancelar</button>
+                        <button type="submit" class="btn-primary" style="width: auto;">Salvar Transação</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const transactionId = urlParams.get('id');
+            const userId = sessionStorage.getItem('userId');
+
+            if (!userId) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const headerTitle = document.querySelector('.page-header h1');
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            if (transactionId) {
+                // Modo Edição
+                headerTitle.textContent = 'Editar Transação';
+                submitBtn.textContent = 'Atualizar Transação';
+
+                try {
+                    const response = await fetch(`/api/transactions/${transactionId}`, {
+                        headers: { 'user-id': userId }
+                    });
+                    if (response.ok) {
+                        const t = await response.json();
+
+                        // Preencher forma
+                        document.getElementById('itemDescription').value = t.description;
+                        document.getElementById('itemValue').value = t.value;
+                        document.getElementById('itemCategory').value = t.category;
+                        document.getElementById('itemDate').value = t.date;
+                        document.getElementById('itemRecurring').checked = t.isRecurring === 1;
+
+                        // Tipo de transação
+                        const radioIncome = document.querySelector('input[value="income"]');
+                        const radioExpense = document.querySelector('input[value="expense"]');
+                        if (t.type === 'income') {
+                            radioIncome.checked = true;
+                            radioIncome.closest('.radio-card').classList.add('active');
+                            radioExpense.closest('.radio-card').classList.remove('active');
+                        } else {
+                            radioExpense.checked = true;
+                            radioExpense.closest('.radio-card').classList.add('active');
+                            radioIncome.closest('.radio-card').classList.remove('active');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar transação:', error);
+                }
+            }
+
+            // Sobrescrever o submit do form se for edição
+            const form = document.getElementById('itemForm');
+            form.addEventListener('submit', async (e) => {
+                if (transactionId) {
+                    e.preventDefault();
+
+                    const transactionData = {
+                        type: document.querySelector('input[name="transactionType"]:checked').value,
+                        description: document.getElementById('itemDescription').value,
+                        value: parseFloat(document.getElementById('itemValue').value),
+                        category: document.getElementById('itemCategory').value,
+                        date: document.getElementById('itemDate').value,
+                        isRecurring: document.getElementById('itemRecurring').checked
+                    };
+
+                    try {
+                        const response = await fetch(`/api/transactions/${transactionId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'user-id': userId
+                            },
+                            body: JSON.stringify(transactionData)
+                        });
+
+                        if (response.ok) {
+                            window.location.href = '/transactions';
+                        } else {
+                            alert('Erro ao atualizar transação.');
+                        }
+                    } catch (error) {
+                        console.error('Erro:', error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

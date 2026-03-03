@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transações - Horizonte Financeiro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="dashboard-body">
+    <script>
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    </script>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
+            <h2>Horizonte Financeiro</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira</a>
+            <a href="/horizontefinanceiro/transactions" class="nav-item active"><i
+                    class="fa-solid fa-arrow-right-arrow-left"></i>
+                Transações</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>
+                Histórico</a>
+            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <button id="mobileMenuBtn" class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Filtrar histórico...">
+            </div>
+            <div class="user-profile">
+                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="page-header">
+                <div>
+                    <h1>Histórico de Transações</h1>
+                    <p class="subtitle">Veja todas as suas movimentações financeiras aqui.</p>
+                </div>
+                <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
+                    Lançamento</a>
+            </div>
+
+            <div class="recent-transactions">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Descrição</th>
+                                <th class="hide-mobile">Categoria</th>
+                                <th class="hide-mobile">Data</th>
+                                <th style="text-align: right;">Valor</th>
+                                <th style="text-align: center; width: 100px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullTransactionsBody">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        // Função global para excluir transação
+        async function deleteTransaction(id) {
+            if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
+
+            const userId = sessionStorage.getItem('userId');
+            try {
+                const response = await fetch(`/api/transactions/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'user-id': userId }
+                });
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Erro ao excluir transação.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro na conexão.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = sessionStorage.getItem('userId');
+            const userName = sessionStorage.getItem('userName');
+
+            // Proteção de rota
+            if (!userId) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const tbody = document.getElementById('fullTransactionsBody');
+            if (tbody) {
+                try {
+                    const response = await fetch('/api/transactions', {
+                        headers: {
+                            'user-id': userId
+                        }
+                    });
+                    const transactions = await response.json();
+
+                    tbody.innerHTML = '';
+
+                    if (transactions.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px;">Nenhuma transação cadastrada.</td></tr>';
+                    } else {
+                        transactions.forEach(t => {
+                            const tr = document.createElement('tr');
+                            const isIncome = t.type === 'income';
+                            const iconBg = isIncome ? 'green-bg' : 'red-bg';
+                            const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
+
+                            const formatMoney = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+                            const valueText = isIncome ? `+ ${formatMoney(t.value)}` : `- ${formatMoney(t.value)}`;
+
+                            let tagClass = 'tag-blue';
+                            if (t.category === 'alimentacao') tagClass = 'tag-orange';
+                            if (t.category === 'contas') tagClass = 'tag-purple';
+
+                            const dateObj = new Date(t.date);
+                            dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset());
+                            const formattedDate = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(dateObj);
+
+                            tr.innerHTML = `
+                                <td>
+                                    <div class="item-desc">
+                                        <div class="item-icon ${iconBg}"><i class="fa-solid ${iconClass}"></i></div>
+                                        <span style="display: flex; flex-direction: column;">
+                                            <span class="desc-text">${t.description}</span>
+                                            <div class="item-meta">
+                                                <span class="tag ${tagClass}">${t.category}</span>
+                                                <small>${formattedDate}</small>
+                                            </div>
+                                            <small style="color: var(--text-muted); font-size: 12px; font-weight: normal; margin-top: 2px;">
+                                                ${t.isRecurring ? '<i class="fa-solid fa-rotate"></i> Recorrente' : 'Única'}
+                                            </small>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="hide-mobile"><span class="tag ${tagClass}">${t.category}</span></td>
+                                <td class="hide-mobile">${formattedDate}</td>
+                                <td class="${isIncome ? 'text-green' : 'text-red'} text-right">${valueText}</td>
+                                <td style="text-align: center;">
+                                    <div style="display: flex; gap: 8px; justify-content: center;">
+                                        <a href="/horizontefinanceiro/register-item?id=${t.id}" class="action-btn-edit" title="Editar" style="color: var(--primary-color);"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <button onclick="deleteTransaction(${t.id})" class="action-btn-delete" title="Excluir" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0;"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar transações:', error);
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:red;">Erro ao conectar com o servidor.</td></tr>';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

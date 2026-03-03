@@ -1,0 +1,449 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const BASE_PATH = '';
+
+    // Note: Dark mode initialization is now handled via inline scripts in HTML files to prevent flash.
+
+    // --- LÓGICA DE CADASTRO ---
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const form = document.getElementById('registerForm');
+    const strengthBar = document.getElementById('strengthBar');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            if (type === 'text') {
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            } else {
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            }
+        });
+    }
+
+    if (passwordInput && strengthBar) {
+        passwordInput.addEventListener('input', () => {
+            const value = passwordInput.value;
+            let strength = 0;
+
+            if (value.length > 0) {
+                strength += 25;
+                if (value.length >= 8) strength += 25;
+                if (/[A-Z]/.test(value)) strength += 25;
+                if (/[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) strength += 25;
+            }
+
+            strengthBar.style.width = `${strength}%`;
+
+            if (strength <= 25) {
+                strengthBar.style.background = '#ef4444';
+            } else if (strength <= 50) {
+                strengthBar.style.background = '#f59e0b';
+            } else if (strength <= 75) {
+                strengthBar.style.background = '#eab308';
+            } else {
+                strengthBar.style.background = '#22c55e';
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem. Por favor, verifique.');
+                return;
+            }
+
+            const btn = form.querySelector('.btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando conta...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${BASE_PATH}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Conta Criada!';
+                    btn.style.background = '#00ff88';
+
+                    setTimeout(() => {
+                        window.location.href = `${BASE_PATH}/login`;
+                    }, 1500);
+                } else {
+                    alert(data.error || 'Erro ao criar conta.');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro na conexão com o servidor.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // --- LÓGICA DE LOGIN ---
+    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+    const loginPasswordInput = document.getElementById('loginPassword');
+    const loginForm = document.getElementById('loginForm');
+    const rememberMe = document.getElementById('rememberMe');
+
+    if (toggleLoginPassword && loginPasswordInput) {
+        toggleLoginPassword.addEventListener('click', () => {
+            const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginPasswordInput.setAttribute('type', type);
+            if (type === 'text') {
+                toggleLoginPassword.classList.remove('fa-eye');
+                toggleLoginPassword.classList.add('fa-eye-slash');
+            } else {
+                toggleLoginPassword.classList.remove('fa-eye-slash');
+                toggleLoginPassword.classList.add('fa-eye');
+            }
+        });
+    }
+
+    if (loginForm) {
+        if (localStorage.getItem('rememberedEmail')) {
+            const loginEmailInput = document.getElementById('loginEmail');
+            if (loginEmailInput) {
+                loginEmailInput.value = localStorage.getItem('rememberedEmail');
+                if (rememberMe) rememberMe.checked = true;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (rememberMe && rememberMe.checked) {
+                localStorage.setItem('rememberedEmail', email);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+
+            const btn = loginForm.querySelector('.btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${BASE_PATH}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    sessionStorage.setItem('userId', data.id);
+                    sessionStorage.setItem('userName', data.name);
+
+                    // Sync theme from DB to localstorage
+                    if (data.darkMode) {
+                        localStorage.setItem('darkMode', data.darkMode);
+                        if (data.darkMode === 'enabled') {
+                            document.body.classList.add('dark-mode');
+                        } else {
+                            document.body.classList.remove('dark-mode');
+                        }
+                    }
+
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Acesso Permitido!';
+                    btn.style.background = '#00ff88';
+
+                    setTimeout(() => {
+                        window.location.href = `${BASE_PATH}/dashboard`;
+                    }, 1000);
+                } else {
+                    alert(data.error || 'Erro ao entrar.');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro na conexão com o servidor.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // --- LÓGICA DE REGISTRO DE ITEM (DASHBOARD) ---
+    const radioCards = document.querySelectorAll('.radio-card');
+    if (radioCards.length > 0) {
+        radioCards.forEach(card => {
+            card.addEventListener('click', function () {
+                radioCards.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+            });
+        });
+    }
+
+    const itemForm = document.getElementById('itemForm');
+    if (itemForm) {
+        itemForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = itemForm.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            btn.disabled = true;
+
+            // Pegar os valores do formulário
+            const typeInput = document.querySelector('input[name="transactionType"]:checked');
+            const type = typeInput ? typeInput.value : 'expense';
+            const description = document.getElementById('itemDescription').value;
+            const valueRaw = document.getElementById('itemValue').value;
+            const category = document.getElementById('itemCategory').value;
+            const date = document.getElementById('itemDate').value;
+            const isRecurring = document.getElementById('itemRecurring') ? document.getElementById('itemRecurring').checked : false;
+
+            const newTransaction = {
+                type,
+                description,
+                value: parseFloat(valueRaw),
+                category,
+                date,
+                isRecurring
+            };
+
+            try {
+                const userId = sessionStorage.getItem('userId');
+                if (!userId) {
+                    window.location.href = `${BASE_PATH}/login`;
+                    return;
+                }
+
+                const response = await fetch(`${BASE_PATH}/api/transactions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'user-id': userId
+                    },
+                    body: JSON.stringify(newTransaction)
+                });
+
+                if (response.ok) {
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Salvo com sucesso!';
+                    btn.style.background = '#22c55e';
+
+                    setTimeout(() => {
+                        itemForm.reset();
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                        window.location.href = `${BASE_PATH}/dashboard`;
+                    }, 1000);
+                } else {
+                    throw new Error('Falha ao salvar no servidor');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao salvar transação. Tente novamente.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // --- CARREGAR DADOS NO DASHBOARD ---
+    const dashboardCards = document.querySelector('.summary-cards');
+    if (dashboardCards) {
+        const formatMoney = (value) => {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        };
+
+        const carregarDashboard = async () => {
+            try {
+                const userId = sessionStorage.getItem('userId');
+                const userName = sessionStorage.getItem('userName');
+
+                if (!userId) {
+                    window.location.href = `${BASE_PATH}/login`;
+                    return;
+                }
+
+                // Atualizar saudação e avatar
+                const welcomeEl = document.getElementById('userWelcome');
+                if (welcomeEl && userName) {
+                    welcomeEl.textContent = `Bem-vindo(a), ${userName}! Aqui está o resumo das suas finanças.`;
+                }
+
+                const response = await fetch(`${BASE_PATH}/api/transactions`, {
+                    headers: { 'user-id': userId }
+                });
+                const transactions = await response.json();
+
+                // Sync theme if provided in any potential user info (optional but good)
+                // For now, the login sync and toggle sync are primary.
+
+                // 1. Calcular Totais
+                let totalIncomes = 0;
+                let totalExpenses = 0;
+
+                transactions.forEach(t => {
+                    const val = parseFloat(t.value) || 0;
+                    if (t.type === 'income') {
+                        totalIncomes += val;
+                    } else if (t.type === 'expense') {
+                        totalExpenses += val;
+                    }
+                });
+
+                const currentBalance = totalIncomes - totalExpenses;
+                const savings = currentBalance > 0 ? currentBalance : 0;
+
+                // Atualizar os Cards
+                const amountElements = document.querySelectorAll('.summary-card .amount');
+                if (amountElements.length >= 3) {
+                    amountElements[0].textContent = formatMoney(currentBalance);
+                    amountElements[1].textContent = formatMoney(totalIncomes);
+                    amountElements[2].textContent = formatMoney(totalExpenses);
+                    if (amountElements[3]) amountElements[3].textContent = formatMoney(savings);
+                }
+
+                // 2. Preencher a Tabela
+                const tbody = document.querySelector('.data-table tbody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+
+                    if (transactions.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="2" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                    <div style="font-size: 32px; margin-bottom: 12px;"><i class="fa-solid fa-receipt"></i></div>
+                                    <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma transação encontrada</h3>
+                                    <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo Lançamento" para adicionar sua primeira transação.</p>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        const recentTransactions = transactions.slice(0, 5);
+                        recentTransactions.forEach(t => {
+                            const tr = document.createElement('tr');
+                            const isIncome = t.type === 'income';
+                            const iconBg = isIncome ? 'green-bg' : 'red-bg';
+                            const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
+                            const valueText = isIncome ? `+ ${formatMoney(t.value)}` : `- ${formatMoney(t.value)}`;
+                            const valueClass = isIncome ? 'text-green' : 'text-red';
+
+                            let categoryText = t.category.charAt(0).toUpperCase() + t.category.slice(1);
+                            let tagClass = 'tag-blue';
+                            if (t.category === 'alimentacao') tagClass = 'tag-orange';
+                            if (t.category === 'contas') tagClass = 'tag-purple';
+
+                            const dateObj = new Date(t.date);
+                            dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset());
+                            const formattedDate = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(dateObj);
+
+                            tr.innerHTML = `
+                                <td>
+                                    <div class="item-desc">
+                                        <div class="item-icon ${iconBg}"><i class="fa-solid ${iconClass}"></i></div>
+                                        <span style="display: flex; flex-direction: column;">
+                                            <span class="desc-text">${t.description}</span>
+                                            <div class="item-meta">
+                                                <span class="tag ${tagClass}">${categoryText}</span>
+                                                <small>${formattedDate}</small>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="${valueClass} text-right">${valueText}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        };
+
+        carregarDashboard();
+    }
+
+    // --- MODO ESCURO ---
+    const darkModeBtn = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    if (darkModeBtn) {
+        // Atualizar ícone inicial se já estiver dark
+        if (body.classList.contains('dark-mode')) {
+            darkModeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        }
+
+        darkModeBtn.addEventListener('click', async () => {
+            const isDark = body.classList.toggle('dark-mode');
+            const themeState = isDark ? 'enabled' : 'disabled';
+
+            // Persist locally for instant load
+            localStorage.setItem('darkMode', themeState);
+            darkModeBtn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+
+            // Sync with DB
+            const userId = sessionStorage.getItem('userId');
+            if (userId) {
+                try {
+                    await fetch(`${BASE_PATH}/api/user/preferences`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'user-id': userId
+                        },
+                        body: JSON.stringify({ darkMode: themeState })
+                    });
+                } catch (err) {
+                    console.error('Erro ao sincronizar tema com o servidor:', err);
+                }
+            }
+        });
+    }
+
+    // --- MENU MOBILE ---
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Fechar ao clicar em um link (útil no mobile)
+        const navLinks = sidebar.querySelectorAll('.nav-item');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+        });
+
+        // Fechar ao clicar fora da sidebar (opcional, mas bom)
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+});
