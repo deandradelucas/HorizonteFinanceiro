@@ -273,7 +273,8 @@ app.use((err, req, res, next) => {
 });
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
+
 
 // Fallback to index.html for Single Page Apps
 app.get('*', (req, res) => {
