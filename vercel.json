@@ -1,32 +1,13 @@
 {
+    "version": 2,
     "rewrites": [
         {
             "source": "/api/(.*)",
             "destination": "/index.js"
         },
         {
-            "source": "/login",
-            "destination": "/login.html"
-        },
-        {
-            "source": "/dashboard",
-            "destination": "/dashboard.html"
-        },
-        {
-            "source": "/register-item",
-            "destination": "/register-item.html"
-        },
-        {
-            "source": "/transactions",
-            "destination": "/transactions.html"
-        },
-        {
-            "source": "/history",
-            "destination": "/history.html"
-        },
-        {
-            "source": "/goals",
-            "destination": "/goals.html"
+            "source": "/(.*)",
+            "destination": "/public/$1"
         }
     ]
 }

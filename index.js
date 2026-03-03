@@ -274,20 +274,10 @@ app.use((err, req, res, next) => {
 // Start Server (only if not running as a function)
 if (require.main === module) {
   // Configurações locais para testes (só roda no seu PC)
-  app.use(express.static(__dirname));
+  app.use(express.static(path.join(__dirname, 'public')));
 
-  const pages = {
-    '/': 'index.html',
-    '/login': 'login.html',
-    '/dashboard': 'dashboard.html',
-    '/register-item': 'register-item.html',
-    '/transactions': 'transactions.html',
-    '/history': 'history.html',
-    '/goals': 'goals.html'
-  };
-
-  Object.entries(pages).forEach(([route, file]) => {
-    app.get(route, (req, res) => res.sendFile(path.join(__dirname, file)));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
   app.listen(PORT, '0.0.0.0', () => {
