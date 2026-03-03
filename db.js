@@ -15,10 +15,10 @@ if (!supabase) {
 // Helper factory to mirror the old SQLite API (query, getAsync, allAsync)
 const createSupabaseProxy = (table) => ({
     query: async (sql, params = []) => {
-        // This is a naive translation for basic INSERT/UPDATE/DELETE
-        // Legacy support for raw SQL is limited in Supabase client, 
-        // normally we should use the client methods.
-        // For now, we manually map common queries used in index.js.
+        if (!supabase) {
+            console.error('Supabase client not initialized');
+            throw new Error('Erro de conexão com o banco de dados.');
+        }
 
         if (sql.toLowerCase().includes('insert into users')) {
             const { data, error } = await supabase
@@ -135,6 +135,7 @@ const createSupabaseProxy = (table) => ({
     },
 
     getAsync: async (sql, params = []) => {
+        if (!supabase) return null;
         if (sql.toLowerCase().includes('from users where email = ?')) {
             const { data, error } = await supabase
                 .from('users')
@@ -161,6 +162,7 @@ const createSupabaseProxy = (table) => ({
     },
 
     allAsync: async (sql, params = []) => {
+        if (!supabase) return [];
         if (sql.toLowerCase().includes('from transactions where user_id = ? order by date desc')) {
             const { data, error } = await supabase
                 .from('transactions')
