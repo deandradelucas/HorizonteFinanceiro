@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const os = require('os');
 const path = require('path');
@@ -271,15 +272,16 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Fallback to index.html for Single Page Apps
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Start Server (only if not running as a function)
 if (require.main === module) {
-  // Configurações locais para testes (só roda no seu PC)
-  app.use(express.static(path.join(__dirname, 'public')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
-
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n🚀 Horizonte Financeiro rodando em:`);
     console.log(`   - Local: http://localhost:${PORT}`);
