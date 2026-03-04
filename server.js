@@ -3,6 +3,9 @@ const os = require('os');
 const path = require('path');
 const db = require('./db');
 
+console.log('--- [SISTEMA] INICIALIZANDO SERVIDOR V1.0.1-ULTRA-TRACE ---');
+console.log('--- [SISTEMA] DATA:', new Date().toLocaleString());
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -19,13 +22,22 @@ function getLocalIP() {
 
 const localIP = getLocalIP();
 
-// Middleware
 app.use(express.json());
+
+// Global Request Logger
+app.use((req, res, next) => {
+  console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 
 // --- Middlewares Utilitários ---
 const authenticate = (req, res, next) => {
   const userId = req.headers['user-id'];
-  if (!userId) return res.status(401).json({ error: 'Não autorizado' });
+  console.log(`[AUTH CHECK] Path: ${req.method} ${req.url}, user-id: ${userId}`);
+  if (!userId) {
+    console.warn('[AUTH FAILED] No user-id header provided');
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
   req.userId = userId;
   next();
 };
@@ -91,11 +103,13 @@ app.get('/api/transactions', authenticate, async (req, res, next) => {
 
 app.post('/api/transactions', authenticate, async (req, res, next) => {
   try {
+    console.log('[API] POST /api/transactions - Body:', JSON.stringify(req.body));
     const { type, description, value, category, date, isRecurring } = req.body;
     const result = await db.transactions.query(
       'INSERT INTO transactions (user_id, type, description, value, category, date, isRecurring) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [req.userId, type, description, value, category, date, isRecurring ? 1 : 0]
     );
+    console.log('[API] Transaction Saved OK, ID:', result.id);
     res.status(201).json({ id: result.id, message: 'Transação salva com sucesso!' });
   } catch (err) {
     console.error(`[TRANSACTION ERROR] ${err.message}`);
@@ -286,9 +300,9 @@ app.get('*', (req, res) => {
 // Start Server (only if not running as a function)
 if (require.main === module) {
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n🚀 Horizonte Financeiro rodando em:`);
+    console.log(`\n🔥 SERVIDOR ATUALIZADO E RASTREADO 🔥`);
     console.log(`   - Local: http://localhost:${PORT}`);
-    console.log(`   - Rede:  http://${localIP}:${PORT}\n`);
+    console.log(`   - Versão: 1.0.1-ULTRA-TRACE\n`);
   });
 }
 

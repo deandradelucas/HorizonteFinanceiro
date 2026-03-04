@@ -8,10 +8,20 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+// Global Request Logger
+app.use((req, res, next) => {
+    console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 // --- Middlewares Utilitários ---
 const authenticate = (req, res, next) => {
     const userId = req.headers['user-id'];
-    if (!userId) return res.status(401).json({ error: 'Não autorizado' });
+    console.log(`[AUTH CHECK] Path: ${req.method} ${req.url}, user-id: ${userId}`);
+    if (!userId) {
+        console.warn('[AUTH FAILED] No user-id header provided');
+        return res.status(401).json({ error: 'Não autorizado' });
+    }
     req.userId = userId;
     next();
 };
@@ -51,9 +61,9 @@ app.post('/api/login', async (req, res, next) => {
 
 app.put('/api/user/preferences', authenticate, async (req, res, next) => {
     try {
-        const { darkMode } = req.body;
+        const { darkMode } = req.body; // 'enabled' or 'disabled'
         await db.users.query(
-            'UPDATE users SET darkMode = ? WHERE id = ?',
+            'UPDATE users SET darkmode = ? WHERE id = ?',
             [darkMode, req.userId]
         );
         res.json({ message: 'Preferências atualizadas com sucesso!' });
@@ -77,13 +87,17 @@ app.get('/api/transactions', authenticate, async (req, res, next) => {
 
 app.post('/api/transactions', authenticate, async (req, res, next) => {
     try {
+        console.log('[API] POST /api/transactions - Body:', JSON.stringify(req.body));
         const { type, description, value, category, date, isRecurring } = req.body;
         const result = await db.transactions.query(
             'INSERT INTO transactions (user_id, type, description, value, category, date, isRecurring) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [req.userId, type, description, value, category, date, isRecurring ? 1 : 0]
         );
+        console.log('[API] Transaction Saved OK, ID:', result.id);
         res.status(201).json({ id: result.id, message: 'Transação salva com sucesso!' });
     } catch (err) {
+        console.error(`[TRANSACTION ERROR] ${err.message}`);
+        if (err.details) console.error(`Detalhamento: ${err.details}`);
         next(err);
     }
 });
@@ -131,12 +145,20 @@ app.get('/api/history/summary', authenticate, async (req, res, next) => {
     try {
         const { year } = req.query;
         if (!year) return res.status(400).json({ error: 'Ano é obrigatório' });
+
         const rows = await db.transactions.allAsync(
-            `SELECT substr(date, 6, 2) as month, type, SUM(value) as total
-       FROM transactions WHERE user_id = ? AND substr(date, 1, 4) = ?
-       GROUP BY substr(date, 6, 2), type ORDER BY month`,
+            `SELECT 
+        substr(date, 6, 2) as month,
+        type,
+        SUM(value) as total
+       FROM transactions 
+       WHERE user_id = ? AND substr(date, 1, 4) = ?
+       GROUP BY substr(date, 6, 2), type
+       ORDER BY month`,
             [req.userId, year]
         );
+
+        // Build monthly summary
         const months = {};
         for (let m = 1; m <= 12; m++) {
             const key = String(m).padStart(2, '0');
@@ -147,6 +169,7 @@ app.get('/api/history/summary', authenticate, async (req, res, next) => {
             else months[r.month].despesas = r.total;
         });
         Object.values(months).forEach(m => m.saldo = m.receitas - m.despesas);
+
         res.json(Object.values(months));
     } catch (err) {
         next(err);
@@ -157,17 +180,29 @@ app.get('/api/history/details', authenticate, async (req, res, next) => {
     try {
         const { year, month, day } = req.query;
         if (!year || !month) return res.status(400).json({ error: 'Ano e mês são obrigatórios' });
-        const datePrefix = day ? `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}` : `${year}-${month.padStart(2, '0')}`;
+
+        const datePrefix = day
+            ? `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            : `${year}-${month.padStart(2, '0')}`;
+
+        // Transactions for the period
         const transactions = await db.transactions.allAsync(
-            `SELECT * FROM transactions WHERE user_id = ? AND date LIKE ? ORDER BY date DESC, id DESC`,
+            `SELECT * FROM transactions 
+       WHERE user_id = ? AND date LIKE ?
+       ORDER BY date DESC, id DESC`,
             [req.userId, `${datePrefix}%`]
         );
+
+        // Category totals
         const categoryTotals = await db.transactions.allAsync(
             `SELECT category, type, SUM(value) as total, COUNT(*) as count
-       FROM transactions WHERE user_id = ? AND date LIKE ?
-       GROUP BY category, type ORDER BY total DESC`,
+       FROM transactions 
+       WHERE user_id = ? AND date LIKE ?
+       GROUP BY category, type
+       ORDER BY total DESC`,
             [req.userId, `${datePrefix}%`]
         );
+
         res.json({ transactions, categoryTotals });
     } catch (err) {
         next(err);
@@ -177,7 +212,10 @@ app.get('/api/history/details', authenticate, async (req, res, next) => {
 // --- API Metas ---
 app.get('/api/goals', authenticate, async (req, res, next) => {
     try {
-        const goals = await db.goals.allAsync('SELECT * FROM goals WHERE user_id = ? ORDER BY createdAt DESC', [req.userId]);
+        const goals = await db.goals.allAsync(
+            'SELECT * FROM goals WHERE user_id = ? ORDER BY createdat DESC',
+            [req.userId]
+        );
         res.json(goals);
     } catch (err) {
         next(err);
@@ -188,7 +226,8 @@ app.post('/api/goals', authenticate, async (req, res, next) => {
     try {
         const { title, targetValue, currentValue, deadline, category, icon, color } = req.body;
         const result = await db.goals.query(
-            `INSERT INTO goals (user_id, title, targetValue, currentValue, deadline, category, icon, color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO goals (user_id, title, targetvalue, currentvalue, deadline, category, icon, color) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [req.userId, title, targetValue, currentValue || 0, deadline || null, category || 'geral', icon || 'fa-bullseye', color || '#0d9488']
         );
         res.status(201).json({ id: result.id, message: 'Meta criada com sucesso!' });
@@ -201,7 +240,8 @@ app.put('/api/goals/:id', authenticate, async (req, res, next) => {
     try {
         const { title, targetValue, currentValue, deadline, category, icon, color } = req.body;
         await db.goals.query(
-            `UPDATE goals SET title = ?, targetValue = ?, currentValue = ?, deadline = ?, category = ?, icon = ?, color = ? WHERE id = ? AND user_id = ?`,
+            `UPDATE goals SET title = ?, targetvalue = ?, currentvalue = ?, deadline = ?, category = ?, icon = ?, color = ?
+       WHERE id = ? AND user_id = ?`,
             [title, targetValue, currentValue, deadline, category, icon, color, req.params.id, req.userId]
         );
         res.json({ message: 'Meta atualizada com sucesso!' });
@@ -212,7 +252,10 @@ app.put('/api/goals/:id', authenticate, async (req, res, next) => {
 
 app.delete('/api/goals/:id', authenticate, async (req, res, next) => {
     try {
-        await db.goals.query('DELETE FROM goals WHERE id = ? AND user_id = ?', [req.params.id, req.userId]);
+        await db.goals.query(
+            'DELETE FROM goals WHERE id = ? AND user_id = ?',
+            [req.params.id, req.userId]
+        );
         res.json({ message: 'Meta excluída com sucesso!' });
     } catch (err) {
         next(err);
@@ -222,7 +265,11 @@ app.delete('/api/goals/:id', authenticate, async (req, res, next) => {
 // --- Middleware de Erro Centralizado ---
 app.use((err, req, res, next) => {
     console.error(`[SERVER ERROR] ${err.message}`);
-    res.status(500).json({ error: 'Erro interno do servidor.', detalhe: err.message, caminho_tentado: req.originalUrl });
+    res.status(500).json({
+        error: 'Erro interno do servidor.',
+        detalhe: err.message,
+        caminho_tentado: req.originalUrl
+    });
 });
 
 module.exports = app;

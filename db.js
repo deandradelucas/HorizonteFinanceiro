@@ -15,6 +15,7 @@ if (!supabase) {
 // Helper factory to mirror the old SQLite API (query, getAsync, allAsync)
 const createSupabaseProxy = (table) => ({
     query: async (sql, params = []) => {
+        console.log(`[DB QUERY] SQL: ${sql.substring(0, 50)}... Params:`, params);
         if (!supabase) {
             console.error('Supabase client not initialized');
             throw new Error('Erro de conexão com o banco de dados.');
