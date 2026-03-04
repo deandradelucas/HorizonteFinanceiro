@@ -33,7 +33,7 @@ const createSupabaseProxy = (table) => ({
         if (sql.toLowerCase().includes('update users set darkmode')) {
             const { error } = await supabase
                 .from('users')
-                .update({ darkMode: params[0] })
+                .update({ darkmode: params[0] })
                 .eq('id', params[1]);
             if (error) throw error;
             return { changes: 1 };
@@ -139,7 +139,7 @@ const createSupabaseProxy = (table) => ({
         if (sql.toLowerCase().includes('from users where email = ?')) {
             const { data, error } = await supabase
                 .from('users')
-                .select('id, name, email, darkMode')
+                .select('id, name, email, darkmode')
                 .eq('email', params[0])
                 .eq('password', params[1])
                 .single();
