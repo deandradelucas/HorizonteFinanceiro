@@ -2,7 +2,7 @@
 const { createClient } = require('@supabase/supabase-js')
 
 const supabaseUrl = 'https://rjdlzohjxllmigaupwet.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqZGx6b2hqeGxsbWlnYXVwd2V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NjMyMDQsImV4cCI6MjA4ODEzOTIwNH0.Pb78_E032nE9mttwib8U6w16l6ymbNCMQCQRLAWUl_8'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqZGx6b2hqeGxsbWlnYXVwd2V0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjU2MzIwNCwiZXhwIjoyMDg4MTM5MjA0fQ.Msxf6C6IHh0w78ixmjkzgpCqZRe2bt8lEVoiRxOPEEU'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 module.exports = async function handler(req, res) {
