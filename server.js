@@ -67,7 +67,7 @@ app.put('/api/user/preferences', authenticate, async (req, res, next) => {
   try {
     const { darkMode } = req.body; // 'enabled' or 'disabled'
     await db.users.query(
-      'UPDATE users SET darkMode = ? WHERE id = ?',
+      'UPDATE users SET darkmode = ? WHERE id = ?',
       [darkMode, req.userId]
     );
     res.json({ message: 'Preferências atualizadas com sucesso!' });
@@ -98,6 +98,8 @@ app.post('/api/transactions', authenticate, async (req, res, next) => {
     );
     res.status(201).json({ id: result.id, message: 'Transação salva com sucesso!' });
   } catch (err) {
+    console.error(`[TRANSACTION ERROR] ${err.message}`);
+    if (err.details) console.error(`Detalhamento: ${err.details}`);
     next(err);
   }
 });
