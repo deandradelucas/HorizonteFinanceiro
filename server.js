@@ -1,3 +1,11 @@
+// ============================================================
+// LEGEND: Este script pertence ao "Horizonte Financeiro"
+// LEGEND (PT): Servidor Express principal para desenvolvimento local.
+//   - Define todas as rotas da API (autenticação, transações, metas, histórico)
+//   - Serve arquivos estáticos do frontend (pasta /public)
+//   - Usa o módulo db.js como camada de acesso ao Supabase
+//   - Exporta o app para uso no Vercel (module.exports)
+// ============================================================
 const express = require('express');
 const os = require('os');
 const path = require('path');
@@ -9,7 +17,7 @@ console.log('--- [SISTEMA] DATA:', new Date().toLocaleString());
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Utility to get local IP
+// Utilitário para obter o IP local (útil para acessar de outros dispositivos na rede)
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
@@ -31,6 +39,7 @@ app.use((req, res, next) => {
 });
 
 // --- Middlewares Utilitários ---
+// Middleware para verificar se o ID do usuário foi passado no header
 const authenticate = (req, res, next) => {
   const userId = req.headers['user-id'];
   console.log(`[AUTH CHECK] Path: ${req.method} ${req.url}, user-id: ${userId}`);
@@ -43,6 +52,7 @@ const authenticate = (req, res, next) => {
 };
 
 // --- API Autenticação ---
+// Rota para registrar um novo usuário
 app.post('/api/register', async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -89,6 +99,7 @@ app.put('/api/user/preferences', authenticate, async (req, res, next) => {
 });
 
 // --- API Transações ---
+// Rota para buscar todas as transações de um usuário
 app.get('/api/transactions', authenticate, async (req, res, next) => {
   try {
     const transactions = await db.transactions.allAsync(
@@ -101,6 +112,7 @@ app.get('/api/transactions', authenticate, async (req, res, next) => {
   }
 });
 
+// Rota para criar uma nova transação
 app.post('/api/transactions', authenticate, async (req, res, next) => {
   try {
     console.log('[API] POST /api/transactions - Body:', JSON.stringify(req.body));

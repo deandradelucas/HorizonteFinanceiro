@@ -1,9 +1,21 @@
+// ============================================================
+// LEGEND: Este script pertence ao "Horizonte Financeiro"
+// LEGEND (PT): Script principal do frontend.
+//   - Lógica de cadastro de usuário (formulário + validação de senha)
+//   - Lógica de login (autenticação + "lembrar e-mail")
+//   - Registro de transações (receitas/despesas)
+//   - Carregamento do dashboard (cards de resumo + tabela)
+//   - Modo escuro (toggle + sincronização com o servidor)
+//   - Menu mobile (sidebar responsiva)
+//   - Registro do Service Worker (PWA)
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     const BASE_PATH = '';
 
-    // Note: Dark mode initialization is now handled via inline scripts in HTML files to prevent flash.
+    // Nota: A inicialização do modo escuro é tratada via scripts inline nos arquivos HTML para evitar o "flash" de cor clara.
 
     // --- LÓGICA DE CADASTRO ---
+    // Gerencia o formulário de criação de nova conta e validação de força de senha
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     const form = document.getElementById('registerForm');
@@ -100,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DE LOGIN ---
+    // Gerencia a autenticação do usuário e a funcionalidade "Lembrar-me"
     const toggleLoginPassword = document.getElementById('toggleLoginPassword');
     const loginPasswordInput = document.getElementById('loginPassword');
     const loginForm = document.getElementById('loginForm');
@@ -189,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DE REGISTRO DE ITEM (DASHBOARD) ---
+    // Gerencia a adição de novas receitas e despesas
     const radioCards = document.querySelectorAll('.radio-card');
     if (radioCards.length > 0) {
         radioCards.forEach(card => {
@@ -269,6 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- CARREGAR DADOS NO DASHBOARD ---
+    // Busca transações do servidor e calcula resumo (Saldo, Receitas, Despesas)
     const dashboardCards = document.querySelector('.summary-cards');
     if (dashboardCards) {
         const formatMoney = (value) => {
@@ -386,6 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- MODO ESCURO ---
+    // Alterna o tema visual e sincroniza a preferência com o servidor
     const darkModeBtn = document.getElementById('darkModeToggle');
     const body = document.body;
 

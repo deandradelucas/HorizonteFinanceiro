@@ -1,3 +1,11 @@
+// ============================================================
+// LEGEND: Este script pertence ao "Horizonte Financeiro"
+// LEGEND (PT): API serverless para deploy no Vercel.
+//   - Contém todas as rotas da API (mesmo conteúdo do server.js)
+//   - Usado automaticamente pelo Vercel via vercel.json
+//   - Inclui: autenticação, transações, metas, histórico
+//   - Middleware de autenticação via header 'user-id'
+// ============================================================
 // api/index.js
 const express = require('express');
 const path = require('path');
@@ -8,7 +16,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Global Request Logger
+// Middleware global para log de requisições
 app.use((req, res, next) => {
     console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
@@ -27,6 +35,7 @@ const authenticate = (req, res, next) => {
 };
 
 // --- API Autenticação ---
+// Rota para registro de novos usuários e login
 app.post('/api/register', async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
@@ -73,6 +82,7 @@ app.put('/api/user/preferences', authenticate, async (req, res, next) => {
 });
 
 // --- API Transações ---
+// Rotas para gerenciar receitas e despesas
 app.get('/api/transactions', authenticate, async (req, res, next) => {
     try {
         const transactions = await db.transactions.allAsync(
@@ -141,6 +151,7 @@ app.delete('/api/transactions/:id', authenticate, async (req, res, next) => {
 });
 
 // --- API Histórico ---
+// Rotas para resumo mensal e detalhes por período
 app.get('/api/history/summary', authenticate, async (req, res, next) => {
     try {
         const { year } = req.query;
