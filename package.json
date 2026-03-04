@@ -1,5 +1,5 @@
 {
-  "name": "meu-projeto",
+  "name": "horizonte-financeiro",
   "version": "1.0.0",
   "description": "Projeto Express com hot reload",
   "main": "index.js",
@@ -14,7 +14,8 @@
     "express": "4.19.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "supabase": "^2.76.16"
   },
   "author": "",
   "license": "ISC",
