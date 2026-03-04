@@ -1,9 +1,13 @@
 {
-    "cleanUrls": true,
+    "version": 2,
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "/index.js"
+            "destination": "/api/index.js"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/public/$1"
         }
     ]
 }
