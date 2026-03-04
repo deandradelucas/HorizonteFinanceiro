@@ -40,7 +40,8 @@ app.post('/api/register', async (req, res, next) => {
     );
     res.status(201).json({ id: result.id, message: 'Usuário cadastrado com sucesso!' });
   } catch (err) {
-    if (err.message.includes('UNIQUE constraint failed')) {
+    const errorMsg = err.message || '';
+    if (errorMsg.includes('UNIQUE constraint failed') || errorMsg.includes('duplicate key value')) {
       return res.status(400).json({ error: 'E-mail já cadastrado.' });
     }
     next(err);

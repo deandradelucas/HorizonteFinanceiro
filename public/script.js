@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             try {
-                const response = await fetch(`${BASE_PATH}/public/index.html`, {
+                const response = await fetch(`${BASE_PATH}/api/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, password })

@@ -27,6 +27,7 @@ const createSupabaseProxy = (table) => ({
                 .select()
                 .single();
             if (error) throw error;
+            if (!data) throw new Error('Falha ao inserir usuário: Nenhun dado retornado.');
             return { id: data.id };
         }
 
@@ -49,7 +50,7 @@ const createSupabaseProxy = (table) => ({
                     value: params[3],
                     category: params[4],
                     date: params[5],
-                    isRecurring: params[6] === 1
+                    isrecurring: params[6] === 1
                 })
                 .select()
                 .single();
@@ -66,7 +67,7 @@ const createSupabaseProxy = (table) => ({
                     value: params[2],
                     category: params[3],
                     date: params[4],
-                    isRecurring: params[5] === 1
+                    isrecurring: params[5] === 1
                 })
                 .eq('id', params[6])
                 .eq('user_id', params[7]);
@@ -90,8 +91,8 @@ const createSupabaseProxy = (table) => ({
                 .insert({
                     user_id: params[0],
                     title: params[1],
-                    targetValue: params[2],
-                    currentValue: params[3],
+                    targetvalue: params[2],
+                    currentvalue: params[3],
                     deadline: params[4],
                     category: params[5],
                     icon: params[6],
@@ -108,8 +109,8 @@ const createSupabaseProxy = (table) => ({
                 .from('goals')
                 .update({
                     title: params[0],
-                    targetValue: params[1],
-                    currentValue: params[2],
+                    targetvalue: params[1],
+                    currentvalue: params[2],
                     deadline: params[3],
                     category: params[4],
                     icon: params[5],
@@ -226,7 +227,7 @@ const createSupabaseProxy = (table) => ({
                 .from('goals')
                 .select('*')
                 .eq('user_id', params[0])
-                .order('createdAt', { ascending: false });
+                .order('createdat', { ascending: false });
             if (error) throw error;
             return data;
         }
