@@ -18,9 +18,26 @@ app.use(express.json());
 
 // Global Request Logger with Ultra Trace
 app.use((req, res, next) => {
-    const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-    console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${fullUrl}`);
-    next();
+    try {
+        const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+        console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${fullUrl}`);
+        next();
+    } catch (err) {
+        console.error('Error in request logger:', err);
+        next();
+    }
+});
+
+// Health check for Vercel
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        env: {
+            hasUrl: !!process.env.SUPABASE_URL,
+            hasKey: !!process.env.SUPABASE_KEY
+        }
+    });
 });
 
 // --- Middlewares Utilitários ---
