@@ -439,7 +439,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             { val: 25000, label: '25k' },
                             { val: 50000, label: '50k' },
                             { val: 100000, label: '100k' },
-                            { val: 250000, label: '250k' },
+                            { val: 200000, label: '200k' },
+                            { val: 300000, label: '300k' },
+                            { val: 400000, label: '400k' },
                             { val: 500000, label: '500k' },
                             { val: 1000000, label: '1M' }
                         ];
