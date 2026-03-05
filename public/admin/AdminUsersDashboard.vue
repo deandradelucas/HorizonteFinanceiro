@@ -9,6 +9,7 @@
         </div>
         
         <div class="flex items-center gap-4">
+          <span class="text-sm font-medium text-slate-300 flex items-center hidden sm:flex"><i class="fa-regular fa-calendar mr-2"></i> {{ currentDate }}</span>
           <a href="/dashboard" class="text-sm text-slate-300 hover:text-white transition-colors" title="Voltar ao site principal">
             <i class="fa-solid fa-arrow-right-from-bracket rotate-180 mr-1"></i> Sair do Admin
           </a>
@@ -165,7 +166,8 @@ export default {
         actionsToday: 0
       },
       aiPrompt: '',
-      isAILoading: false
+      isAILoading: false,
+      currentDate: ''
     }
   },
   computed: {
@@ -238,6 +240,13 @@ export default {
   },
   mounted() {
     this.loadStats();
+    
+    // Set Current Date
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date();
+    let formattedDate = today.toLocaleDateString('pt-BR', options);
+    this.currentDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+    
     // Expose options globally so child components can load each other if necessary
     if(!window.vue3Options) {
         window.vue3Options = {
