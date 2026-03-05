@@ -86,6 +86,12 @@
                         <span id="mainGoalPct" class="percentage">25%</span>
                     </div>
                 </div>
+
+                <!-- Trilha de Marcos -->
+                <div id="milestoneTrack" class="milestone-track"
+                    style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border-color);">
+                    <!-- Gerado via JavaScript -->
+                </div>
             </div>
 
             <style>
@@ -175,6 +181,92 @@
                         text-align: left;
                         max-width: 100%;
                     }
+                }
+
+                /* Estilos da Trilha de Marcos */
+                .milestone-track {
+                    display: flex;
+                    justify-content: space-between;
+                    position: relative;
+                    padding-bottom: 8px;
+                }
+
+                .milestone-track::before {
+                    content: '';
+                    position: absolute;
+                    top: 10px;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: var(--border-color);
+                    z-index: 0;
+                    border-radius: 2px;
+                }
+
+                .milestone-step {
+                    position: relative;
+                    z-index: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 8px;
+                    flex: 1;
+                }
+
+                .milestone-dot {
+                    width: 24px;
+                    height: 24px;
+                    background: var(--card-bg);
+                    border: 4px solid var(--border-color);
+                    border-radius: 50%;
+                    transition: var(--transition);
+                }
+
+                .milestone-step.achieved .milestone-dot {
+                    background: var(--primary-color);
+                    border-color: var(--primary-color);
+                    box-shadow: 0 0 15px var(--primary-color);
+                }
+
+                .milestone-step.current .milestone-dot {
+                    border-color: var(--primary-color);
+                    transform: scale(1.2);
+                    animation: pulse-milestone 2s infinite;
+                }
+
+                .milestone-label {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: var(--text-muted);
+                    transition: var(--transition);
+                }
+
+                .milestone-step.achieved .milestone-label,
+                .milestone-step.current .milestone-label {
+                    color: var(--text-main);
+                }
+
+                @keyframes pulse-milestone {
+                    0% {
+                        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4);
+                    }
+
+                    70% {
+                        box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
+                    }
+
+                    100% {
+                        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+                    }
+                }
+
+                @media (max-width: 500px) {
+                    .milestone-label {
+                        font-size: 9px;
+                        white-space: nowrap;
+                    }
+
+                    /* Esconde etiquetas intermediárias no mobile extremo se houver muitas */
                 }
             </style>
 

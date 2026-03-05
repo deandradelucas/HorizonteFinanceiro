@@ -430,6 +430,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     const randomPhrase = selectedPhrases[Math.floor(Math.random() * selectedPhrases.length)];
                     document.getElementById('motivationPhrase').textContent = `"${randomPhrase}"`;
 
+                    // --- Lógica da Trilha de Marcos ---
+                    const milestoneTrack = document.getElementById('milestoneTrack');
+                    if (milestoneTrack) {
+                        const milestones = [
+                            { val: 5000, label: '5k' },
+                            { val: 10000, label: '10k' },
+                            { val: 25000, label: '25k' },
+                            { val: 50000, label: '50k' },
+                            { val: 100000, label: '100k' },
+                            { val: 250000, label: '250k' },
+                            { val: 500000, label: '500k' },
+                            { val: 1000000, label: '1M' }
+                        ];
+
+                        milestoneTrack.innerHTML = '';
+                        const currentMoney = mainGoal.currentvalue;
+
+                        milestones.forEach(m => {
+                            const step = document.createElement('div');
+                            step.className = 'milestone-step';
+
+                            if (currentMoney >= m.val) {
+                                step.classList.add('achieved');
+                            } else {
+                                // Primeiro marco não alcançado é o 'current' (próximo objetivo)
+                                const isNext = milestones.find(ms => currentMoney < ms.val) === m;
+                                if (isNext) step.classList.add('current');
+                            }
+
+                            step.innerHTML = `
+                                <div class="milestone-dot"></div>
+                                <span class="milestone-label">${m.label}</span>
+                            `;
+                            milestoneTrack.appendChild(step);
+                        });
+                    }
+
                     goalContainer.style.display = 'block';
                 }
 
