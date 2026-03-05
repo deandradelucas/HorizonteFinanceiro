@@ -30,7 +30,6 @@ app.use((req, res, next) => {
 
 // Health check for Vercel with Diagnostics
 app.get('/api/health', (req, res) => {
-    const fs = require('fs');
     const diagnostics = {
         status: 'ok',
         timestamp: new Date().toISOString(),
@@ -38,22 +37,8 @@ app.get('/api/health', (req, res) => {
         env: {
             hasUrl: !!process.env.SUPABASE_URL,
             hasKey: !!process.env.SUPABASE_KEY
-        },
-        fs_audit: {}
-    };
-
-    // Audit Express internal lib
-    try {
-        const expressLibPath = path.join(__dirname, '../node_modules/express/lib');
-        if (fs.existsSync(expressLibPath)) {
-            diagnostics.fs_audit.express_lib = fs.readdirSync(expressLibPath);
-            diagnostics.fs_audit.router_exists = fs.existsSync(path.join(expressLibPath, 'router'));
-        } else {
-            diagnostics.fs_audit.express_lib = 'NOT_FOUND';
         }
-    } catch (err) {
-        diagnostics.fs_audit.error = err.message;
-    }
+    };
 
     res.json(diagnostics);
 });
