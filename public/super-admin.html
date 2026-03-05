@@ -84,12 +84,12 @@
 
     <script>
         // --- AUTHENTICATION & SECURITY CHECK ---
-        const rawUserId = localStorage.getItem('userId');
+        const rawUserId = sessionStorage.getItem('userId');
         const role = localStorage.getItem('userRole');
 
         // We will soon add role saving logic to the backend login, 
         // but the backend API will ultimately enforce RBAC.
-        if (!rawUserId) {
+        if (!rawUserId || role !== 'super_admin') {
             window.location.href = '/login';
         }
 
