@@ -2,7 +2,7 @@
     "version": 2,
     "functions": {
         "api/**/*.js": {
-            "includeFiles": "{node_modules/**,db.js}"
+            "includeFiles": "{db.js,node_modules/iconv-lite/lib/**,node_modules/iconv-lite/encodings/**,node_modules/body-parser/lib/**}"
         }
     },
     "redirects": [
