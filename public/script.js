@@ -12,6 +12,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     const BASE_PATH = '';
 
+    // --- PERMISSÕES GLOBAIS DE UI ---
+    // Checa se o usuário logado é Super Admin e injeta o botão em qualquer página que tenha o sidebar
+    const globalUserRole = localStorage.getItem('userRole');
+    if (globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
+        const nav = document.querySelector('.sidebar-nav');
+        if (nav) {
+            const adminLink = document.createElement('a');
+            adminLink.href = "/super-admin.html";
+            adminLink.id = "superAdminLink";
+            adminLink.className = "nav-item";
+            adminLink.innerHTML = '<i class="fa-solid fa-shield-halved text-purple-500"></i> <span class="text-purple-500 font-bold">Painel Admin</span>';
+            nav.appendChild(adminLink);
+        }
+    }
+
     // Nota: A inicialização do modo escuro é tratada via scripts inline nos arquivos HTML para evitar o "flash" de cor clara.
 
     // --- LÓGICA DE CADASTRO ---
