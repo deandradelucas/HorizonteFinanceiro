@@ -182,7 +182,7 @@ export default {
   methods: {
     async loadStats() {
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = sessionStorage.getItem('userId');
         const res = await fetch('/api/admin/stats', {
             headers: { 'user-id': userId }
         });
@@ -200,7 +200,7 @@ export default {
         this.isAILoading = true;
         
         try {
-            const userId = localStorage.getItem('userId');
+            const userId = sessionStorage.getItem('userId');
             const res = await fetch('/api/admin/ai-execute', {
                 method: 'POST',
                 headers: {
