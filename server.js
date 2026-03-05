@@ -427,7 +427,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Serve frontend static files
+// 1. Redirect root to login (Must be before static middleware)
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+// 2. Serve frontend static files
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 
@@ -435,6 +440,7 @@ app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] })
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 
 // Start Server (only if not running as a function)
 if (require.main === module) {
