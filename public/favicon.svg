@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#818cf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Chart pie icon (similar to fa-chart-pie) -->
+  <g transform="translate(96, 96) scale(0.625)" fill="white">
+    <path d="M302.2 5.1C314.8 1.8 327.4 0 340.3 0c94.8 0 171.7 76.9 171.7 171.7c0 12.9-1.8 25.5-5.1 38.1L340.3 171.7l-38.1-166.6zM213.3 77.5l36.1 157.2 111.3 111.3c-30.6 22.4-68.2 35.6-108.7 35.6C112.9 381.6 0 268.7 0 129.6c0-6.1 .4-12.1 1.2-18C9.8 52.7 60.5 12.6 119.3 3.2c32.6-5.2 65.4 .7 94 20.3zM437.6 256.8c-9.4 58.9-49.5 109.6-108.4 118.2c-5.9 .9-11.9 1.2-18 1.2c-6.1 0-12.1-.4-18-1.2l-4.8-4.8L437.6 256.8z"/>
+  </g>
+</svg>

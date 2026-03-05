@@ -2,7 +2,7 @@
     "version": 2,
     "functions": {
         "api/**/*.js": {
-            "includeFiles": "node_modules/express/**"
+            "includeFiles": "{node_modules/**,db.js}"
         }
     },
     "redirects": [
@@ -13,6 +13,10 @@
         }
     ],
     "rewrites": [
+        {
+            "source": "/favicon.ico",
+            "destination": "/public/favicon.svg"
+        },
         {
             "source": "/api/(.*)",
             "destination": "/api/index.js"
