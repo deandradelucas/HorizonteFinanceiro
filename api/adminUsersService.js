@@ -12,14 +12,28 @@ require('dotenv').config();
 
 // Re-initialize a service-role or client with admin privileges if needed.
 // For this application, we are using the URL and KEY from the environment.
-const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const supabaseKey = process.env.SUPABASE_API_KEY || 'YOUR_SUPABASE_KEY';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE || process.env.SUPABASE_KEY;
+
+let supabase = null;
+if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_KEY') {
+    try {
+        supabase = createClient(supabaseUrl, supabaseKey);
+    } catch (e) {
+        console.error('[Admin Service] Erro ao inicializar Supabase:', e.message);
+    }
+} else {
+    console.warn('[Admin Service] Supabase não configurado corretamente. Verifique as credenciais no .env.');
+}
 
 // Provide your OpenAI key in the .env file
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY || 'sk-dummy-key' // fallback for local testing without breaking start
-});
+const openaiKey = process.env.OPENAI_API_KEY;
+let openai = null;
+if (openaiKey && openaiKey !== 'sk-dummy-key') {
+    openai = new OpenAI({
+        apiKey: openaiKey
+    });
+}
 
 const adminService = {
 
