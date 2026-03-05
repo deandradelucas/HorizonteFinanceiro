@@ -152,7 +152,7 @@ function createSupabaseProxy(table) {
             if (sql.toLowerCase().includes('from users where email = ?')) {
                 const { data, error } = await supabase
                     .from('users')
-                    .select('id, name, email, darkmode')
+                    .select('id, name, email, darkmode, role, is_active')
                     .eq('email', params[0])
                     .eq('password', params[1])
                     .single();
@@ -162,7 +162,9 @@ function createSupabaseProxy(table) {
                         id: data.id,
                         name: data.name,
                         email: data.email,
-                        darkMode: data.darkmode
+                        darkMode: data.darkmode,
+                        role: data.role,
+                        is_active: data.is_active
                     };
                 }
                 return null;
