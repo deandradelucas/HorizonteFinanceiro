@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     sessionStorage.setItem('userId', data.id);
                     sessionStorage.setItem('userName', data.name);
+                    localStorage.setItem('userRole', data.role); // Save role for UI checks
 
                     // Sync theme from DB to localstorage
                     if (data.darkMode) {
@@ -300,10 +301,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Atualizar saudação
+                // Atualizar saudação e checar permissão Super Admin
                 const welcomeEl = document.getElementById('userWelcome');
                 if (welcomeEl && userName) {
                     welcomeEl.textContent = `Bem-vindo(a), ${userName}! Aqui está o resumo das suas finanças.`;
+                }
+
+                // Add Super Admin Link to Sidebar if authorized
+                const userRole = localStorage.getItem('userRole');
+                if (userRole === 'super_admin' && !document.getElementById('superAdminLink')) {
+                    const nav = document.querySelector('.sidebar-nav');
+                    if (nav) {
+                        const adminLink = document.createElement('a');
+                        adminLink.href = "/super-admin.html";
+                        adminLink.id = "superAdminLink";
+                        adminLink.className = "nav-item";
+                        adminLink.innerHTML = '<i class="fa-solid fa-shield-halved text-purple-500"></i> <span class="text-purple-500 font-bold">Painel Admin</span>';
+                        nav.appendChild(adminLink);
+                    }
                 }
 
                 // Carregar Transações e Metas em paralelo

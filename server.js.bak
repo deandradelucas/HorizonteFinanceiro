@@ -10,7 +10,6 @@ const express = require('express');
 const os = require('os');
 const path = require('path');
 const db = require('./db');
-const adminService = require('./api/adminUsersService');
 
 console.log('--- [SISTEMA] INICIALIZANDO SERVIDOR V1.0.1-ULTRA-TRACE ---');
 console.log('--- [SISTEMA] DATA:', new Date().toLocaleString());
@@ -52,31 +51,6 @@ const authenticate = (req, res, next) => {
   next();
 };
 
-// Middleware para verificar permissão de Super Admin
-const authorizeRole = (requiredRole) => {
-  return async (req, res, next) => {
-    try {
-      if (!req.userId) return res.status(401).json({ error: 'Não autorizado' });
-
-      const user = await db.users.getAsync('SELECT role FROM users WHERE id = ?', [req.userId]);
-
-      if (!user) return res.status(401).json({ error: 'Usuário não encontrado' });
-
-      // Hierarchy level
-      const levels = { 'user': 1, 'admin': 2, 'super_admin': 3 };
-
-      if (levels[user.role] < levels[requiredRole]) {
-        return res.status(403).json({ error: 'Acesso negado. Nível de permissão insuficiente.' });
-      }
-
-      req.userRole = user.role;
-      next();
-    } catch (e) {
-      next(e);
-    }
-  };
-};
-
 // --- API Autenticação ---
 // Rota para registrar um novo usuário
 app.post('/api/register', async (req, res, next) => {
@@ -99,21 +73,12 @@ app.post('/api/register', async (req, res, next) => {
 app.post('/api/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // Updated query to include role and is_active from the new RBAC structure
     const user = await db.users.getAsync(
-      'SELECT id, name, email, darkMode, role, is_active FROM users WHERE email = ? AND password = ?',
+      'SELECT id, name, email, darkMode FROM users WHERE email = ? AND password = ?',
       [email, password]
     );
 
     if (!user) return res.status(401).json({ error: 'E-mail ou senha inválidos.' });
-    if (user.is_active === 0 || user.is_active === false) {
-      return res.status(403).json({ error: 'Esta conta está bloqueada pelo administrador.' });
-    }
-
-    // Update last_login footprint asynchronously (don't block response)
-    db.users.query('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?', [user.id]).catch(console.error);
-
     res.json(user);
   } catch (err) {
     next(err);
@@ -323,96 +288,6 @@ app.delete('/api/goals/:id', authenticate, async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
-
-// --- API SUPER ADMIN (RBAC: super_admin) ---
-
-app.get('/api/admin/stats', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const stats = await adminService.getDashboardStats();
-    res.json(stats);
-  } catch (err) { next(err); }
-});
-
-app.get('/api/admin/users', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const users = await adminService.getAllUsers();
-    res.json(users);
-  } catch (err) { next(err); }
-});
-
-app.post('/api/admin/users', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const { email, password, role, name } = req.body;
-    const user = await adminService.addUser(email, password, role, name);
-    res.status(201).json(user);
-  } catch (err) { next(err); }
-});
-
-app.put('/api/admin/users/:id/role', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const { role, is_active } = req.body;
-    const user = await adminService.updateUserRole(req.params.id, role, is_active);
-    res.json(user);
-  } catch (err) { next(err); }
-});
-
-app.post('/api/admin/users/:id/block', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const user = await adminService.blockUser(req.params.id);
-    res.json(user);
-  } catch (err) { next(err); }
-});
-
-app.post('/api/admin/users/:id/unblock', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const user = await adminService.unblockUser(req.params.id);
-    res.json(user);
-  } catch (err) { next(err); }
-});
-
-app.get('/api/admin/users/online', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const users = await adminService.getOnlineUsers();
-    res.json(users);
-  } catch (err) { next(err); }
-});
-
-app.post('/api/admin/users/:id/force-logout', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    await adminService.forceLogout(req.params.id);
-    res.json({ success: true });
-  } catch (err) { next(err); }
-});
-
-app.get('/api/admin/logs', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const logs = await adminService.getLogs();
-    res.json(logs);
-  } catch (err) { next(err); }
-});
-
-app.get('/api/admin/users/:id/permissions', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const perms = await adminService.getPermissions(req.params.id);
-    res.json(perms);
-  } catch (err) { next(err); }
-});
-
-app.put('/api/admin/users/:id/permissions', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const { permissions } = req.body;
-    const perms = await adminService.updatePermissions(req.params.id, permissions);
-    res.json(perms);
-  } catch (err) { next(err); }
-});
-
-app.post('/api/admin/ai-execute', authenticate, authorizeRole('super_admin'), async (req, res, next) => {
-  try {
-    const { prompt } = req.body;
-    const result = await adminService.processAICommand(prompt, req.userId);
-    res.json(result);
-  } catch (err) { next(err); }
 });
 
 // --- Middleware de Erro Centralizado ---
