@@ -301,4 +301,24 @@ app.use((err, req, res, next) => {
     });
 });
 
+// --- Roteamento de Frontend (Prioridade para o Vercel) ---
+
+// 1. Redirecionar raiz para login
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+// 2. Mapear /register explicitamente
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
+
+// 3. Servir arquivos estáticos do frontend (Ajustado para ../public)
+app.use(express.static(path.join(__dirname, '../public'), { extensions: ['html'] }));
+
+// Fallback para index.html (SPA)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
+
 module.exports = app;
