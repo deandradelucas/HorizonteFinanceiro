@@ -35,9 +35,9 @@ const localIP = getLocalIP();
 app.use(compression());
 app.use(express.json());
 
-// Global Request Logger
 app.use((req, res, next) => {
-  console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${req.url}`);
+  const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${fullUrl}`);
   next();
 });
 
@@ -446,8 +446,9 @@ app.get('*', (req, res) => {
 if (require.main === module) {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n🔥 SERVIDOR ATUALIZADO E RASTREADO 🔥`);
-    console.log(`   - Local: http://localhost:${PORT}`);
-    console.log(`   - Versão: 1.0.1-ULTRA-TRACE\n`);
+    console.log(`   - Local:    http://localhost:${PORT}`);
+    console.log(`   - Produção: https://horizontefinanceiro.mestredamente.com`);
+    console.log(`   - Versão:   1.0.1-ULTRA-TRACE\n`);
   });
 }
 
