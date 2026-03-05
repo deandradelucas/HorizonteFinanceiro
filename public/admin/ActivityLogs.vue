@@ -95,8 +95,8 @@ export default {
     async fetchLogs() {
       this.loading = true;
       try {
-        const userId = localStorage.getItem('userId');
-        const res = await fetch('/api/admin/logs', { headers: { 'user-id': userId }});
+        const userId = sessionStorage.getItem('userId');
+        const res = await fetch('/api/admin/activity-logs', { headers: { 'user-id': userId }});
         if(res.ok) {
           const data = await res.json();
           this.logs = data;

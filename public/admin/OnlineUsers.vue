@@ -80,8 +80,8 @@ export default {
     async fetchOnlineUsers() {
       this.loading = true;
       try {
-        const userId = localStorage.getItem('userId');
-        const res = await fetch('/api/admin/users/online', { headers: { 'user-id': userId }});
+        const userId = sessionStorage.getItem('userId');
+        const res = await fetch('/api/admin/online-users', { headers: { 'user-id': userId }});
         if(res.ok) {
           const data = await res.json();
           this.onlineUsers = data;
@@ -97,8 +97,8 @@ export default {
       if(!confirm('Deseja forçar a desconexão deste usuário?')) return;
       
       try {
-        const userId = localStorage.getItem('userId');
-        const res = await fetch(`/api/admin/users/${targetId}/force-logout`, {
+        const userId = sessionStorage.getItem('userId');
+        const res = await fetch(`/api/admin/users/${targetId}/disconnect`, {
           method: 'POST',
           headers: { 'user-id': userId }
         });

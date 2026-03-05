@@ -166,7 +166,7 @@ export default {
     async fetchUsers() {
       this.loading = true;
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = sessionStorage.getItem('userId');
         const res = await fetch('/api/admin/users', { headers: { 'user-id': userId }});
         if(res.ok) {
           const data = await res.json();
@@ -217,7 +217,7 @@ export default {
     },
     async toggleBlock(targetId, activate) {
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = sessionStorage.getItem('userId');
         const endpoint = activate ? `/api/admin/users/${targetId}/unblock` : `/api/admin/users/${targetId}/block`;
         
         const res = await fetch(endpoint, {

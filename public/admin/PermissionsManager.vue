@@ -127,8 +127,8 @@ export default {
     async fetchUsers() {
       this.loadingUsers = true;
       try {
-        const userId = localStorage.getItem('userId');
-        const res = await fetch('/api/admin/users', { headers: { 'user-id': userId }});
+        const userId = sessionStorage.getItem('userId');
+        const res = await fetch('/api/admin/permissions', { headers: { 'user-id': userId }});
         if(res.ok) {
           const data = await res.json();
           this.users = data;
@@ -144,8 +144,8 @@ export default {
         this.loadingPermissions = true;
         
         try {
-            const userId = localStorage.getItem('userId');
-            const res = await fetch(`/api/admin/users/${user.id}/permissions`, { headers: { 'user-id': userId }});
+            const userId = sessionStorage.getItem('userId');
+            const res = await fetch(`/api/admin/permissions/${user.id}`, { headers: { 'user-id': userId }});
             if(res.ok) {
                 const data = await res.json();
                 

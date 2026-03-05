@@ -117,7 +117,7 @@ export default {
       
       this.loading = true;
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = sessionStorage.getItem('userId');
         
         let endpoint = '/api/admin/users';
         let method = 'POST';
