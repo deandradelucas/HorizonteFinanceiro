@@ -7,6 +7,7 @@
 //   - Exporta o app para uso no Vercel (module.exports)
 // ============================================================
 const express = require('express');
+const compression = require('compression');
 const os = require('os');
 const path = require('path');
 const db = require('./db');
@@ -31,6 +32,7 @@ function getLocalIP() {
 
 const localIP = getLocalIP();
 
+app.use(compression());
 app.use(express.json());
 
 // Global Request Logger
