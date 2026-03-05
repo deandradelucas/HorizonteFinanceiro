@@ -1,10 +1,5 @@
 {
     "version": 2,
-    "functions": {
-        "api/**/*.js": {
-            "includeFiles": "{db.js,node_modules/iconv-lite/lib/**,node_modules/iconv-lite/encodings/**,node_modules/body-parser/lib/**}"
-        }
-    },
     "redirects": [
         {
             "source": "/",

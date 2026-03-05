@@ -7,9 +7,10 @@
 //   - Middleware de autenticação via header 'user-id'
 // ============================================================
 // api/index.js
+// api/index.js
 const express = require('express');
 const path = require('path');
-const db = require('../db');
+const db = require('./db');
 
 const app = express();
 
