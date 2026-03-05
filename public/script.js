@@ -12,6 +12,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const BASE_PATH = '';
 
+    // --- DISPLAY CURRENT DATE ---
+    const dateDisplay = document.getElementById('currentDateDisplay');
+    if (dateDisplay) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        let formattedDate = today.toLocaleDateString('pt-BR', options);
+        formattedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        dateDisplay.innerHTML = `<i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${formattedDate}`;
+    }
+
     // --- PERMISSÕES GLOBAIS DE UI ---
     // Checa se o usuário logado é Super Admin e injeta o botão em qualquer página que tenha o sidebar
     const globalUserRole = localStorage.getItem('userRole');
