@@ -78,6 +78,14 @@
         <div v-if="loadingApp" class="loader-container">
             <div class="spinner"></div>
         </div>
+        <div class="flex items-center gap-4">
+            <span id="adminDateDisplay"
+                class="text-xs font-medium text-slate-300 flex items-center hidden sm:flex"></span>
+            <a href="/dashboard" class="text-sm text-slate-300 hover:text-white transition-colors"
+                title="Voltar ao site principal">
+                <i class="fa-solid fa-arrow-right-from-bracket rotate-180 mr-1"></i> Sair do Admin
+            </a>
+        </div>
         <!-- Main Component -->
         <admin-users-dashboard v-else></admin-users-dashboard>
     </div>
