@@ -300,19 +300,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Atualizar saudação e avatar
+                // Atualizar saudação
                 const welcomeEl = document.getElementById('userWelcome');
                 if (welcomeEl && userName) {
                     welcomeEl.textContent = `Bem-vindo(a), ${userName}! Aqui está o resumo das suas finanças.`;
                 }
 
-                const response = await fetch(`${BASE_PATH}/api/transactions`, {
-                    headers: { 'user-id': userId }
-                });
-                const transactions = await response.json();
+                // Carregar Transações e Metas em paralelo
+                const [transactionsRes, goalsRes] = await Promise.all([
+                    fetch(`${BASE_PATH}/api/transactions`, { headers: { 'user-id': userId } }),
+                    fetch(`${BASE_PATH}/api/goals`, { headers: { 'user-id': userId } })
+                ]);
 
-                // Sync theme if provided in any potential user info (optional but good)
-                // For now, the login sync and toggle sync are primary.
+                const transactions = await transactionsRes.json();
+                const goals = await goalsRes.json();
 
                 // 1. Calcular Totais
                 let totalIncomes = 0;
@@ -320,11 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 transactions.forEach(t => {
                     const val = parseFloat(t.value) || 0;
-                    if (t.type === 'income') {
-                        totalIncomes += val;
-                    } else if (t.type === 'expense') {
-                        totalExpenses += val;
-                    }
+                    if (t.type === 'income') totalIncomes += val;
+                    else if (t.type === 'expense') totalExpenses += val;
                 });
 
                 const currentBalance = totalIncomes - totalExpenses;
@@ -339,7 +337,61 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (amountElements[3]) amountElements[3].textContent = formatMoney(savings);
                 }
 
-                // 2. Preencher a Tabela
+                // 2. Meta em Destaque no Dashboard
+                const goalContainer = document.getElementById('mainGoalContainer');
+                if (goalContainer && goals.length > 0) {
+                    // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
+                    const sortedGoals = goals.sort((a, b) => {
+                        const pctA = (a.currentvalue / a.targetvalue);
+                        const pctB = (b.currentvalue / b.targetvalue);
+                        return pctB - pctA;
+                    });
+
+                    const mainGoal = sortedGoals[0];
+                    const pct = Math.min(Math.round((mainGoal.currentvalue / mainGoal.targetvalue) * 100), 100);
+
+                    document.getElementById('mainGoalTitle').textContent = mainGoal.title;
+                    document.getElementById('mainGoalBar').style.width = `${pct}%`;
+                    document.getElementById('mainGoalValues').textContent = `${formatMoney(mainGoal.currentvalue)} de ${formatMoney(mainGoal.targetvalue)}`;
+                    document.getElementById('mainGoalPct').textContent = `${pct}%`;
+
+                    // Frases Motivacionais baseadas no progresso
+                    const phrases = {
+                        start: [
+                            "O primeiro passo é sempre o mais importante! 🚀",
+                            "Toda grande jornada começa com uma pequena economia.",
+                            "Mantenha o foco, o seu futuro agradece!"
+                        ],
+                        middle: [
+                            "Você está no caminho certo! Continue firme. 💪",
+                            "Mais da metade já foi! O sucesso está logo ali.",
+                            "Sua disciplina está dando frutos, parabéns!"
+                        ],
+                        end: [
+                            "Quase lá! Só mais um pouco de esforço. ✨",
+                            "A linha de chegada está à vista! Não pare agora.",
+                            "Você é uma inspiração na gestão financeira!"
+                        ],
+                        complete: [
+                            "PARABÉNS! Você conquistou seu objetivo! 🏆",
+                            "Meta batida! Hora de celebrar e planejar a próxima.",
+                            "Incrível! Você provou que com foco tudo é possível."
+                        ]
+                    };
+
+                    let selectedPhrases;
+                    if (pct >= 100) selectedPhrases = phrases.complete;
+                    else if (pct >= 75) selectedPhrases = phrases.end;
+                    else if (pct >= 25) selectedPhrases = phrases.middle;
+                    else selectedPhrases = phrases.start;
+
+                    const randomPhrase = selectedPhrases[Math.floor(Math.random() * selectedPhrases.length)];
+                    document.getElementById('motivationPhrase').textContent = `"${randomPhrase}"`;
+
+                    goalContainer.style.display = 'block';
+                }
+
+                // 3. Preencher a Tabela
                 const tbody = document.querySelector('.data-table tbody');
                 if (tbody) {
                     tbody.innerHTML = '';

@@ -57,12 +57,124 @@
                 <div>
                     <h1>Visão Geral</h1>
                     <p id="userWelcome" class="subtitle" style="margin-bottom: 0;">Bem-vindo(a) de volta! Aqui está o
-                        resumo das suas
-                        finanças.</p>
+                        resumo das suas finanças.</p>
                 </div>
                 <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
                     Lançamento</a>
             </div>
+
+            <!-- Meta em Destaque -->
+            <div id="mainGoalContainer" class="main-goal-container" style="display: none;">
+                <div class="goal-info-header">
+                    <div class="goal-text">
+                        <span class="goal-label">Meta em Destaque</span>
+                        <h2 id="mainGoalTitle" class="goal-main-title">Viagem para Europa</h2>
+                    </div>
+                    <div class="motivation-area">
+                        <p id="motivationPhrase" class="motivation-phrase">"Cada real economizado é um passo em direção
+                            ao seu sonho! 🚀"</p>
+                    </div>
+                </div>
+                <div class="goal-progress-wrapper">
+                    <div class="progress-bar-container">
+                        <div id="mainGoalBar" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="mainGoalValues" class="values">R$ 5.000 de R$ 20.000</span>
+                        <span id="mainGoalPct" class="percentage">25%</span>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .main-goal-container {
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 20px;
+                    padding: 24px;
+                    margin-bottom: 24px;
+                    transition: var(--transition);
+                }
+
+                .goal-info-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 20px;
+                    gap: 16px;
+                }
+
+                .goal-label {
+                    font-size: 12px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    color: var(--primary-color);
+                    letter-spacing: 0.5px;
+                }
+
+                .goal-main-title {
+                    font-size: 20px;
+                    font-weight: 700;
+                    margin-top: 4px;
+                }
+
+                .motivation-area {
+                    flex: 1;
+                    max-width: 400px;
+                    text-align: right;
+                }
+
+                .motivation-phrase {
+                    font-size: 14px;
+                    color: var(--text-muted);
+                    font-style: italic;
+                    line-height: 1.4;
+                }
+
+                .goal-progress-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .progress-bar-container {
+                    height: 14px;
+                    background: var(--border-color);
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+
+                .progress-bar-fill {
+                    height: 100%;
+                    background: linear-gradient(90deg, var(--primary-color), #4ade80);
+                    width: 0%;
+                    border-radius: 10px;
+                    transition: width 1s ease-out;
+                }
+
+                .progress-stats {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+                .progress-stats .percentage {
+                    color: var(--primary-color);
+                }
+
+                @media (max-width: 600px) {
+                    .goal-info-header {
+                        flex-direction: column;
+                        gap: 8px;
+                    }
+
+                    .motivation-area {
+                        text-align: left;
+                        max-width: 100%;
+                    }
+                }
+            </style>
 
             <!-- Resumo Cards -->
             <div class="summary-cards">
