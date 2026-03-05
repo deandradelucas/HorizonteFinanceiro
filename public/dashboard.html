@@ -45,7 +45,9 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" placeholder="Buscar transações...">
             </div>
-            <div class="user-profile">
+            <div class="user-profile" style="display: flex; align-items: center;">
+                <span id="currentDateDisplay" class="date-display"
+                    style="margin-right: 15px; font-weight: 500; color: var(--text-muted); font-size: 14px; display: flex; align-items: center;"></span>
                 <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
                     <i class="fa-solid fa-moon"></i>
                 </button>
@@ -57,12 +59,216 @@
                 <div>
                     <h1>Visão Geral</h1>
                     <p id="userWelcome" class="subtitle" style="margin-bottom: 0;">Bem-vindo(a) de volta! Aqui está o
-                        resumo das suas
-                        finanças.</p>
+                        resumo das suas finanças.</p>
                 </div>
                 <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
                     Lançamento</a>
             </div>
+
+            <!-- Meta em Destaque -->
+            <div id="mainGoalContainer" class="main-goal-container" style="display: none;">
+                <div class="goal-info-header">
+                    <div class="goal-text">
+                        <span class="goal-label">Meta em Destaque</span>
+                        <h2 id="mainGoalTitle" class="goal-main-title">Viagem para Europa</h2>
+                    </div>
+                    <div class="motivation-area">
+                        <p id="motivationPhrase" class="motivation-phrase">"Cada real economizado é um passo em direção
+                            ao seu sonho! 🚀"</p>
+                    </div>
+                </div>
+                <div class="goal-progress-wrapper">
+                    <div class="progress-bar-container">
+                        <div id="mainGoalBar" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="mainGoalValues" class="values">R$ 5.000 de R$ 20.000</span>
+                        <span id="mainGoalPct" class="percentage">25%</span>
+                    </div>
+                </div>
+
+                <!-- Trilha de Marcos -->
+                <div id="milestoneTrack" class="milestone-track"
+                    style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border-color);">
+                    <!-- Gerado via JavaScript -->
+                </div>
+            </div>
+
+            <style>
+                .main-goal-container {
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 20px;
+                    padding: 24px;
+                    margin-bottom: 24px;
+                    transition: var(--transition);
+                }
+
+                .goal-info-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 20px;
+                    gap: 16px;
+                }
+
+                .goal-label {
+                    font-size: 12px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    color: var(--primary-color);
+                    letter-spacing: 0.5px;
+                }
+
+                .goal-main-title {
+                    font-size: 20px;
+                    font-weight: 700;
+                    margin-top: 4px;
+                }
+
+                .motivation-area {
+                    flex: 1;
+                    max-width: 400px;
+                    text-align: right;
+                }
+
+                .motivation-phrase {
+                    font-size: 14px;
+                    color: var(--text-muted);
+                    font-style: italic;
+                    line-height: 1.4;
+                }
+
+                .goal-progress-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .progress-bar-container {
+                    height: 14px;
+                    background: var(--border-color);
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+
+                .progress-bar-fill {
+                    height: 100%;
+                    background: linear-gradient(90deg, var(--primary-color), #4ade80);
+                    width: 0%;
+                    border-radius: 10px;
+                    transition: width 1s ease-out;
+                }
+
+                .progress-stats {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+                .progress-stats .percentage {
+                    color: var(--primary-color);
+                }
+
+                @media (max-width: 600px) {
+                    .goal-info-header {
+                        flex-direction: column;
+                        gap: 8px;
+                    }
+
+                    .motivation-area {
+                        text-align: left;
+                        max-width: 100%;
+                    }
+                }
+
+                /* Estilos da Trilha de Marcos */
+                .milestone-track {
+                    display: flex;
+                    justify-content: space-between;
+                    position: relative;
+                    padding-bottom: 8px;
+                }
+
+                .milestone-track::before {
+                    content: '';
+                    position: absolute;
+                    top: 10px;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: var(--border-color);
+                    z-index: 0;
+                    border-radius: 2px;
+                }
+
+                .milestone-step {
+                    position: relative;
+                    z-index: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 8px;
+                    flex: 1;
+                }
+
+                .milestone-dot {
+                    width: 24px;
+                    height: 24px;
+                    background: var(--card-bg);
+                    border: 4px solid var(--border-color);
+                    border-radius: 50%;
+                    transition: var(--transition);
+                }
+
+                .milestone-step.achieved .milestone-dot {
+                    background: var(--primary-color);
+                    border-color: var(--primary-color);
+                    box-shadow: 0 0 15px var(--primary-color);
+                }
+
+                .milestone-step.current .milestone-dot {
+                    border-color: var(--primary-color);
+                    transform: scale(1.2);
+                    animation: pulse-milestone 2s infinite;
+                }
+
+                .milestone-label {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: var(--text-muted);
+                    transition: var(--transition);
+                }
+
+                .milestone-step.achieved .milestone-label,
+                .milestone-step.current .milestone-label {
+                    color: var(--text-main);
+                }
+
+                @keyframes pulse-milestone {
+                    0% {
+                        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4);
+                    }
+
+                    70% {
+                        box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
+                    }
+
+                    100% {
+                        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+                    }
+                }
+
+                @media (max-width: 500px) {
+                    .milestone-label {
+                        font-size: 9px;
+                        white-space: nowrap;
+                    }
+
+                    /* Esconde etiquetas intermediárias no mobile extremo se houver muitas */
+                }
+            </style>
 
             <!-- Resumo Cards -->
             <div class="summary-cards">

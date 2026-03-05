@@ -1,13 +1,29 @@
 {
     "version": 2,
+    "functions": {
+        "api/**/*.js": {
+            "includeFiles": "node_modules/express/**"
+        }
+    },
+    "redirects": [
+        {
+            "source": "/",
+            "destination": "/login",
+            "permanent": false
+        }
+    ],
     "rewrites": [
         {
             "source": "/api/(.*)",
             "destination": "/api/index.js"
         },
         {
-            "source": "/",
+            "source": "/login",
             "destination": "/public/login.html"
+        },
+        {
+            "source": "/register",
+            "destination": "/public/index.html"
         },
         {
             "source": "/(.*)",

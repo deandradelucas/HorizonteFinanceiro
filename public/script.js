@@ -1,9 +1,62 @@
+// ============================================================
+// LEGEND: Este script pertence ao "Horizonte Financeiro"
+// LEGEND (PT): Script principal do frontend.
+//   - Lógica de cadastro de usuário (formulário + validação de senha)
+//   - Lógica de login (autenticação + "lembrar e-mail")
+//   - Registro de transações (receitas/despesas)
+//   - Carregamento do dashboard (cards de resumo + tabela)
+//   - Modo escuro (toggle + sincronização com o servidor)
+//   - Menu mobile (sidebar responsiva)
+//   - Registro do Service Worker (PWA)
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     const BASE_PATH = '';
 
-    // Note: Dark mode initialization is now handled via inline scripts in HTML files to prevent flash.
+    // --- DISPLAY CURRENT DATE ---
+    const dateDisplay = document.getElementById('currentDateDisplay');
+    if (dateDisplay) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        let formattedDate = today.toLocaleDateString('pt-BR', options);
+        formattedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        dateDisplay.innerHTML = `<i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${formattedDate}`;
+    }
+
+    // --- PERMISSÕES GLOBAIS DE UI ---
+    // Checa se o usuário logado é Super Admin e injeta o botão em qualquer página que tenha o sidebar
+    const globalUserRole = localStorage.getItem('userRole');
+    if (globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
+        const nav = document.querySelector('.sidebar-nav');
+        if (nav) {
+            const adminLink = document.createElement('a');
+            // Hardcode navigation with JS to bypass any strange event delegation like logout
+            adminLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = "/super-admin.html";
+            });
+            adminLink.style.cursor = "pointer";
+            adminLink.id = "superAdminLink";
+
+            // Add custom styling so it stands out and doesn't look like the logout button
+            adminLink.className = "nav-item admin-portal-btn";
+            adminLink.style.marginTop = "auto";
+            adminLink.style.border = "1px solid rgba(168, 85, 247, 0.4)";
+            adminLink.style.backgroundColor = "rgba(168, 85, 247, 0.05)";
+            adminLink.style.color = "#a855f7";
+            adminLink.style.display = "flex";
+            adminLink.style.alignItems = "center";
+            adminLink.style.justifyContent = "center";
+            adminLink.style.gap = "8px";
+
+            adminLink.innerHTML = '<i class="fa-solid fa-shield-halved" style="color: #a855f7; font-size: 18px;"></i> <span style="font-weight: 700;">Painel Admin</span>';
+            nav.appendChild(adminLink);
+        }
+    }
+
+    // Nota: A inicialização do modo escuro é tratada via scripts inline nos arquivos HTML para evitar o "flash" de cor clara.
 
     // --- LÓGICA DE CADASTRO ---
+    // Gerencia o formulário de criação de nova conta e validação de força de senha
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     const form = document.getElementById('registerForm');
@@ -100,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DE LOGIN ---
+    // Gerencia a autenticação do usuário e a funcionalidade "Lembrar-me"
     const toggleLoginPassword = document.getElementById('toggleLoginPassword');
     const loginPasswordInput = document.getElementById('loginPassword');
     const loginForm = document.getElementById('loginForm');
@@ -157,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     sessionStorage.setItem('userId', data.id);
                     sessionStorage.setItem('userName', data.name);
+                    localStorage.setItem('userRole', data.role); // Save role for UI checks
 
                     // Sync theme from DB to localstorage
                     if (data.darkMode) {
@@ -189,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DE REGISTRO DE ITEM (DASHBOARD) ---
+    // Gerencia a adição de novas receitas e despesas
     const radioCards = document.querySelectorAll('.radio-card');
     if (radioCards.length > 0) {
         radioCards.forEach(card => {
@@ -269,6 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- CARREGAR DADOS NO DASHBOARD ---
+    // Busca transações do servidor e calcula resumo (Saldo, Receitas, Despesas)
     const dashboardCards = document.querySelector('.summary-cards');
     if (dashboardCards) {
         const formatMoney = (value) => {
@@ -285,19 +342,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Atualizar saudação e avatar
+                // Atualizar saudação e checar permissão Super Admin
                 const welcomeEl = document.getElementById('userWelcome');
                 if (welcomeEl && userName) {
                     welcomeEl.textContent = `Bem-vindo(a), ${userName}! Aqui está o resumo das suas finanças.`;
                 }
 
-                const response = await fetch(`${BASE_PATH}/api/transactions`, {
-                    headers: { 'user-id': userId }
-                });
-                const transactions = await response.json();
+                // Carregar Transações e Metas em paralelo
+                const [transactionsRes, goalsRes] = await Promise.all([
+                    fetch(`${BASE_PATH}/api/transactions`, { headers: { 'user-id': userId } }),
+                    fetch(`${BASE_PATH}/api/goals`, { headers: { 'user-id': userId } })
+                ]);
 
-                // Sync theme if provided in any potential user info (optional but good)
-                // For now, the login sync and toggle sync are primary.
+                const transactions = await transactionsRes.json();
+                const goals = await goalsRes.json();
 
                 // 1. Calcular Totais
                 let totalIncomes = 0;
@@ -305,11 +363,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 transactions.forEach(t => {
                     const val = parseFloat(t.value) || 0;
-                    if (t.type === 'income') {
-                        totalIncomes += val;
-                    } else if (t.type === 'expense') {
-                        totalExpenses += val;
-                    }
+                    if (t.type === 'income') totalIncomes += val;
+                    else if (t.type === 'expense') totalExpenses += val;
                 });
 
                 const currentBalance = totalIncomes - totalExpenses;
@@ -324,7 +379,100 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (amountElements[3]) amountElements[3].textContent = formatMoney(savings);
                 }
 
-                // 2. Preencher a Tabela
+                // 2. Meta em Destaque no Dashboard
+                const goalContainer = document.getElementById('mainGoalContainer');
+                if (goalContainer && goals.length > 0) {
+                    // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
+                    const sortedGoals = goals.sort((a, b) => {
+                        const pctA = (a.currentvalue / a.targetvalue);
+                        const pctB = (b.currentvalue / b.targetvalue);
+                        return pctB - pctA;
+                    });
+
+                    const mainGoal = sortedGoals[0];
+                    const pct = Math.min(Math.round((mainGoal.currentvalue / mainGoal.targetvalue) * 100), 100);
+
+                    document.getElementById('mainGoalTitle').textContent = mainGoal.title;
+                    document.getElementById('mainGoalBar').style.width = `${pct}%`;
+                    document.getElementById('mainGoalValues').textContent = `${formatMoney(mainGoal.currentvalue)} de ${formatMoney(mainGoal.targetvalue)}`;
+                    document.getElementById('mainGoalPct').textContent = `${pct}%`;
+
+                    // Frases Motivacionais baseadas no progresso
+                    const phrases = {
+                        start: [
+                            "O primeiro passo é sempre o mais importante! 🚀",
+                            "Toda grande jornada começa com uma pequena economia.",
+                            "Mantenha o foco, o seu futuro agradece!"
+                        ],
+                        middle: [
+                            "Você está no caminho certo! Continue firme. 💪",
+                            "Mais da metade já foi! O sucesso está logo ali.",
+                            "Sua disciplina está dando frutos, parabéns!"
+                        ],
+                        end: [
+                            "Quase lá! Só mais um pouco de esforço. ✨",
+                            "A linha de chegada está à vista! Não pare agora.",
+                            "Você é uma inspiração na gestão financeira!"
+                        ],
+                        complete: [
+                            "PARABÉNS! Você conquistou seu objetivo! 🏆",
+                            "Meta batida! Hora de celebrar e planejar a próxima.",
+                            "Incrível! Você provou que com foco tudo é possível."
+                        ]
+                    };
+
+                    let selectedPhrases;
+                    if (pct >= 100) selectedPhrases = phrases.complete;
+                    else if (pct >= 75) selectedPhrases = phrases.end;
+                    else if (pct >= 25) selectedPhrases = phrases.middle;
+                    else selectedPhrases = phrases.start;
+
+                    const randomPhrase = selectedPhrases[Math.floor(Math.random() * selectedPhrases.length)];
+                    document.getElementById('motivationPhrase').textContent = `"${randomPhrase}"`;
+
+                    // --- Lógica da Trilha de Marcos ---
+                    const milestoneTrack = document.getElementById('milestoneTrack');
+                    if (milestoneTrack) {
+                        const milestones = [
+                            { val: 5000, label: '5k' },
+                            { val: 10000, label: '10k' },
+                            { val: 25000, label: '25k' },
+                            { val: 50000, label: '50k' },
+                            { val: 100000, label: '100k' },
+                            { val: 200000, label: '200k' },
+                            { val: 300000, label: '300k' },
+                            { val: 400000, label: '400k' },
+                            { val: 500000, label: '500k' },
+                            { val: 1000000, label: '1M' }
+                        ];
+
+                        milestoneTrack.innerHTML = '';
+                        const currentMoney = mainGoal.currentvalue;
+
+                        milestones.forEach(m => {
+                            const step = document.createElement('div');
+                            step.className = 'milestone-step';
+
+                            if (currentMoney >= m.val) {
+                                step.classList.add('achieved');
+                            } else {
+                                // Primeiro marco não alcançado é o 'current' (próximo objetivo)
+                                const isNext = milestones.find(ms => currentMoney < ms.val) === m;
+                                if (isNext) step.classList.add('current');
+                            }
+
+                            step.innerHTML = `
+                                <div class="milestone-dot"></div>
+                                <span class="milestone-label">${m.label}</span>
+                            `;
+                            milestoneTrack.appendChild(step);
+                        });
+                    }
+
+                    goalContainer.style.display = 'block';
+                }
+
+                // 3. Preencher a Tabela
                 const tbody = document.querySelector('.data-table tbody');
                 if (tbody) {
                     tbody.innerHTML = '';
@@ -386,6 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- MODO ESCURO ---
+    // Alterna o tema visual e sincroniza a preferência com o servidor
     const darkModeBtn = document.getElementById('darkModeToggle');
     const body = document.body;
 

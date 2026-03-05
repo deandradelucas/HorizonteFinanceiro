@@ -1,3 +1,11 @@
+// ============================================================
+// LEGEND: Este script pertence ao "Horizonte Financeiro"
+// LEGEND (PT): API serverless para deploy no Vercel.
+//   - Contém todas as rotas da API (mesmo conteúdo do server.js)
+//   - Usado automaticamente pelo Vercel via vercel.json
+//   - Inclui: autenticação, transações, metas, histórico
+//   - Middleware de autenticação via header 'user-id'
+// ============================================================
 // api/index.js
 const express = require('express');
 const path = require('path');
@@ -8,10 +16,31 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Global Request Logger
+// Global Request Logger with Ultra Trace
 app.use((req, res, next) => {
-    console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${req.url}`);
-    next();
+    try {
+        const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+        console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${fullUrl}`);
+        next();
+    } catch (err) {
+        console.error('Error in request logger:', err);
+        next();
+    }
+});
+
+// Health check for Vercel with Diagnostics
+app.get('/api/health', (req, res) => {
+    const diagnostics = {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        node_version: process.version,
+        env: {
+            hasUrl: !!process.env.SUPABASE_URL,
+            hasKey: !!process.env.SUPABASE_KEY
+        }
+    };
+
+    res.json(diagnostics);
 });
 
 // --- Middlewares Utilitários ---
@@ -27,6 +56,7 @@ const authenticate = (req, res, next) => {
 };
 
 // --- API Autenticação ---
+// Rota para registro de novos usuários e login
 app.post('/api/register', async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
@@ -48,7 +78,7 @@ app.post('/api/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await db.users.getAsync(
-            'SELECT id, name, email, darkMode FROM users WHERE email = ? AND password = ?',
+            'SELECT id, name, email, darkmode, role, is_active FROM users WHERE email = ? AND password = ?',
             [email, password]
         );
 
@@ -73,6 +103,7 @@ app.put('/api/user/preferences', authenticate, async (req, res, next) => {
 });
 
 // --- API Transações ---
+// Rotas para gerenciar receitas e despesas
 app.get('/api/transactions', authenticate, async (req, res, next) => {
     try {
         const transactions = await db.transactions.allAsync(
@@ -141,6 +172,7 @@ app.delete('/api/transactions/:id', authenticate, async (req, res, next) => {
 });
 
 // --- API Histórico ---
+// Rotas para resumo mensal e detalhes por período
 app.get('/api/history/summary', authenticate, async (req, res, next) => {
     try {
         const { year } = req.query;
@@ -270,6 +302,26 @@ app.use((err, req, res, next) => {
         detalhe: err.message,
         caminho_tentado: req.originalUrl
     });
+});
+
+// --- Roteamento de Frontend (Prioridade para o Vercel) ---
+
+// 1. Redirecionar raiz para login
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+// 2. Mapear /register explicitamente
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
+
+// 3. Servir arquivos estáticos do frontend (Ajustado para ../public)
+app.use(express.static(path.join(__dirname, '../public'), { extensions: ['html'] }));
+
+// Fallback para index.html (SPA)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 module.exports = app;

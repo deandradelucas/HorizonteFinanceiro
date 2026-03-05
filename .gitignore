@@ -1,7 +1,11 @@
 node_modules
-*.db
+db-local/*.db
 .env
 .DS_Store
 dist
 .vercel
 .env*.local
+unused/
+db-local/
+db-online/config.toml
+db-online/migrations/

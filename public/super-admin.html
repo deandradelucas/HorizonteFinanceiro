@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin - Horizonte Financeiro</title>
+
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Tailwind CSS via CDN for styling the Admin Area safely -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb', // A safe, professional blue
+                        dark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Vue 3 & SFC Loader -->
+    <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue3-sfc-loader@0.8.4/dist/vue3-sfc-loader.js"></script>
+
+    <!-- SweetAlert2 (Popup/Toasts) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Loader CSS */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: #2563eb;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Minimal override for Vue elements */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- App Mount Point -->
+    <div id="app" v-cloak>
+        <div v-if="loadingApp" class="loader-container">
+            <div class="spinner"></div>
+        </div>
+        <!-- Main Component -->
+        <admin-users-dashboard v-else></admin-users-dashboard>
+    </div>
+
+    <script>
+        // --- AUTHENTICATION & SECURITY CHECK ---
+        const rawUserId = sessionStorage.getItem('userId');
+        const role = localStorage.getItem('userRole');
+
+        // We will soon add role saving logic to the backend login, 
+        // but the backend API will ultimately enforce RBAC.
+        if (!rawUserId || role !== 'super_admin') {
+            window.location.href = '/login';
+        }
+
+        // --- VUE 3 SFC LOADER SETUP ---
+        const { loadModule } = window['vue3-sfc-loader'];
+
+        const options = {
+            moduleCache: {
+                vue: Vue
+            },
+            async getFile(url) {
+                const res = await fetch(url);
+                if (!res.ok)
+                    throw Object.assign(new Error(res.statusText + ' ' + url), { res });
+                return {
+                    getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text(),
+                }
+            },
+            addStyle(textContent) {
+                const style = Object.assign(document.createElement('style'), { textContent });
+                const ref = document.head.getElementsByTagName('style')[0] || null;
+                document.head.insertBefore(style, ref);
+            },
+        };
+
+        // --- VUE APP INITIALIZATION ---
+        const app = Vue.createApp({
+            data() {
+                return {
+                    loadingApp: true
+                }
+            },
+            mounted() {
+                // App loaded
+                setTimeout(() => {
+                    this.loadingApp = false;
+                }, 300);
+            }
+        });
+
+        // Register async root component from file
+        app.component('admin-users-dashboard', Vue.defineAsyncComponent(() =>
+            loadModule('/admin/AdminUsersDashboard.vue', options)
+        ));
+
+        app.mount('#app');
+    </script>
+</body>
+
+</html>

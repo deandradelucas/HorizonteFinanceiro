@@ -398,7 +398,9 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" placeholder="Buscar metas...">
             </div>
-            <div class="user-profile">
+            <div class="user-profile" style="display: flex; align-items: center;">
+                <span id="currentDateDisplay" class="date-display"
+                    style="margin-right: 15px; font-weight: 500; color: var(--text-muted); font-size: 14px; display: flex; align-items: center;"></span>
                 <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
                     <i class="fa-solid fa-moon"></i>
                 </button>
@@ -467,11 +469,13 @@
                     <input type="text" id="goalTitle" placeholder="Ex: Reserva de Emergência" required>
                 </div>
                 <div class="form-group">
-                    <label for="goalTarget">Valor Alvo (R$)</label>
-                    <input type="number" id="goalTarget" step="0.01" min="0" placeholder="10000.00" required>
+                    <label for="goalTarget">Quanto você quer investir? (R$)</label>
+                    <select id="goalTarget" required>
+                        <!-- Opções geradas via JS -->
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="goalCurrent">Valor Atual (R$)</label>
+                    <label for="goalCurrent">Valor já investido (R$)</label>
                     <input type="number" id="goalCurrent" step="0.01" min="0" placeholder="0.00" value="0">
                 </div>
                 <div class="form-group">
@@ -510,6 +514,26 @@
         };
         let selectedColor = '#0d9488';
         let editingGoalId = null;
+
+        // Gerar opções de valores solicitados: 5k, 10k, 20k, 30k, 50k, 100k, 200k, 300k, 400k, +100k até 1M
+        function populateTargetOptions() {
+            const select = document.getElementById('goalTarget');
+            const values = [5000, 10000, 20000, 30000, 50000, 100000, 200000, 300000, 400000];
+            for (let v = 500000; v <= 1000000; v += 100000) values.push(v);
+
+            select.innerHTML = '<option value="">Selecione um valor...</option>';
+            values.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                opt.textContent = v >= 1000000 ? 'R$ 1.000.000 (1 Milhão)' : 'R$ ' + v.toLocaleString('pt-BR');
+                select.appendChild(opt);
+            });
+            // Option for custom if needed (optional but good)
+            const optOther = document.createElement('option');
+            optOther.value = 'other';
+            optOther.textContent = 'Outro valor...';
+            // select.appendChild(optOther); 
+        }
 
         function fmt(v) { return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
 
@@ -676,7 +700,10 @@
             return `${day}/${m}/${y}`;
         }
 
-        document.addEventListener('DOMContentLoaded', loadGoals);
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTargetOptions();
+            loadGoals();
+        });
     </script>
 </body>
 
