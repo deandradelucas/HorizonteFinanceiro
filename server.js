@@ -432,7 +432,12 @@ app.get('/', (req, res) => {
   res.redirect('/login');
 });
 
-// 2. Serve frontend static files
+// 2. Map /register explicitly
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// 3. Serve frontend static files
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 

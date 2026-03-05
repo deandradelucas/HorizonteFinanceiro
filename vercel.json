@@ -17,6 +17,10 @@
             "destination": "/public/login.html"
         },
         {
+            "source": "/register",
+            "destination": "/public/index.html"
+        },
+        {
             "source": "/(.*)",
             "destination": "/public/$1"
         }

@@ -16,9 +16,10 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Middleware global para log de requisições
+// Global Request Logger with Ultra Trace
 app.use((req, res, next) => {
-    console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${req.url}`);
+    const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    console.log(`>>> [REQ] ${new Date().toISOString()} - ${req.method} ${fullUrl}`);
     next();
 });
 
@@ -57,7 +58,7 @@ app.post('/api/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await db.users.getAsync(
-            'SELECT id, name, email, darkMode FROM users WHERE email = ? AND password = ?',
+            'SELECT id, name, email, darkmode, role, is_active FROM users WHERE email = ? AND password = ?',
             [email, password]
         );
 
