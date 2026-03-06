@@ -443,6 +443,11 @@
                         <h4>Carro Novo</h4>
                         <p>Junte para o carro que sempre quis</p>
                     </div>
+                    <div class="template-card" onclick="useTemplate('objetivo')">
+                        <i class="fa-solid fa-coins" style="color:#22c55e"></i>
+                        <h4>Objetivo Financeiro</h4>
+                        <p>Acompanhe seu saldo total automaticamente</p>
+                    </div>
                 </div>
             </div>
 
@@ -475,7 +480,7 @@
                         <!-- Opções geradas via JS -->
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="currentValueGroup">
                     <label for="goalCurrent">Valor já investido (R$)</label>
                     <input type="number" id="goalCurrent" step="0.01" min="0" placeholder="0.00" value="0">
                 </div>
@@ -564,8 +569,8 @@
             document.getElementById('modalSubmitBtn').textContent = goal ? 'Salvar Alterações' : 'Criar Meta';
             document.getElementById('goalId').value = goal ? goal.id : '';
             document.getElementById('goalTitle').value = goal ? goal.title : '';
-            document.getElementById('goalTarget').value = goal ? goal.targetValue : '';
-            document.getElementById('goalCurrent').value = goal ? goal.currentValue : 0;
+            document.getElementById('goalTarget').value = goal ? goal.targetvalue : '';
+            document.getElementById('goalCurrent').value = goal ? goal.currentvalue : 0;
             document.getElementById('goalDeadline').value = goal ? (goal.deadline || '') : '';
             document.getElementById('goalCategory').value = goal ? (goal.category || 'geral') : 'geral';
 
@@ -709,8 +714,8 @@
 
                 goals.forEach(g => {
                     const isAutomatic = g.category === 'objetivo_financeiro';
-                    const currentValue = isAutomatic ? currentBalance : g.currentValue;
-                    const pct = g.targetValue > 0 ? Math.min(Math.round((currentValue / g.targetValue) * 100), 100) : 0;
+                    const currentValue = isAutomatic ? currentBalance : g.currentvalue;
+                    const pct = g.targetvalue > 0 ? Math.min(Math.round((currentValue / g.targetvalue) * 100), 100) : 0;
 
                     // Automatic color logic requested - based on progress
                     let barColor;
@@ -721,7 +726,7 @@
                     const icon = g.icon || icons[g.category] || 'fa-bullseye';
                     const color = g.color || '#0d9488';
                     const deadlineStr = g.deadline ? formatDate(g.deadline) : 'Sem prazo';
-                    const remaining = g.targetValue - currentValue;
+                    const remaining = g.targetvalue - currentValue;
                     const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
 
                     const card = document.createElement('div');
@@ -744,7 +749,7 @@
                             <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-style: italic;">${randomPhrase}</p>
                             <div class="goal-progress-header">
                                 <span class="current">${fmt(currentValue)}</span>
-                                <span class="target">de ${fmt(g.targetValue)}</span>
+                                <span class="target">de ${fmt(g.targetvalue)}</span>
                             </div>
                             <div class="goal-progress-bar-bg">
                                 <div class="goal-progress-bar" style="width:${pct}%;background:${barColor}"></div>
@@ -762,6 +767,7 @@
                 console.error('Erro ao carregar metas:', err);
             }
         }
+
 
         function formatDate(d) {
             if (!d) return '';
