@@ -485,8 +485,9 @@
                 </div>
                 <div class="form-group">
                     <label for="goalCategory">Categoria</label>
-                    <select id="goalCategory">
+                    <select id="goalCategory" onchange="handleCategoryChange()">
                         <option value="geral">Geral</option>
+                        <option value="objetivo_financeiro">Objetivo Financeiro (Automático)</option>
                         <option value="emergência">Reserva de Emergência</option>
                         <option value="viagem">Viagem</option>
                         <option value="investimento">Investimento</option>
@@ -509,31 +510,36 @@
     <script>
         const colors = ['#0d9488', '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#22c55e', '#ef4444', '#06b6d4', '#f59e0b'];
         const icons = {
-            'geral': 'fa-bullseye', 'emergência': 'fa-shield-halved', 'viagem': 'fa-plane',
-            'investimento': 'fa-chart-line', 'veículo': 'fa-car', 'imóvel': 'fa-house',
-            'educação': 'fa-graduation-cap', 'aposentadoria': 'fa-umbrella-beach'
+            'geral': 'fa-bullseye', 'objetivo_financeiro': 'fa-coins', 'emergência': 'fa-shield-halved',
+            'viagem': 'fa-plane', 'investimento': 'fa-chart-line', 'veículo': 'fa-car',
+            'imóvel': 'fa-house', 'educação': 'fa-graduation-cap', 'aposentadoria': 'fa-umbrella-beach'
         };
         let selectedColor = '#0d9488';
         let editingGoalId = null;
 
-        // Gerar opções de valores solicitados: 5k, 10k, 20k, 30k, 50k, 100k, 200k, 300k, 400k, +100k até 1M
+        function handleCategoryChange() {
+            const category = document.getElementById('goalCategory').value;
+            const currentGroup = document.getElementById('currentValueGroup');
+            if (category === 'objetivo_financeiro') {
+                currentGroup.style.display = 'none';
+                document.getElementById('goalCurrent').value = 0;
+            } else {
+                currentGroup.style.display = 'block';
+            }
+        }
+
+        // Gerar opções de valores solicitados
         function populateTargetOptions() {
             const select = document.getElementById('goalTarget');
-            const values = [5000, 10000, 20000, 30000, 50000, 100000, 200000, 300000, 400000];
-            for (let v = 500000; v <= 1000000; v += 100000) values.push(v);
+            const values = [5000, 10000, 20000, 30000, 40000, 50000, 100000, 150000, 200000, 300000, 400000, 500000, 1000000];
 
             select.innerHTML = '<option value="">Selecione um valor...</option>';
             values.forEach(v => {
                 const opt = document.createElement('option');
                 opt.value = v;
-                opt.textContent = v >= 1000000 ? 'R$ 1.000.000 (1 Milhão)' : 'R$ ' + v.toLocaleString('pt-BR');
+                opt.textContent = 'R$ ' + v.toLocaleString('pt-BR');
                 select.appendChild(opt);
             });
-            // Option for custom if needed (optional but good)
-            const optOther = document.createElement('option');
-            optOther.value = 'other';
-            optOther.textContent = 'Outro valor...';
-            // select.appendChild(optOther); 
         }
 
         function fmt(v) { return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
@@ -562,9 +568,14 @@
             document.getElementById('goalCurrent').value = goal ? goal.currentValue : 0;
             document.getElementById('goalDeadline').value = goal ? (goal.deadline || '') : '';
             document.getElementById('goalCategory').value = goal ? (goal.category || 'geral') : 'geral';
+
+            handleCategoryChange();
+
             selectedColor = goal ? (goal.color || '#0d9488') : '#0d9488';
             document.querySelectorAll('.color-swatch').forEach(s => {
-                s.classList.toggle('active', s.style.background === selectedColor || rgbToHex(s.style.background) === selectedColor);
+                const swatchColor = s.style.background;
+                const matches = swatchColor === selectedColor || rgbToHex(swatchColor) === selectedColor;
+                s.classList.toggle('active', matches);
             });
             document.getElementById('goalModal').classList.add('visible');
         }
@@ -572,12 +583,15 @@
         function closeModal() {
             document.getElementById('goalModal').classList.remove('visible');
             document.getElementById('goalForm').reset();
+            document.getElementById('currentValueGroup').style.display = 'block';
             editingGoalId = null;
         }
 
         function rgbToHex(rgb) {
-            if (rgb.startsWith('#')) return rgb;
-            const [r, g, b] = rgb.match(/\d+/g).map(Number);
+            if (!rgb || rgb.startsWith('#')) return rgb;
+            const match = rgb.match(/\d+/g);
+            if (!match) return '#0d9488';
+            const [r, g, b] = match.map(Number);
             return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
         }
 
@@ -586,13 +600,15 @@
                 emergency: { title: 'Reserva de Emergência', target: '', category: 'emergência', color: '#0d9488' },
                 travel: { title: 'Viagem dos Sonhos', target: '', category: 'viagem', color: '#3b82f6' },
                 investment: { title: 'Carteira de Investimentos', target: '', category: 'investimento', color: '#8b5cf6' },
-                car: { title: 'Carro Novo', target: '', category: 'veículo', color: '#f97316' }
+                car: { title: 'Carro Novo', target: '', category: 'veículo', color: '#f97316' },
+                objetivo: { title: 'Objetivo Financeiro', target: '', category: 'objetivo_financeiro', color: '#22c55e' }
             };
             const t = templates[type];
             openModal();
             document.getElementById('goalTitle').value = t.title;
             document.getElementById('goalTarget').value = t.target;
             document.getElementById('goalCategory').value = t.category;
+            handleCategoryChange();
             selectedColor = t.color;
             document.querySelectorAll('.color-swatch').forEach(s => {
                 s.classList.toggle('active', rgbToHex(s.style.background) === t.color);
@@ -603,27 +619,39 @@
             e.preventDefault();
             const userId = sessionStorage.getItem('userId');
             const category = document.getElementById('goalCategory').value;
+            const isAutomatic = category === 'objetivo_financeiro';
+
             const goal = {
                 title: document.getElementById('goalTitle').value,
                 targetValue: parseFloat(document.getElementById('goalTarget').value),
-                currentValue: parseFloat(document.getElementById('goalCurrent').value) || 0,
+                currentValue: isAutomatic ? 0 : (parseFloat(document.getElementById('goalCurrent').value) || 0),
                 deadline: document.getElementById('goalDeadline').value || null,
                 category,
                 icon: icons[category] || 'fa-bullseye',
                 color: selectedColor
             };
 
-            const url = editingGoalId ? `/horizontefinanceiro/api/goals/${editingGoalId}` : '/horizontefinanceiro/api/goals';
+            const url = editingGoalId ? `/api/goals/${editingGoalId}` : '/api/goals';
             const method = editingGoalId ? 'PUT' : 'POST';
 
-            await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json', 'user-id': userId },
-                body: JSON.stringify(goal)
-            });
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'user-id': userId },
+                    body: JSON.stringify(goal)
+                });
 
-            closeModal();
-            loadGoals();
+                if (response.ok) {
+                    closeModal();
+                    loadGoals();
+                } else {
+                    const data = await response.json();
+                    alert('Erro ao salvar meta: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro na conexão com o servidor.');
+            }
         }
 
         async function deleteGoal(id) {
@@ -640,59 +668,99 @@
             const userId = sessionStorage.getItem('userId');
             if (!userId) return window.location.href = '/login';
 
-            const res = await fetch('/api/goals', { headers: { 'user-id': userId } });
-            const goals = await res.json();
-            const grid = document.getElementById('goalsGrid');
-            grid.innerHTML = '';
+            try {
+                // Fetch goals and transactions to compute balance
+                const [resGoals, resTrans] = await Promise.all([
+                    fetch('/api/goals', { headers: { 'user-id': userId } }),
+                    fetch('/api/transactions', { headers: { 'user-id': userId } })
+                ]);
 
-            if (goals.length === 0) {
-                document.getElementById('emptyState').style.display = 'block';
-                document.getElementById('templatesSection').style.display = 'block';
-                return;
+                const goals = await resGoals.json();
+                const transactions = await resTrans.json();
+
+                // Calculate current balance
+                let totalIncomes = 0;
+                let totalExpenses = 0;
+                transactions.forEach(t => {
+                    const val = parseFloat(t.value) || 0;
+                    if (t.type === 'income') totalIncomes += val;
+                    else totalExpenses += val;
+                });
+                const currentBalance = totalIncomes - totalExpenses;
+
+                const grid = document.getElementById('goalsGrid');
+                grid.innerHTML = '';
+
+                if (goals.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    document.getElementById('templatesSection').style.display = 'block';
+                    return;
+                }
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('templatesSection').style.display = 'none';
+
+                const motivationalPhrases = [
+                    "Cada passo conta! Continue economizando e você vai chegar lá!",
+                    "Foco no objetivo, a recompensa virá!",
+                    "Sua disciplina é o caminho para o sucesso financeiro!",
+                    "Pequenas economias hoje, grandes conquistas amanhã!",
+                    "Você está construindo o seu futuro, continue firme!"
+                ];
+
+                goals.forEach(g => {
+                    const isAutomatic = g.category === 'objetivo_financeiro';
+                    const currentValue = isAutomatic ? currentBalance : g.currentValue;
+                    const pct = g.targetValue > 0 ? Math.min(Math.round((currentValue / g.targetValue) * 100), 100) : 0;
+
+                    // Automatic color logic requested - based on progress
+                    let barColor;
+                    if (pct >= 80) barColor = '#22c55e'; // Green
+                    else if (pct >= 40) barColor = '#f59e0b'; // Amber
+                    else barColor = '#ef4444'; // Red
+
+                    const icon = g.icon || icons[g.category] || 'fa-bullseye';
+                    const color = g.color || '#0d9488';
+                    const deadlineStr = g.deadline ? formatDate(g.deadline) : 'Sem prazo';
+                    const remaining = g.targetValue - currentValue;
+                    const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+
+                    const card = document.createElement('div');
+                    card.className = 'goal-card';
+                    card.innerHTML = `
+                        <div class="goal-card-accent" style="background:${color}"></div>
+                        <div class="goal-card-top">
+                            <div class="goal-icon" style="background:${color}">
+                                <i class="fa-solid ${icon}"></i>
+                            </div>
+                            <div class="goal-actions">
+                                <button onclick='openModal(${JSON.stringify(g).replace(/'/g, "&apos;")})' title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button class="delete" onclick="deleteGoal(${g.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="goal-title">${g.title}</div>
+                        <div class="goal-category">${g.category === 'objetivo_financeiro' ? 'Objetivo Financeiro' : g.category.charAt(0).toUpperCase() + g.category.slice(1)}</div>
+
+                        <div class="goal-progress-section">
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-style: italic;">${randomPhrase}</p>
+                            <div class="goal-progress-header">
+                                <span class="current">${fmt(currentValue)}</span>
+                                <span class="target">de ${fmt(g.targetValue)}</span>
+                            </div>
+                            <div class="goal-progress-bar-bg">
+                                <div class="goal-progress-bar" style="width:${pct}%;background:${barColor}"></div>
+                            </div>
+                            <div class="goal-pct" style="color:${barColor}">${pct}%</div>
+                        </div>
+                        <div class="goal-footer">
+                            <span class="goal-deadline"><i class="fa-regular fa-calendar"></i> ${deadlineStr}</span>
+                            <span style="font-weight:600;">Faltam ${fmt(Math.max(remaining, 0))}</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error('Erro ao carregar metas:', err);
             }
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('templatesSection').style.display = 'none';
-
-            goals.forEach(g => {
-                const pct = g.targetValue > 0 ? Math.min(Math.round((g.currentValue / g.targetValue) * 100), 100) : 0;
-                const barColor = pct >= 80 ? 'var(--success-color)' : pct >= 50 ? '#f59e0b' : 'var(--error-color)';
-                const icon = g.icon || icons[g.category] || 'fa-bullseye';
-                const color = g.color || '#0d9488';
-                const deadlineStr = g.deadline ? formatDate(g.deadline) : 'Sem prazo';
-                const remaining = g.targetValue - g.currentValue;
-
-                const card = document.createElement('div');
-                card.className = 'goal-card';
-                card.innerHTML = `
-                    <div class="goal-card-accent" style="background:${color}"></div>
-                    <div class="goal-card-top">
-                        <div class="goal-icon" style="background:${color}">
-                            <i class="fa-solid ${icon}"></i>
-                        </div>
-                        <div class="goal-actions">
-                            <button onclick='openModal(${JSON.stringify(g)})' title="Editar"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete" onclick="deleteGoal(${g.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="goal-title">${g.title}</div>
-                    <div class="goal-category">${g.category.charAt(0).toUpperCase() + g.category.slice(1)}</div>
-                    <div class="goal-progress-section">
-                        <div class="goal-progress-header">
-                            <span class="current">${fmt(g.currentValue)}</span>
-                            <span class="target">de ${fmt(g.targetValue)}</span>
-                        </div>
-                        <div class="goal-progress-bar-bg">
-                            <div class="goal-progress-bar" style="width:${pct}%;background:${barColor}"></div>
-                        </div>
-                        <div class="goal-pct" style="color:${barColor}">${pct}%</div>
-                    </div>
-                    <div class="goal-footer">
-                        <span class="goal-deadline"><i class="fa-regular fa-calendar"></i> ${deadlineStr}</span>
-                        <span style="font-weight:600;">Faltam ${fmt(Math.max(remaining, 0))}</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
         }
 
         function formatDate(d) {

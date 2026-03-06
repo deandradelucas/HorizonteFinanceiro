@@ -383,36 +383,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 const goalContainer = document.getElementById('mainGoalContainer');
                 if (goalContainer && goals.length > 0) {
                     // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
-                    const sortedGoals = goals.sort((a, b) => {
-                        const pctA = (a.currentvalue / a.targetvalue);
-                        const pctB = (b.currentvalue / b.targetvalue);
-                        return pctB - pctA;
+                    const goalsWithActualProgress = goals.map(g => {
+                        const isAutomatic = g.category === 'objetivo_financeiro';
+                        const currentValue = isAutomatic ? currentBalance : g.currentvalue;
+                        const pct = g.targetvalue > 0 ? (currentValue / g.targetvalue) : 0;
+                        return { ...g, actualCurrentValue: currentValue, actualPct: pct };
+                    });
+
+                    const sortedGoals = goalsWithActualProgress.sort((a, b) => {
+                        return b.actualPct - a.actualPct;
                     });
 
                     const mainGoal = sortedGoals[0];
-                    const pct = Math.min(Math.round((mainGoal.currentvalue / mainGoal.targetvalue) * 100), 100);
+                    const pctInt = Math.min(Math.round(mainGoal.actualPct * 100), 100);
+
+                    // Automatic color logic based on progress
+                    let barColor;
+                    if (pctInt >= 80) barColor = '#22c55e'; // Green
+                    else if (pctInt >= 40) barColor = '#f59e0b'; // Amber
+                    else barColor = '#ef4444'; // Red
 
                     document.getElementById('mainGoalTitle').textContent = mainGoal.title;
-                    document.getElementById('mainGoalBar').style.width = `${pct}%`;
-                    document.getElementById('mainGoalValues').textContent = `${formatMoney(mainGoal.currentvalue)} de ${formatMoney(mainGoal.targetvalue)}`;
-                    document.getElementById('mainGoalPct').textContent = `${pct}%`;
+                    const bar = document.getElementById('mainGoalBar');
+                    bar.style.width = `${pctInt}%`;
+                    bar.style.backgroundColor = barColor; // Applying calculated color
+
+                    document.getElementById('mainGoalValues').textContent = `${formatMoney(mainGoal.actualCurrentValue)} de ${formatMoney(mainGoal.targetvalue)}`;
+                    const pctDisplay = document.getElementById('mainGoalPct');
+                    pctDisplay.textContent = `${pctInt}%`;
+                    pctDisplay.style.color = barColor;
 
                     // Frases Motivacionais baseadas no progresso
                     const phrases = {
                         start: [
                             "O primeiro passo é sempre o mais importante! 🚀",
                             "Toda grande jornada começa com uma pequena economia.",
-                            "Mantenha o foco, o seu futuro agradece!"
+                            "Mantenha o foco, o seu futuro agradece!",
+                            "Cada passo conta! Continue economizando e você vai chegar lá!"
                         ],
                         middle: [
                             "Você está no caminho certo! Continue firme. 💪",
                             "Mais da metade já foi! O sucesso está logo ali.",
-                            "Sua disciplina está dando frutos, parabéns!"
+                            "Sua disciplina está dando frutos, parabéns!",
+                            "Continue economizando e você vai chegar lá!"
                         ],
                         end: [
                             "Quase lá! Só mais um pouco de esforço. ✨",
                             "A linha de chegada está à vista! Não pare agora.",
-                            "Você é uma inspiração na gestão financeira!"
+                            "Você é uma inspiração na gestão financeira!",
+                            "Cada passo conta! Você vai chegar lá!"
                         ],
                         complete: [
                             "PARABÉNS! Você conquistou seu objetivo! 🏆",
@@ -422,9 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     let selectedPhrases;
-                    if (pct >= 100) selectedPhrases = phrases.complete;
-                    else if (pct >= 75) selectedPhrases = phrases.end;
-                    else if (pct >= 25) selectedPhrases = phrases.middle;
+                    if (pctInt >= 100) selectedPhrases = phrases.complete;
+                    else if (pctInt >= 75) selectedPhrases = phrases.end;
+                    else if (pctInt >= 25) selectedPhrases = phrases.middle;
                     else selectedPhrases = phrases.start;
 
                     const randomPhrase = selectedPhrases[Math.floor(Math.random() * selectedPhrases.length)];
