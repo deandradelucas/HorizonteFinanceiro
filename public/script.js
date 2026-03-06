@@ -382,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 2. Meta em Destaque no Dashboard
                 const goalContainer = document.getElementById('mainGoalContainer');
                 if (goalContainer && goals.length > 0) {
+                    goalContainer.style.display = 'block'; // Make it visible
                     // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
                     const goalsWithActualProgress = goals.map(g => {
                         const isAutomatic = g.category === 'objetivo_financeiro';
