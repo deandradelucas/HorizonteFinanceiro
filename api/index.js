@@ -175,6 +175,17 @@ app.delete('/api/transactions/:id', authenticate, async (req, res, next) => {
 
 // --- API Histórico ---
 // Rotas para resumo mensal e detalhes por período
+const normalizeTransactionType = (type) => {
+    if (type === 'income' || type === 'receita') return 'income';
+    if (type === 'expense' || type === 'despesa') return 'expense';
+    return type;
+};
+
+const toSafeNumber = (value, fallback = 0) => {
+    const parsed = typeof value === 'number' ? value : parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+};
+
 app.get('/api/history/summary', authenticate, async (req, res, next) => {
     try {
         const { year } = req.query;
@@ -199,8 +210,11 @@ app.get('/api/history/summary', authenticate, async (req, res, next) => {
             months[key] = { month: key, receitas: 0, despesas: 0, saldo: 0 };
         }
         rows.forEach(r => {
-            if (r.type === 'receita') months[r.month].receitas = r.total;
-            else months[r.month].despesas = r.total;
+            const normalizedType = normalizeTransactionType(r.type);
+            const total = toSafeNumber(r.total);
+            if (!months[r.month]) return;
+            if (normalizedType === 'income') months[r.month].receitas = total;
+            else if (normalizedType === 'expense') months[r.month].despesas = total;
         });
         Object.values(months).forEach(m => m.saldo = m.receitas - m.despesas);
 
@@ -237,7 +251,20 @@ app.get('/api/history/details', authenticate, async (req, res, next) => {
             [req.userId, `${datePrefix}%`]
         );
 
-        res.json({ transactions, categoryTotals });
+        const normalizedTransactions = transactions.map((transaction) => ({
+            ...transaction,
+            type: normalizeTransactionType(transaction.type),
+            value: toSafeNumber(transaction.value)
+        }));
+
+        const normalizedCategoryTotals = categoryTotals.map((item) => ({
+            ...item,
+            type: normalizeTransactionType(item.type),
+            total: toSafeNumber(item.total),
+            count: Number.isFinite(item.count) ? item.count : parseInt(item.count, 10) || 0
+        }));
+
+        res.json({ transactions: normalizedTransactions, categoryTotals: normalizedCategoryTotals });
     } catch (err) {
         next(err);
     }

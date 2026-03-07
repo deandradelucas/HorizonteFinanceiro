@@ -1,613 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transações - Horizonte Financeiro</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Horizonte">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .history-filters {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .history-filters select,
-        .history-filters input {
-            padding: 10px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 14px;
-            font-family: inherit;
-            background: var(--card-bg);
-            color: var(--text-main);
-            cursor: pointer;
-        }
-
-        .history-filters select:focus,
-        .history-filters input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .history-filters .btn-filter {
-            padding: 10px 20px;
-            background: var(--primary-color);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .history-filters .btn-filter:hover {
-            background: var(--primary-hover);
-        }
-
-        .history-filters .btn-clear {
-            padding: 10px 20px;
-            background: transparent;
-            color: var(--text-muted);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        /* Year Summary Cards */
-        .year-totals {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .year-total-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .year-total-card h4 {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .year-total-card .amount {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .year-total-card .amount.income {
-            color: var(--success-color);
-        }
-
-        .year-total-card .amount.expense {
-            color: var(--error-color);
-        }
-
-        .year-total-card .amount.balance {
-            color: var(--primary-color);
-        }
-
-        /* Month Grid */
-        .month-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .month-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .month-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        .month-card.active {
-            border-color: var(--primary-color);
-            background: rgba(13, 148, 136, 0.04);
-        }
-
-        .month-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .month-card-header h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .month-card-header .month-saldo {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .month-card-header .month-saldo.positive {
-            color: var(--success-color);
-        }
-
-        .month-card-header .month-saldo.negative {
-            color: var(--error-color);
-        }
-
-        .month-card-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .month-card-row .value {
-            font-weight: 600;
-        }
-
-        .month-card-row .income-val {
-            color: var(--success-color);
-        }
-
-        .month-card-row .expense-val {
-            color: var(--error-color);
-        }
-
-        .month-progress {
-            height: 6px;
-            background: var(--border-color);
-            border-radius: 4px;
-            margin-top: 12px;
-            overflow: hidden;
-        }
-
-        .month-progress-bar {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        /* Detail Panel */
-        .detail-panel {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            display: none;
-        }
-
-        .detail-panel.visible {
-            display: block;
-        }
-
-        .detail-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .detail-panel-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .detail-panel-close {
-            background: none;
-            border: none;
-            font-size: 18px;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        /* Category Breakdown */
-        .category-breakdown {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .category-card {
-            background: var(--bg-color);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .category-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .category-info h4 {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 2px;
-        }
-
-        .category-info span {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .category-info .cat-count {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        /* Detail Table */
-        .detail-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .detail-table th {
-            text-align: left;
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px 8px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .detail-table td {
-            padding: 14px 8px;
-            font-size: 14px;
-            color: var(--text-main);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .detail-table .text-right {
-            text-align: right;
-        }
-
-        @media (max-width: 900px) {
-            .year-totals {
-                grid-template-columns: 1fr;
-            }
-
-            .month-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .category-breakdown {
-                grid-template-columns: 1fr;
-            }
-
-            .history-filters {
-                flex-direction: column;
-            }
-
-            .history-filters select,
-            .history-filters input,
-            .history-filters .btn-filter,
-            .history-filters .btn-clear {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historico - Horizonte Financeiro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .filters,.totals,.months,.cats{display:grid;gap:16px}.filters{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:24px}.filters .actions{display:flex;gap:12px;align-items:end}.filters label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px}.filters input,.filters select{width:100%;padding:10px 14px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main)}.totals{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:24px}.card,.panel,.empty,.month{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px}.card{padding:20px}.card h4{font-size:12px;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px}.amount{font-size:24px;font-weight:700}.inc{color:var(--success-color)}.exp{color:var(--error-color)}.bal{color:var(--primary-color)}.months{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:24px}.month{padding:18px;cursor:pointer;transition:var(--transition)}.month:hover,.month.active{border-color:var(--primary-color);transform:translateY(-2px)}.mh,.row{display:flex;justify-content:space-between;gap:12px}.mh{margin-bottom:14px}.row{font-size:13px;color:var(--text-muted)}.bar{height:6px;background:var(--border-color);border-radius:999px;overflow:hidden;margin-top:12px}.bar>div{height:100%}.panel{padding:24px;display:none}.panel.visible{display:block}.ph{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px}.cats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:20px}.cat{display:flex;gap:12px;align-items:center;padding:14px;border-radius:12px;background:var(--bg-color)}.ci{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff}.empty{padding:28px;text-align:center;color:var(--text-muted);display:none}.table-wrap{overflow:auto}.detail-table{width:100%;border-collapse:collapse}.detail-table th,.detail-table td{padding:12px 8px;border-bottom:1px solid var(--border-color);text-align:left}.detail-table th{text-transform:uppercase;font-size:12px;color:var(--text-muted)}.right{text-align:right}.tag-chip{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+  </style>
 </head>
-
 <body class="dashboard-body">
-    <script>
-        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
-    </script>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
-            <h2>Horizonte Financeiro</h2>
+  <script>if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
+  <aside class="sidebar">
+    <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira</a>
+      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transacoes</a>
+      <a href="/history" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> Historico</a>
+      <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+      <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configuracoes</a>
+    </nav>
+    <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar">
+      <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+      <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="historySearchTop" type="text" placeholder="Buscar no historico..."></div>
+      <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar Tema"><i class="fa-solid fa-moon"></i></button></div>
+    </header>
+    <div class="dashboard-content">
+      <div class="page-header"><div><h1>Historico Financeiro</h1><p class="subtitle">Resumo anual, meses detalhados e breakdown por categoria.</p></div></div>
+      <div class="filters">
+        <div><label for="yearSelect">Ano</label><select id="yearSelect"></select></div>
+        <div><label for="typeSelect">Tipo</label><select id="typeSelect"><option value="all">Todos</option><option value="income">Receitas</option><option value="expense">Despesas</option></select></div>
+        <div><label for="historySearch">Buscar</label><input id="historySearch" type="text" placeholder="Descricao ou categoria"></div>
+        <div class="actions"><button class="btn-primary btn-action" onclick="loadHistorySummary()">Consultar</button><button class="notification-btn" onclick="resetHistoryFilters()">Limpar</button></div>
+      </div>
+      <div class="totals" id="yearTotals">
+        <div class="card"><h4>Receitas do Ano</h4><div class="amount inc" id="yearIncome">R$ 0,00</div></div>
+        <div class="card"><h4>Despesas do Ano</h4><div class="amount exp" id="yearExpense">R$ 0,00</div></div>
+        <div class="card"><h4>Saldo do Ano</h4><div class="amount bal" id="yearBalance">R$ 0,00</div></div>
+      </div>
+      <div class="months" id="monthGrid"></div>
+      <div class="empty" id="historyEmpty"><i class="fa-solid fa-chart-column"></i><p>Nenhuma movimentacao encontrada para os filtros selecionados.</p></div>
+      <div class="panel" id="detailPanel">
+        <div class="ph">
+          <h2 id="detailTitle">Detalhes</h2>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><label style="font-size:13px;color:var(--text-muted);">Dia</label><input id="dayFilter" type="number" min="1" max="31" placeholder="Todos" style="width:74px;padding:8px 10px;border:2px solid var(--border-color);border-radius:10px;background:var(--card-bg);color:var(--text-main)"><button class="notification-btn" onclick="applyDayFilter()"><i class="fa-solid fa-filter"></i></button><button class="notification-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></button></div>
         </div>
-        <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira</a>
-            <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
-            <a href="/history" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i>
-                Histórico</a>
-            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
-        </nav>
-        <div class="sidebar-footer">
-            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        <div class="cats" id="categoryBreakdown"></div>
+        <div class="empty" id="detailEmpty" style="margin-bottom:16px;"><i class="fa-solid fa-folder-open"></i><p>Nenhuma transacao encontrada nesse periodo.</p></div>
+        <div class="table-wrap">
+          <table class="detail-table">
+            <thead><tr><th>Descricao</th><th>Categoria</th><th>Data</th><th class="right">Valor</th></tr></thead>
+            <tbody id="detailTableBody"></tbody>
+          </table>
         </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <header class="topbar">
-            <button id="mobileMenuBtn" class="mobile-menu-btn">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar no histórico...">
-            </div>
-            <div class="user-profile" style="display: flex; align-items: center;">
-                <span id="currentDateDisplay" class="date-display"
-                    style="margin-right: 15px; font-weight: 500; color: var(--text-muted); font-size: 14px; display: flex; align-items: center;"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-            </div>
-        </header>
-
-        <div class="dashboard-content">
-            <div class="page-header">
-                <div>
-                    <h1>Histórico Financeiro</h1>
-                    <p class="subtitle">Analise seus gastos por mês, dia e categoria.</p>
-                </div>
-            </div>
-
-            <!-- Filters -->
-            <div class="history-filters">
-                <select id="yearSelect"></select>
-                <button class="btn-filter" onclick="loadHistorySummary()">
-                    <i class="fa-solid fa-search"></i> Consultar
-                </button>
-            </div>
-
-            <!-- Year Totals -->
-            <div class="year-totals" id="yearTotals" style="display:none;">
-                <div class="year-total-card">
-                    <h4><i class="fa-solid fa-arrow-up"></i> Receitas do Ano</h4>
-                    <div class="amount income" id="yearIncome">R$ 0,00</div>
-                </div>
-                <div class="year-total-card">
-                    <h4><i class="fa-solid fa-arrow-down"></i> Despesas do Ano</h4>
-                    <div class="amount expense" id="yearExpense">R$ 0,00</div>
-                </div>
-                <div class="year-total-card">
-                    <h4><i class="fa-solid fa-scale-balanced"></i> Saldo do Ano</h4>
-                    <div class="amount balance" id="yearBalance">R$ 0,00</div>
-                </div>
-            </div>
-
-            <!-- Month Grid -->
-            <div class="month-grid" id="monthGrid"></div>
-
-            <!-- Detail Panel -->
-            <div class="detail-panel" id="detailPanel">
-                <div class="detail-panel-header">
-                    <h2 id="detailTitle">Detalhes</h2>
-                    <div style="display:flex;gap:8px;align-items:center;">
-                        <label style="font-size:13px;color:var(--text-muted);">Filtrar dia:</label>
-                        <input type="number" id="dayFilter" min="1" max="31" placeholder="Todos"
-                            style="width:70px;padding:8px;border:2px solid var(--border-color);border-radius:10px;font-size:14px;background:var(--card-bg);color:var(--text-main);">
-                        <button class="btn-filter" onclick="applyDayFilter()" style="padding:8px 14px;">
-                            <i class="fa-solid fa-filter"></i>
-                        </button>
-                        <button class="detail-panel-close" onclick="closeDetail()">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text-main);">
-                    <i class="fa-solid fa-chart-pie"></i> Totais por Categoria
-                </h3>
-                <div class="category-breakdown" id="categoryBreakdown"></div>
-
-                <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text-main);">
-                    <i class="fa-solid fa-list"></i> Transações
-                </h3>
-                <div style="overflow-x:auto;">
-                    <table class="detail-table">
-                        <thead>
-                            <tr>
-                                <th>Descrição</th>
-                                <th>Categoria</th>
-                                <th>Data</th>
-                                <th class="text-right">Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="detailTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="script.js"></script>
-    <script>
-        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        const categoryColors = {
-            'Alimentação': '#f97316', 'Transporte': '#3b82f6', 'Saúde': '#ef4444', 'Educação': '#8b5cf6',
-            'Lazer': '#ec4899', 'Moradia': '#06b6d4', 'Salário': '#22c55e', 'Investimento': '#0d9488',
-            'Outros': '#64748b', 'Freelance': '#f59e0b', 'Vendas': '#10b981'
-        };
-        let currentMonth = null, currentYear = null;
-
-        // Populate year selector
-        const yearSelect = document.getElementById('yearSelect');
-        const currentYearVal = new Date().getFullYear();
-        for (let y = currentYearVal; y >= currentYearVal - 5; y--) {
-            const opt = document.createElement('option');
-            opt.value = y; opt.textContent = y;
-            yearSelect.appendChild(opt);
-        }
-
-        function fmt(v) { return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
-
-        async function loadHistorySummary() {
-            const userId = sessionStorage.getItem('userId');
-            if (!userId) return window.location.href = '/login';
-            const year = yearSelect.value;
-            currentYear = year;
-
-            const res = await fetch(`/api/history/summary?year=${year}`, {
-                headers: { 'user-id': userId }
-            });
-            const data = await res.json();
-
-            let totalInc = 0, totalExp = 0;
-            data.forEach(m => { totalInc += m.receitas; totalExp += m.despesas; });
-
-            document.getElementById('yearTotals').style.display = 'grid';
-            document.getElementById('yearIncome').textContent = fmt(totalInc);
-            document.getElementById('yearExpense').textContent = fmt(totalExp);
-            document.getElementById('yearBalance').textContent = fmt(totalInc - totalExp);
-
-            const grid = document.getElementById('monthGrid');
-            grid.innerHTML = '';
-            const maxVal = Math.max(...data.map(m => Math.max(m.receitas, m.despesas)), 1);
-
-            data.forEach(m => {
-                const hasData = m.receitas > 0 || m.despesas > 0;
-                const saldo = m.saldo;
-                const card = document.createElement('div');
-                card.className = 'month-card';
-                card.style.opacity = hasData ? '1' : '0.5';
-                const pct = hasData ? Math.round((m.despesas / maxVal) * 100) : 0;
-                const barColor = saldo >= 0 ? 'var(--success-color)' : 'var(--error-color)';
-                card.innerHTML = `
-                    <div class="month-card-header">
-                        <h3>${monthNames[parseInt(m.month) - 1]}</h3>
-                        <span class="month-saldo ${saldo >= 0 ? 'positive' : 'negative'}">${hasData ? fmt(saldo) : '—'}</span>
-                    </div>
-                    <div class="month-card-row">
-                        <span><i class="fa-solid fa-arrow-up" style="color:var(--success-color)"></i> Receitas</span>
-                        <span class="value income-val">${fmt(m.receitas)}</span>
-                    </div>
-                    <div class="month-card-row">
-                        <span><i class="fa-solid fa-arrow-down" style="color:var(--error-color)"></i> Despesas</span>
-                        <span class="value expense-val">${fmt(m.despesas)}</span>
-                    </div>
-                    <div class="month-progress">
-                        <div class="month-progress-bar" style="width:${pct}%;background:${barColor}"></div>
-                    </div>
-                `;
-                if (hasData) card.onclick = () => openMonthDetail(m.month);
-                grid.appendChild(card);
-            });
-
-            closeDetail();
-        }
-
-        async function openMonthDetail(month, day) {
-            const userId = sessionStorage.getItem('userId');
-            currentMonth = month;
-            const params = `year=${currentYear}&month=${month}${day ? '&day=' + day : ''}`;
-            const res = await fetch(`/api/history/details?${params}`, {
-                headers: { 'user-id': userId }
-            });
-            const { transactions, categoryTotals } = await res.json();
-
-            const panel = document.getElementById('detailPanel');
-            panel.classList.add('visible');
-            const dayLabel = day ? ` — Dia ${day}` : '';
-            document.getElementById('detailTitle').textContent = `${monthNames[parseInt(month) - 1]} ${currentYear}${dayLabel}`;
-            document.getElementById('dayFilter').value = day || '';
-
-            // Category Breakdown
-            const catDiv = document.getElementById('categoryBreakdown');
-            catDiv.innerHTML = '';
-            categoryTotals.forEach(ct => {
-                const color = categoryColors[ct.category] || '#64748b';
-                const isExpense = ct.type === 'despesa';
-                catDiv.innerHTML += `
-                    <div class="category-card">
-                        <div class="category-icon" style="background:${color}">
-                            <i class="fa-solid ${isExpense ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
-                        </div>
-                        <div class="category-info">
-                            <h4>${ct.category}</h4>
-                            <span style="color:${isExpense ? 'var(--error-color)' : 'var(--success-color)'}">${fmt(ct.total)}</span>
-                            <span class="cat-count"> · ${ct.count} transaç${ct.count > 1 ? 'ões' : 'ão'}</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Transactions Table
-            const tbody = document.getElementById('detailTableBody');
-            tbody.innerHTML = '';
-            transactions.forEach(t => {
-                const isExpense = t.type === 'despesa';
-                const [y, m, d] = t.date.split('-');
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="font-weight:600;">${t.description}</td>
-                        <td><span class="tag" style="background:${categoryColors[t.category] || '#64748b'}22;color:${categoryColors[t.category] || '#64748b'}">${t.category}</span></td>
-                        <td style="color:var(--text-muted)">${d}/${m}/${y}</td>
-                        <td class="text-right" style="font-weight:700;color:${isExpense ? 'var(--error-color)' : 'var(--success-color)'}">
-                            ${isExpense ? '-' : '+'}${fmt(t.value)}
-                        </td>
-                    </tr>
-                `;
-            });
-
-            // Highlight active month card
-            document.querySelectorAll('.month-card').forEach((c, i) => {
-                c.classList.toggle('active', String(i + 1).padStart(2, '0') === month);
-            });
-
-            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function applyDayFilter() {
-            const day = document.getElementById('dayFilter').value;
-            if (currentMonth) openMonthDetail(currentMonth, day || undefined);
-        }
-
-        function closeDetail() {
-            document.getElementById('detailPanel').classList.remove('visible');
-            document.querySelectorAll('.month-card').forEach(c => c.classList.remove('active'));
-        }
-
-        // Auto-load current year
-        document.addEventListener('DOMContentLoaded', () => {
-            const userId = sessionStorage.getItem('userId');
-            if (!userId) return window.location.href = '/login';
-            loadHistorySummary();
-        });
-    </script>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+  <script>
+    const monthNames=['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const categoryColors={alimentacao:'#f97316',transporte:'#3b82f6',saude:'#ef4444',educacao:'#8b5cf6',lazer:'#ec4899',moradia:'#06b6d4',salario:'#22c55e',investimento:'#0d9488',freelance:'#f59e0b',vendas:'#10b981',contas:'#6366f1',outros:'#64748b'};
+    let currentMonth=null,currentYear=null;
+    const yearSelect=document.getElementById('yearSelect'),typeSelect=document.getElementById('typeSelect'),historySearch=document.getElementById('historySearch'),historySearchTop=document.getElementById('historySearchTop');
+    const historyEmpty=document.getElementById('historyEmpty'),monthGrid=document.getElementById('monthGrid');
+    const safe=v=>{const n=typeof v==='number'?v:parseFloat(v);return Number.isFinite(n)?n:0};
+    const fmt=v=>'R$ '+safe(v).toLocaleString('pt-BR',{minimumFractionDigits:2});
+    const norm=t=>(t||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    const ttype=t=>(t==='income'||t==='receita')?'income':'expense';
+    const cat=c=>{const s=(c||'outros').replace(/_/g,' ');return s.charAt(0).toUpperCase()+s.slice(1)};
+    const ccolor=c=>categoryColors[norm(c)]||'#64748b';
+    const fdate=d=>!d?'Sem data':`${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(0,4)}`;
+    const search=()=>norm(historySearch.value||historySearchTop.value);
+    function syncSearch(el){historySearch.value=el.value||'';historySearchTop.value=el.value||''}
+    function resetHistoryFilters(){yearSelect.value=String(new Date().getFullYear());typeSelect.value='all';historySearch.value='';historySearchTop.value='';loadHistorySummary()}
+    function populateYears(){const y=new Date().getFullYear();for(let i=y;i>=y-8;i--){const o=document.createElement('option');o.value=i;o.textContent=i;yearSelect.appendChild(o)}}
+    function renderTotals(rows){const inc=rows.reduce((s,r)=>s+r.receitas,0),exp=rows.reduce((s,r)=>s+r.despesas,0);yearIncome.textContent=fmt(inc);yearExpense.textContent=fmt(exp);yearBalance.textContent=fmt(inc-exp)}
+    function filterSummary(rows){const tf=typeSelect.value,term=search();return rows.filter(r=>!(tf==='income'&&r.receitas<=0)&&!(tf==='expense'&&r.despesas<=0)&&(!term||norm(monthNames[parseInt(r.month,10)-1]).includes(term)))}
+    function renderMonths(rows){monthGrid.innerHTML='';if(!rows.length){historyEmpty.style.display='block';return}historyEmpty.style.display='none';const max=Math.max(...rows.map(r=>Math.max(r.receitas,r.despesas)),1);rows.forEach(r=>{const has=r.receitas>0||r.despesas>0,pct=has?Math.round((Math.max(r.receitas,r.despesas)/max)*100):0,col=r.saldo>=0?'var(--success-color)':'var(--error-color)';const d=document.createElement('div');d.className='month';d.style.opacity=has?'1':'0.5';d.innerHTML=`<div class="mh"><h3>${monthNames[parseInt(r.month,10)-1]}</h3><strong class="${r.saldo>=0?'inc':'exp'}">${has?fmt(r.saldo):'—'}</strong></div><div class="row"><span>Receitas</span><span class="inc">${fmt(r.receitas)}</span></div><div class="row"><span>Despesas</span><span class="exp">${fmt(r.despesas)}</span></div><div class="bar"><div style="width:${pct}%;background:${col}"></div></div>`;if(has)d.onclick=()=>openMonthDetail(r.month);monthGrid.appendChild(d)})}
+    async function loadHistorySummary(){const userId=sessionStorage.getItem('userId');if(!userId)return window.location.href='/login';currentYear=yearSelect.value;try{const res=await fetch(`/api/history/summary?year=${currentYear}`,{headers:{'user-id':userId}});const data=await res.json();const rows=Array.isArray(data)?data.map(r=>({month:String(r.month).padStart(2,'0'),receitas:safe(r.receitas),despesas:safe(r.despesas),saldo:safe(r.saldo)})):[];renderTotals(rows);renderMonths(filterSummary(rows));closeDetail()}catch(err){console.error('Erro ao carregar historico:',err);monthGrid.innerHTML='';historyEmpty.style.display='block';historyEmpty.innerHTML='<i class="fa-solid fa-triangle-exclamation"></i><p>Nao foi possivel carregar o historico agora.</p>'}}
+    function renderCats(items){const wrap=document.getElementById('categoryBreakdown');wrap.innerHTML='';if(!items.length){wrap.innerHTML='<div class="empty" style="display:block;grid-column:1/-1;"><i class="fa-solid fa-tags"></i><p>Sem categorias para esse periodo.</p></div>';return}items.forEach(i=>{const exp=ttype(i.type)==='expense',color=ccolor(i.category);wrap.innerHTML+=`<div class="cat"><div class="ci" style="background:${color}"><i class="fa-solid ${exp?'fa-arrow-down':'fa-arrow-up'}"></i></div><div><strong>${cat(i.category)}</strong><div style="font-weight:700;color:${exp?'var(--error-color)':'var(--success-color)'}">${fmt(i.total)}</div><small style="color:var(--text-muted)">${i.count} ${i.count===1?'transacao':'transacoes'}</small></div></div>`})}
+    function renderTable(items){const body=document.getElementById('detailTableBody'),empty=document.getElementById('detailEmpty');body.innerHTML='';if(!items.length){empty.style.display='block';return}empty.style.display='none';items.forEach(i=>{const exp=ttype(i.type)==='expense',color=ccolor(i.category);body.innerHTML+=`<tr><td style="font-weight:600">${i.description||'Sem descricao'}</td><td><span class="tag-chip" style="background:${color}22;color:${color}">${cat(i.category)}</span></td><td style="color:var(--text-muted)">${fdate(i.date)}</td><td class="right" style="font-weight:700;color:${exp?'var(--error-color)':'var(--success-color)'}">${exp?'-':'+'}${fmt(i.value)}</td></tr>`})}
+    async function openMonthDetail(month,day){const userId=sessionStorage.getItem('userId');currentMonth=month;try{const res=await fetch(`/api/history/details?year=${currentYear}&month=${month}${day?`&day=${day}`:''}`,{headers:{'user-id':userId}});const data=await res.json();const tf=typeSelect.value,term=search();const tx=(data.transactions||[]).map(i=>({...i,type:ttype(i.type),value:safe(i.value)})).filter(i=>(tf==='all'||i.type===tf)&&(!term||norm(`${i.description||''} ${i.category||''}`).includes(term)));const ct=(data.categoryTotals||[]).map(i=>({...i,type:ttype(i.type),total:safe(i.total),count:parseInt(i.count,10)||0})).filter(i=>(tf==='all'||i.type===tf)&&(!term||norm(i.category).includes(term)));detailPanel.classList.add('visible');detailTitle.textContent=`${monthNames[parseInt(month,10)-1]} ${currentYear}${day?` - Dia ${day}`:''}`;dayFilter.value=day||'';renderCats(ct);renderTable(tx);document.querySelectorAll('.month').forEach((el,idx)=>el.classList.toggle('active',String(idx+1).padStart(2,'0')===month));detailPanel.scrollIntoView({behavior:'smooth',block:'start'})}catch(err){console.error('Erro ao carregar detalhes:',err)}}
+    function applyDayFilter(){const day=dayFilter.value;if(currentMonth)openMonthDetail(currentMonth,day||undefined)}
+    function closeDetail(){detailPanel.classList.remove('visible');document.querySelectorAll('.month').forEach(el=>el.classList.remove('active'))}
+    historySearch.addEventListener('input',()=>{syncSearch(historySearch);loadHistorySummary()});historySearchTop.addEventListener('input',()=>{syncSearch(historySearchTop);loadHistorySummary()});typeSelect.addEventListener('change',loadHistorySummary);
+    document.addEventListener('DOMContentLoaded',()=>{const userId=sessionStorage.getItem('userId');if(!userId)return window.location.href='/login';populateYears();yearSelect.value=String(new Date().getFullYear());loadHistorySummary()});
+  </script>
 </body>
-
 </html>
