@@ -642,8 +642,8 @@
 
             const goal = {
                 title: document.getElementById('goalTitle').value,
-                targetValue: parseFloat(document.getElementById('goalTarget').value),
-                currentValue: isAutomatic ? 0 : (parseFloat(document.getElementById('goalCurrent').value) || 0),
+                targetValue: toSafeNumber(document.getElementById('goalTarget').value),
+                currentValue: isAutomatic ? 0 : toSafeNumber(document.getElementById('goalCurrent').value),
                 deadline: document.getElementById('goalDeadline').value || null,
                 category,
                 icon: icons[category] || 'fa-bullseye',
