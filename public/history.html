@@ -10,7 +10,62 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    .filters,.totals,.months,.cats{display:grid;gap:16px}.filters{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:24px}.filters .actions{display:flex;gap:12px;align-items:end}.filters label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px}.filters input,.filters select{width:100%;padding:10px 14px;border:2px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main)}.totals{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:24px}.card,.panel,.empty,.month{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px}.card{padding:20px}.card h4{font-size:12px;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px}.amount{font-size:24px;font-weight:700}.inc{color:var(--success-color)}.exp{color:var(--error-color)}.bal{color:var(--primary-color)}.months{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:24px}.month{padding:18px;cursor:pointer;transition:var(--transition)}.month:hover,.month.active{border-color:var(--primary-color);transform:translateY(-2px)}.mh,.row{display:flex;justify-content:space-between;gap:12px}.mh{margin-bottom:14px}.row{font-size:13px;color:var(--text-muted)}.bar{height:6px;background:var(--border-color);border-radius:999px;overflow:hidden;margin-top:12px}.bar>div{height:100%}.panel{padding:24px;display:none}.panel.visible{display:block}.ph{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px}.cats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:20px}.cat{display:flex;gap:12px;align-items:center;padding:14px;border-radius:12px;background:var(--bg-color)}.ci{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff}.empty{padding:28px;text-align:center;color:var(--text-muted);display:none}.table-wrap{overflow:auto}.detail-table{width:100%;border-collapse:collapse}.detail-table th,.detail-table td{padding:12px 8px;border-bottom:1px solid var(--border-color);text-align:left}.detail-table th{text-transform:uppercase;font-size:12px;color:var(--text-muted)}.right{text-align:right}.tag-chip{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .history-shell,.history-filters,.history-stats,.history-months,.detail-stats,.category-grid,.timeline{display:grid;gap:16px}
+    .history-shell{gap:24px}
+    .history-filters{grid-template-columns:repeat(3,minmax(0,1fr)) auto auto;align-items:end}
+    .filter-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
+    .filter-field input,.filter-field select{width:100%;padding:11px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font:inherit}
+    .filter-actions{display:flex;gap:10px}
+    .history-card,.history-detail,.month-card,.timeline-day,.empty-state{background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px}
+    .history-card{padding:20px}
+    .history-stats,.detail-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .stat-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
+    .stat-value{margin-top:8px;font-size:26px;font-weight:700;color:var(--text-main)}
+    .stat-sub{margin-top:6px;font-size:13px;color:var(--text-muted)}
+    .positive{color:var(--success-color)}
+    .negative{color:var(--error-color)}
+    .neutral{color:var(--primary-color)}
+    .history-months{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .month-card{padding:18px;cursor:pointer;transition:var(--transition)}
+    .month-card:hover,.month-card.active{border-color:var(--primary-color);transform:translateY(-2px);box-shadow:0 10px 30px rgba(15,23,42,.08)}
+    .month-head,.month-line,.timeline-item{display:flex;justify-content:space-between;gap:12px}
+    .month-head{align-items:flex-start;margin-bottom:14px}
+    .month-name{font-size:18px;font-weight:700}
+    .month-balance{font-size:15px;font-weight:700}
+    .month-line{font-size:13px;color:var(--text-muted);margin-bottom:6px}
+    .month-bar{height:7px;margin-top:12px;background:var(--border-color);border-radius:999px;overflow:hidden}
+    .month-bar-fill{height:100%}
+    .history-detail{padding:24px;display:none}
+    .history-detail.visible{display:block}
+    .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+    .detail-title h2{font-size:24px;font-weight:700}
+    .detail-title p{margin-top:6px;color:var(--text-muted)}
+    .detail-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .detail-controls input{padding:10px 12px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main)}
+    .category-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:8px}
+    .category-card{display:flex;gap:12px;align-items:center;padding:14px;border-radius:16px;background:var(--bg-color)}
+    .category-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    .category-name{font-size:14px;font-weight:700}
+    .category-total{margin-top:4px;font-size:16px;font-weight:700}
+    .category-meta{margin-top:4px;font-size:12px;color:var(--text-muted)}
+    .timeline{margin-top:8px}
+    .timeline-day{padding:18px}
+    .timeline-day-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+    .timeline-day-title{font-size:16px;font-weight:700}
+    .timeline-day-total{font-size:13px;font-weight:700;color:var(--text-muted)}
+    .timeline-items{display:grid;gap:10px}
+    .timeline-item{align-items:center;padding:12px 14px;border-radius:14px;background:var(--bg-color)}
+    .timeline-main{display:flex;align-items:center;gap:12px;min-width:0}
+    .timeline-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .timeline-text{min-width:0}
+    .timeline-text strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .timeline-text span{display:block;margin-top:4px;font-size:12px;color:var(--text-muted)}
+    .timeline-value{text-align:right;font-weight:700}
+    .tag-chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+    .empty-state{padding:32px 24px;text-align:center;color:var(--text-muted)}
+    .empty-state i{display:block;margin-bottom:12px;font-size:28px;color:var(--primary-color)}
+    @media (max-width: 1100px){.history-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.detail-stats,.history-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width: 720px){.history-filters,.history-stats,.detail-stats,.history-months,.category-grid{grid-template-columns:1fr}.filter-actions,.detail-controls{width:100%}.filter-actions button,.detail-controls button,.detail-controls input{width:100%}.timeline-item,.month-head,.timeline-day-head{flex-direction:column;align-items:flex-start}.timeline-value{text-align:left}.history-detail{padding:18px}.history-card{padding:18px}}
   </style>
 </head>
 <body class="dashboard-body">
@@ -30,71 +85,435 @@
   <main class="main-content">
     <header class="topbar">
       <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-      <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="historySearchTop" type="text" placeholder="Buscar no historico..."></div>
+      <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="historySearchTop" type="text" placeholder="Buscar descricao ou categoria..."></div>
       <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar Tema"><i class="fa-solid fa-moon"></i></button></div>
     </header>
-    <div class="dashboard-content">
-      <div class="page-header"><div><h1>Historico Financeiro</h1><p class="subtitle">Resumo anual, meses detalhados e breakdown por categoria.</p></div></div>
-      <div class="filters">
-        <div><label for="yearSelect">Ano</label><select id="yearSelect"></select></div>
-        <div><label for="typeSelect">Tipo</label><select id="typeSelect"><option value="all">Todos</option><option value="income">Receitas</option><option value="expense">Despesas</option></select></div>
-        <div><label for="historySearch">Buscar</label><input id="historySearch" type="text" placeholder="Descricao ou categoria"></div>
-        <div class="actions"><button class="btn-primary btn-action" onclick="loadHistorySummary()">Consultar</button><button class="notification-btn" onclick="resetHistoryFilters()">Limpar</button></div>
-      </div>
-      <div class="totals" id="yearTotals">
-        <div class="card"><h4>Receitas do Ano</h4><div class="amount inc" id="yearIncome">R$ 0,00</div></div>
-        <div class="card"><h4>Despesas do Ano</h4><div class="amount exp" id="yearExpense">R$ 0,00</div></div>
-        <div class="card"><h4>Saldo do Ano</h4><div class="amount bal" id="yearBalance">R$ 0,00</div></div>
-      </div>
-      <div class="months" id="monthGrid"></div>
-      <div class="empty" id="historyEmpty"><i class="fa-solid fa-chart-column"></i><p>Nenhuma movimentacao encontrada para os filtros selecionados.</p></div>
-      <div class="panel" id="detailPanel">
-        <div class="ph">
-          <h2 id="detailTitle">Detalhes</h2>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><label style="font-size:13px;color:var(--text-muted);">Dia</label><input id="dayFilter" type="number" min="1" max="31" placeholder="Todos" style="width:74px;padding:8px 10px;border:2px solid var(--border-color);border-radius:10px;background:var(--card-bg);color:var(--text-main)"><button class="notification-btn" onclick="applyDayFilter()"><i class="fa-solid fa-filter"></i></button><button class="notification-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></button></div>
-        </div>
-        <div class="cats" id="categoryBreakdown"></div>
-        <div class="empty" id="detailEmpty" style="margin-bottom:16px;"><i class="fa-solid fa-folder-open"></i><p>Nenhuma transacao encontrada nesse periodo.</p></div>
-        <div class="table-wrap">
-          <table class="detail-table">
-            <thead><tr><th>Descricao</th><th>Categoria</th><th>Data</th><th class="right">Valor</th></tr></thead>
-            <tbody id="detailTableBody"></tbody>
-          </table>
+    <div class="dashboard-content history-shell">
+      <div class="page-header">
+        <div>
+          <h1>Historico Financeiro</h1>
+          <p class="subtitle">Escolha uma data, filtre por tipo e navegue pelo seu historico com detalhe por mes e por dia.</p>
         </div>
       </div>
+
+      <section class="history-filters">
+        <div class="filter-field">
+          <label for="historyDate">Data</label>
+          <input id="historyDate" type="date">
+        </div>
+        <div class="filter-field">
+          <label for="typeSelect">Tipo</label>
+          <select id="typeSelect">
+            <option value="all">Todos</option>
+            <option value="income">Receitas</option>
+            <option value="expense">Despesas</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="historySearch">Buscar</label>
+          <input id="historySearch" type="text" placeholder="Descricao ou categoria">
+        </div>
+        <div class="filter-actions">
+          <button class="btn-primary btn-action" onclick="loadHistorySummary()">Consultar</button>
+        </div>
+        <div class="filter-actions">
+          <button class="notification-btn" onclick="resetHistoryFilters()">Limpar</button>
+        </div>
+      </section>
+
+      <section class="history-stats">
+        <div class="history-card">
+          <div class="stat-label">Receitas</div>
+          <div class="stat-value positive" id="yearIncome">R$ 0,00</div>
+          <div class="stat-sub">Total no filtro atual</div>
+        </div>
+        <div class="history-card">
+          <div class="stat-label">Despesas</div>
+          <div class="stat-value negative" id="yearExpense">R$ 0,00</div>
+          <div class="stat-sub">Total no filtro atual</div>
+        </div>
+        <div class="history-card">
+          <div class="stat-label">Saldo</div>
+          <div class="stat-value neutral" id="yearBalance">R$ 0,00</div>
+          <div class="stat-sub">Resultado do periodo carregado</div>
+        </div>
+        <div class="history-card">
+          <div class="stat-label">Periodo em Foco</div>
+          <div class="stat-value" id="focusPeriod">Historico completo</div>
+          <div class="stat-sub" id="focusPeriodSub">Selecione uma data para abrir direto no dia.</div>
+        </div>
+      </section>
+
+      <section class="history-months" id="monthGrid"></section>
+      <div class="empty-state" id="historyEmpty" style="display:none;">
+        <i class="fa-solid fa-chart-column"></i>
+        <p>Nenhuma movimentacao encontrada para os filtros atuais.</p>
+      </div>
+
+      <section class="history-detail" id="detailPanel">
+        <div class="detail-head">
+          <div class="detail-title">
+            <h2 id="detailTitle">Detalhes do periodo</h2>
+            <p id="detailSubtitle">Resumo aprofundado com categorias e transacoes.</p>
+          </div>
+          <div class="detail-controls">
+            <input id="dayFilter" type="number" min="1" max="31" placeholder="Dia">
+            <button class="notification-btn" onclick="applyDayFilter()"><i class="fa-solid fa-filter"></i></button>
+            <button class="notification-btn" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+
+        <div class="detail-stats">
+          <div class="history-card">
+            <div class="stat-label">Transacoes</div>
+            <div class="stat-value" id="periodCount">0</div>
+            <div class="stat-sub">Quantidade no periodo aberto</div>
+          </div>
+          <div class="history-card">
+            <div class="stat-label">Saldo do Periodo</div>
+            <div class="stat-value neutral" id="periodBalance">R$ 0,00</div>
+            <div class="stat-sub">Resultado do intervalo selecionado</div>
+          </div>
+          <div class="history-card">
+            <div class="stat-label">Ticket Medio</div>
+            <div class="stat-value" id="periodAverage">R$ 0,00</div>
+            <div class="stat-sub">Media por transacao</div>
+          </div>
+          <div class="history-card">
+            <div class="stat-label">Categoria Lider</div>
+            <div class="stat-value" id="topCategory">-</div>
+            <div class="stat-sub" id="topCategorySub">Sem dados ainda</div>
+          </div>
+        </div>
+
+        <div class="category-grid" id="categoryBreakdown"></div>
+        <div class="timeline" id="timeline"></div>
+        <div class="empty-state" id="detailEmpty" style="display:none;">
+          <i class="fa-solid fa-folder-open"></i>
+          <p>Nenhuma transacao encontrada nesse periodo.</p>
+        </div>
+      </section>
     </div>
   </main>
   <script src="script.js"></script>
   <script>
-    const monthNames=['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    const categoryColors={alimentacao:'#f97316',transporte:'#3b82f6',saude:'#ef4444',educacao:'#8b5cf6',lazer:'#ec4899',moradia:'#06b6d4',salario:'#22c55e',investimento:'#0d9488',freelance:'#f59e0b',vendas:'#10b981',contas:'#6366f1',outros:'#64748b'};
-    let currentMonth=null,currentYear=null;
-    const yearSelect=document.getElementById('yearSelect'),typeSelect=document.getElementById('typeSelect'),historySearch=document.getElementById('historySearch'),historySearchTop=document.getElementById('historySearchTop');
-    const historyEmpty=document.getElementById('historyEmpty'),monthGrid=document.getElementById('monthGrid');
-    const yearIncomeEl=document.getElementById('yearIncome'),yearExpenseEl=document.getElementById('yearExpense'),yearBalanceEl=document.getElementById('yearBalance');
-    const detailPanelEl=document.getElementById('detailPanel'),detailTitleEl=document.getElementById('detailTitle'),dayFilterEl=document.getElementById('dayFilter');
-    const safe=v=>{const n=typeof v==='number'?v:parseFloat(v);return Number.isFinite(n)?n:0};
-    const fmt=v=>'R$ '+safe(v).toLocaleString('pt-BR',{minimumFractionDigits:2});
-    const norm=t=>(t||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-    const ttype=t=>(t==='income'||t==='receita')?'income':'expense';
-    const cat=c=>{const s=(c||'outros').replace(/_/g,' ');return s.charAt(0).toUpperCase()+s.slice(1)};
-    const ccolor=c=>categoryColors[norm(c)]||'#64748b';
-    const fdate=d=>!d?'Sem data':`${d.slice(8,10)}/${d.slice(5,7)}/${d.slice(0,4)}`;
-    const search=()=>norm(historySearch.value||historySearchTop.value);
-    function syncSearch(el){historySearch.value=el.value||'';historySearchTop.value=el.value||''}
-    function resetHistoryFilters(){yearSelect.value=String(new Date().getFullYear());typeSelect.value='all';historySearch.value='';historySearchTop.value='';loadHistorySummary()}
-    function populateYears(){const y=new Date().getFullYear();for(let i=y;i>=y-8;i--){const o=document.createElement('option');o.value=i;o.textContent=i;yearSelect.appendChild(o)}}
-    function renderTotals(rows){const inc=rows.reduce((s,r)=>s+r.receitas,0),exp=rows.reduce((s,r)=>s+r.despesas,0);yearIncomeEl.textContent=fmt(inc);yearExpenseEl.textContent=fmt(exp);yearBalanceEl.textContent=fmt(inc-exp)}
-    function filterSummary(rows){const tf=typeSelect.value,term=search();return rows.filter(r=>!(tf==='income'&&r.receitas<=0)&&!(tf==='expense'&&r.despesas<=0)&&(!term||norm(monthNames[parseInt(r.month,10)-1]).includes(term)))}
-    function renderMonths(rows){monthGrid.innerHTML='';if(!rows.length){historyEmpty.style.display='block';return}historyEmpty.style.display='none';const max=Math.max(...rows.map(r=>Math.max(r.receitas,r.despesas)),1);rows.forEach(r=>{const has=r.receitas>0||r.despesas>0,pct=has?Math.round((Math.max(r.receitas,r.despesas)/max)*100):0,col=r.saldo>=0?'var(--success-color)':'var(--error-color)';const d=document.createElement('div');d.className='month';d.style.opacity=has?'1':'0.5';d.innerHTML=`<div class="mh"><h3>${monthNames[parseInt(r.month,10)-1]}</h3><strong class="${r.saldo>=0?'inc':'exp'}">${has?fmt(r.saldo):'—'}</strong></div><div class="row"><span>Receitas</span><span class="inc">${fmt(r.receitas)}</span></div><div class="row"><span>Despesas</span><span class="exp">${fmt(r.despesas)}</span></div><div class="bar"><div style="width:${pct}%;background:${col}"></div></div>`;if(has)d.onclick=()=>openMonthDetail(r.month);monthGrid.appendChild(d)})}
-    async function loadHistorySummary(){const userId=sessionStorage.getItem('userId');if(!userId)return window.location.href='/login';currentYear=yearSelect.value;try{const res=await fetch(`/api/history/summary?year=${currentYear}`,{headers:{'user-id':userId}});const data=await res.json();const rows=Array.isArray(data)?data.map(r=>({month:String(r.month).padStart(2,'0'),receitas:safe(r.receitas),despesas:safe(r.despesas),saldo:safe(r.saldo)})):[];renderTotals(rows);renderMonths(filterSummary(rows));closeDetail()}catch(err){console.error('Erro ao carregar historico:',err);monthGrid.innerHTML='';historyEmpty.style.display='block';historyEmpty.innerHTML='<i class="fa-solid fa-triangle-exclamation"></i><p>Nao foi possivel carregar o historico agora.</p>'}}
-    function renderCats(items){const wrap=document.getElementById('categoryBreakdown');wrap.innerHTML='';if(!items.length){wrap.innerHTML='<div class="empty" style="display:block;grid-column:1/-1;"><i class="fa-solid fa-tags"></i><p>Sem categorias para esse periodo.</p></div>';return}items.forEach(i=>{const exp=ttype(i.type)==='expense',color=ccolor(i.category);wrap.innerHTML+=`<div class="cat"><div class="ci" style="background:${color}"><i class="fa-solid ${exp?'fa-arrow-down':'fa-arrow-up'}"></i></div><div><strong>${cat(i.category)}</strong><div style="font-weight:700;color:${exp?'var(--error-color)':'var(--success-color)'}">${fmt(i.total)}</div><small style="color:var(--text-muted)">${i.count} ${i.count===1?'transacao':'transacoes'}</small></div></div>`})}
-    function renderTable(items){const body=document.getElementById('detailTableBody'),empty=document.getElementById('detailEmpty');body.innerHTML='';if(!items.length){empty.style.display='block';return}empty.style.display='none';items.forEach(i=>{const exp=ttype(i.type)==='expense',color=ccolor(i.category);body.innerHTML+=`<tr><td style="font-weight:600">${i.description||'Sem descricao'}</td><td><span class="tag-chip" style="background:${color}22;color:${color}">${cat(i.category)}</span></td><td style="color:var(--text-muted)">${fdate(i.date)}</td><td class="right" style="font-weight:700;color:${exp?'var(--error-color)':'var(--success-color)'}">${exp?'-':'+'}${fmt(i.value)}</td></tr>`})}
-    async function openMonthDetail(month,day){const userId=sessionStorage.getItem('userId');currentMonth=month;try{const res=await fetch(`/api/history/details?year=${currentYear}&month=${month}${day?`&day=${day}`:''}`,{headers:{'user-id':userId}});const data=await res.json();const tf=typeSelect.value,term=search();const tx=(data.transactions||[]).map(i=>({...i,type:ttype(i.type),value:safe(i.value)})).filter(i=>(tf==='all'||i.type===tf)&&(!term||norm(`${i.description||''} ${i.category||''}`).includes(term)));const ct=(data.categoryTotals||[]).map(i=>({...i,type:ttype(i.type),total:safe(i.total),count:parseInt(i.count,10)||0})).filter(i=>(tf==='all'||i.type===tf)&&(!term||norm(i.category).includes(term)));detailPanelEl.classList.add('visible');detailTitleEl.textContent=`${monthNames[parseInt(month,10)-1]} ${currentYear}${day?` - Dia ${day}`:''}`;dayFilterEl.value=day||'';renderCats(ct);renderTable(tx);document.querySelectorAll('.month').forEach((el,idx)=>el.classList.toggle('active',String(idx+1).padStart(2,'0')===month));detailPanelEl.scrollIntoView({behavior:'smooth',block:'start'})}catch(err){console.error('Erro ao carregar detalhes:',err)}}
-    function applyDayFilter(){const day=dayFilterEl.value;if(currentMonth)openMonthDetail(currentMonth,day||undefined)}
-    function closeDetail(){detailPanelEl.classList.remove('visible');document.querySelectorAll('.month').forEach(el=>el.classList.remove('active'))}
-    historySearch.addEventListener('input',()=>{syncSearch(historySearch);loadHistorySummary()});historySearchTop.addEventListener('input',()=>{syncSearch(historySearchTop);loadHistorySummary()});typeSelect.addEventListener('change',loadHistorySummary);
-    document.addEventListener('DOMContentLoaded',()=>{const userId=sessionStorage.getItem('userId');if(!userId)return window.location.href='/login';populateYears();yearSelect.value=String(new Date().getFullYear());loadHistorySummary()});
+    const monthNames = ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const categoryColors = { alimentacao: '#f97316', transporte: '#3b82f6', saude: '#ef4444', educacao: '#8b5cf6', lazer: '#ec4899', moradia: '#06b6d4', salario: '#22c55e', investimento: '#0d9488', freelance: '#f59e0b', vendas: '#10b981', contas: '#6366f1', outros: '#64748b' };
+    let currentMonth = null;
+    let currentDay = null;
+    let allTransactions = [];
+
+    const historyDate = document.getElementById('historyDate');
+    const typeSelect = document.getElementById('typeSelect');
+    const historySearch = document.getElementById('historySearch');
+    const historySearchTop = document.getElementById('historySearchTop');
+    const monthGrid = document.getElementById('monthGrid');
+    const historyEmpty = document.getElementById('historyEmpty');
+    const detailPanel = document.getElementById('detailPanel');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailSubtitle = document.getElementById('detailSubtitle');
+    const dayFilter = document.getElementById('dayFilter');
+    const categoryBreakdown = document.getElementById('categoryBreakdown');
+    const timeline = document.getElementById('timeline');
+    const detailEmpty = document.getElementById('detailEmpty');
+
+    const safe = (value, fallback = 0) => {
+      const parsed = typeof value === 'number' ? value : parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    };
+
+    const fmt = (value) => 'R$ ' + safe(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    const normalize = (value) => (value || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const normalizeType = (type) => (type === 'income' || type === 'receita') ? 'income' : 'expense';
+    const categoryLabel = (value) => { const text = (value || 'outros').replace(/_/g, ' '); return text.charAt(0).toUpperCase() + text.slice(1); };
+    const categoryColor = (value) => categoryColors[normalize(value)] || '#64748b';
+    const formatDate = (dateString) => !dateString ? 'Sem data' : `${dateString.slice(8, 10)}/${dateString.slice(5, 7)}/${dateString.slice(0, 4)}`;
+    const formatDayTitle = (dateString) => !dateString ? 'Sem data' : new Date(`${dateString}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+    const getSearchTerm = () => normalize(historySearch.value || historySearchTop.value);
+
+    function syncSearch(source) {
+      const value = source.value || '';
+      historySearch.value = value;
+      historySearchTop.value = value;
+    }
+
+    function resetHistoryFilters() {
+      historyDate.value = '';
+      typeSelect.value = 'all';
+      historySearch.value = '';
+      historySearchTop.value = '';
+      dayFilter.value = '';
+      currentMonth = null;
+      currentDay = null;
+      document.getElementById('focusPeriod').textContent = 'Historico completo';
+      document.getElementById('focusPeriodSub').textContent = 'Selecione uma data para abrir direto no dia.';
+      loadHistorySummary();
+    }
+
+    function renderYearStats(transactions) {
+      const incomes = transactions.filter((item) => item.type === 'income').reduce((total, item) => total + safe(item.value), 0);
+      const expenses = transactions.filter((item) => item.type === 'expense').reduce((total, item) => total + safe(item.value), 0);
+      document.getElementById('yearIncome').textContent = fmt(incomes);
+      document.getElementById('yearExpense').textContent = fmt(expenses);
+      document.getElementById('yearBalance').textContent = fmt(incomes - expenses);
+    }
+
+    function buildMonthRows(transactions) {
+      const months = {};
+      transactions.forEach((item) => {
+        const month = (item.date || '').slice(5, 7);
+        if (!month) return;
+        if (!months[month]) months[month] = { month, receitas: 0, despesas: 0, saldo: 0 };
+        if (item.type === 'income') months[month].receitas += safe(item.value);
+        else months[month].despesas += safe(item.value);
+      });
+      return Object.values(months)
+        .map((item) => ({ ...item, saldo: item.receitas - item.despesas }))
+        .sort((a, b) => a.month.localeCompare(b.month));
+    }
+
+    function renderMonths(rows) {
+      monthGrid.innerHTML = '';
+      if (!rows.length) {
+        historyEmpty.style.display = 'block';
+        return;
+      }
+
+      historyEmpty.style.display = 'none';
+      const maxValue = Math.max(...rows.map((row) => Math.max(row.receitas, row.despesas)), 1);
+
+      rows.forEach((row) => {
+        const hasData = row.receitas > 0 || row.despesas > 0;
+        const percent = hasData ? Math.round((Math.max(row.receitas, row.despesas) / maxValue) * 100) : 0;
+        const balanceClass = row.saldo >= 0 ? 'positive' : 'negative';
+        const monthCard = document.createElement('button');
+        monthCard.type = 'button';
+        monthCard.className = 'month-card' + (currentMonth === row.month && !currentDay ? ' active' : '');
+        monthCard.style.opacity = hasData ? '1' : '0.55';
+        monthCard.innerHTML = `
+          <div class="month-head">
+            <div>
+              <div class="month-name">${monthNames[parseInt(row.month, 10) - 1]}</div>
+              <div class="stat-sub">${new Date().getFullYear()}</div>
+            </div>
+            <div class="month-balance ${balanceClass}">${hasData ? fmt(row.saldo) : '—'}</div>
+          </div>
+          <div class="month-line"><span>Receitas</span><strong class="positive">${fmt(row.receitas)}</strong></div>
+          <div class="month-line"><span>Despesas</span><strong class="negative">${fmt(row.despesas)}</strong></div>
+          <div class="month-bar"><div class="month-bar-fill" style="width:${percent}%;background:${row.saldo >= 0 ? 'var(--success-color)' : 'var(--error-color)'}"></div></div>
+        `;
+        if (hasData) monthCard.onclick = () => openMonthDetail(row.month);
+        monthGrid.appendChild(monthCard);
+      });
+    }
+
+    function updateFocusLabel() {
+      if (historyDate.value) {
+        document.getElementById('focusPeriod').textContent = formatDate(historyDate.value);
+        document.getElementById('focusPeriodSub').textContent = 'A tela abre detalhada diretamente na data escolhida.';
+        return;
+      }
+      document.getElementById('focusPeriod').textContent = 'Historico completo';
+      document.getElementById('focusPeriodSub').textContent = `${allTransactions.length} transacoes carregadas do banco.`;
+    }
+
+    async function loadHistorySummary() {
+      const userId = sessionStorage.getItem('userId');
+      if (!userId) return window.location.href = '/login';
+
+      try {
+        const response = await fetch('/api/transactions', { headers: { 'user-id': userId } });
+        const payload = await response.json();
+        allTransactions = Array.isArray(payload)
+          ? payload.map((item) => ({ ...item, type: normalizeType(item.type), value: safe(item.value) }))
+          : [];
+
+        const searchTerm = getSearchTerm();
+        const typeFilter = typeSelect.value;
+        const filteredTransactions = allTransactions.filter((item) => {
+          const matchesType = typeFilter === 'all' || item.type === typeFilter;
+          const matchesSearch = !searchTerm || normalize(`${item.description || ''} ${item.category || ''}`).includes(searchTerm);
+          const matchesDate = !historyDate.value || item.date === historyDate.value || item.date.startsWith(historyDate.value.slice(0, 7));
+          return matchesType && matchesSearch && matchesDate;
+        });
+        const rows = buildMonthRows(filteredTransactions);
+
+        renderYearStats(filteredTransactions);
+        updateFocusLabel();
+        renderMonths(rows);
+
+        if (historyDate.value) {
+          await openMonthDetail(historyDate.value.slice(5, 7), historyDate.value.slice(8, 10), false);
+        } else if (currentMonth && !currentDay) {
+          await openMonthDetail(currentMonth, undefined, false);
+        } else {
+          closeDetail();
+        }
+      } catch (error) {
+        console.error('Erro ao carregar historico:', error);
+        monthGrid.innerHTML = '';
+        historyEmpty.style.display = 'block';
+        historyEmpty.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i><p>Nao foi possivel carregar o historico agora.</p>';
+        closeDetail();
+      }
+    }
+
+    function renderCategoryBreakdown(items) {
+      categoryBreakdown.innerHTML = '';
+      if (!items.length) {
+        categoryBreakdown.innerHTML = '<div class="empty-state" style="display:block;grid-column:1 / -1;"><i class="fa-solid fa-tags"></i><p>Sem categorias para esse periodo.</p></div>';
+        return;
+      }
+
+      items.forEach((item) => {
+        const isExpense = normalizeType(item.type) === 'expense';
+        const color = categoryColor(item.category);
+        categoryBreakdown.innerHTML += `
+          <div class="category-card">
+            <div class="category-icon" style="background:${color}"><i class="fa-solid ${isExpense ? 'fa-arrow-down' : 'fa-arrow-up'}"></i></div>
+            <div>
+              <div class="category-name">${categoryLabel(item.category)}</div>
+              <div class="category-total ${isExpense ? 'negative' : 'positive'}">${fmt(item.total)}</div>
+              <div class="category-meta">${item.count} ${item.count === 1 ? 'transacao' : 'transacoes'}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderDetailStats(transactions, categoryTotals) {
+      const incomes = transactions.filter((item) => item.type === 'income').reduce((sum, item) => sum + safe(item.value), 0);
+      const expenses = transactions.filter((item) => item.type === 'expense').reduce((sum, item) => sum + safe(item.value), 0);
+      const balance = incomes - expenses;
+      const average = transactions.length ? transactions.reduce((sum, item) => sum + Math.abs(safe(item.value)), 0) / transactions.length : 0;
+      const topCategory = categoryTotals.slice().sort((a, b) => safe(b.total) - safe(a.total))[0];
+
+      document.getElementById('periodCount').textContent = String(transactions.length);
+      document.getElementById('periodBalance').textContent = fmt(balance);
+      document.getElementById('periodBalance').className = 'stat-value ' + (balance > 0 ? 'positive' : balance < 0 ? 'negative' : 'neutral');
+      document.getElementById('periodAverage').textContent = fmt(average);
+      document.getElementById('topCategory').textContent = topCategory ? categoryLabel(topCategory.category) : '-';
+      document.getElementById('topCategorySub').textContent = topCategory ? `${fmt(topCategory.total)} acumulados na lideranca` : 'Sem dados suficientes';
+    }
+
+    function renderTimeline(transactions) {
+      timeline.innerHTML = '';
+      if (!transactions.length) {
+        detailEmpty.style.display = 'block';
+        return;
+      }
+
+      detailEmpty.style.display = 'none';
+      const grouped = {};
+      transactions.forEach((item) => {
+        const key = item.date || 'sem-data';
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(item);
+      });
+
+      Object.keys(grouped).sort((a, b) => b.localeCompare(a)).forEach((dateKey) => {
+        const items = grouped[dateKey];
+        const dayBalance = items.reduce((sum, item) => sum + (item.type === 'income' ? safe(item.value) : -safe(item.value)), 0);
+        const block = document.createElement('section');
+        block.className = 'timeline-day';
+        block.innerHTML = `
+          <div class="timeline-day-head">
+            <div>
+              <div class="timeline-day-title">${formatDayTitle(dateKey)}</div>
+              <div class="stat-sub">${formatDate(dateKey)}</div>
+            </div>
+            <div class="timeline-day-total ${dayBalance > 0 ? 'positive' : dayBalance < 0 ? 'negative' : 'neutral'}">${fmt(dayBalance)}</div>
+          </div>
+          <div class="timeline-items"></div>
+        `;
+        const itemsContainer = block.querySelector('.timeline-items');
+
+        items.forEach((item) => {
+          const isExpense = item.type === 'expense';
+          const color = categoryColor(item.category);
+          const row = document.createElement('article');
+          row.className = 'timeline-item';
+          row.innerHTML = `
+            <div class="timeline-main">
+              <div class="timeline-icon" style="background:${color}22;color:${color}">
+                <i class="fa-solid ${isExpense ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+              </div>
+              <div class="timeline-text">
+                <strong>${item.description || 'Sem descricao'}</strong>
+                <span><span class="tag-chip" style="background:${color}22;color:${color}">${categoryLabel(item.category)}</span></span>
+              </div>
+            </div>
+            <div class="timeline-value ${isExpense ? 'negative' : 'positive'}">
+              ${isExpense ? '-' : '+'}${fmt(item.value)}
+            </div>
+          `;
+          itemsContainer.appendChild(row);
+        });
+
+        timeline.appendChild(block);
+      });
+    }
+
+    async function openMonthDetail(month, day, scroll = true) {
+      currentMonth = month;
+      currentDay = day || null;
+
+      try {
+        const term = getSearchTerm();
+        const typeFilter = typeSelect.value;
+        const monthPrefix = `-${month.padStart(2, '0')}-`;
+        const transactions = allTransactions
+          .filter((item) => item.date && item.date.includes(monthPrefix))
+          .filter((item) => !day || item.date.slice(8, 10) === day.padStart(2, '0'))
+          .filter((item) => (typeFilter === 'all' || item.type === typeFilter) && (!term || normalize(`${item.description || ''} ${item.category || ''}`).includes(term)));
+        const groups = {};
+        transactions.forEach((item) => {
+          const key = `${item.category}-${item.type}`;
+          if (!groups[key]) groups[key] = { category: item.category, type: item.type, total: 0, count: 0 };
+          groups[key].total += safe(item.value);
+          groups[key].count += 1;
+        });
+        const categoryTotals = Object.values(groups).sort((a, b) => b.total - a.total);
+
+        detailPanel.classList.add('visible');
+        detailTitle.textContent = day ? `${monthNames[parseInt(month, 10) - 1]} - Dia ${day}` : `${monthNames[parseInt(month, 10) - 1]}`;
+        detailSubtitle.textContent = day ? 'Detalhe completo do dia selecionado.' : 'Visao detalhada do mes com agrupamento por dia.';
+        dayFilter.value = day || '';
+
+        renderDetailStats(transactions, categoryTotals);
+        renderCategoryBreakdown(categoryTotals);
+        renderTimeline(transactions);
+
+        document.querySelectorAll('.month-card').forEach((element) => element.classList.remove('active'));
+        const target = Array.from(document.querySelectorAll('.month-card')).find((element) => element.textContent.includes(monthNames[parseInt(month, 10) - 1]));
+        if (target) target.classList.add('active');
+
+        if (scroll) detailPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) {
+        console.error('Erro ao carregar detalhes do historico:', error);
+      }
+    }
+
+    function applyDayFilter() {
+      const day = dayFilter.value;
+      if (currentMonth) openMonthDetail(currentMonth, day || undefined);
+    }
+
+    function closeDetail() {
+      detailPanel.classList.remove('visible');
+      document.querySelectorAll('.month-card').forEach((element) => element.classList.remove('active'));
+    }
+
+    historySearch.addEventListener('input', () => { syncSearch(historySearch); loadHistorySummary(); });
+    historySearchTop.addEventListener('input', () => { syncSearch(historySearchTop); loadHistorySummary(); });
+    historyDate.addEventListener('change', () => loadHistorySummary());
+    typeSelect.addEventListener('change', () => loadHistorySummary());
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = sessionStorage.getItem('userId');
+      if (!userId) return window.location.href = '/login';
+      loadHistorySummary();
+    });
   </script>
 </body>
 </html>
