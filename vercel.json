@@ -25,6 +25,10 @@
             "destination": "/public/index.html"
         },
         {
+            "source": "/investments",
+            "destination": "/public/investments.html"
+        },
+        {
             "source": "/(.*)",
             "destination": "/public/$1"
         }

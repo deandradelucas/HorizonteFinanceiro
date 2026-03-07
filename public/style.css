@@ -1632,8 +1632,13 @@ body.dark-mode .sidebar-header h2 {
     }
 
     /* Input fields: font-size 16px prevents iOS zoom on focus */
+    input,
+    select,
+    textarea,
     .input-field input,
-    .input-field select {
+    .input-field select,
+    .search-bar input {
+        font-size: 16px !important;
         min-height: 52px;
         /* Slightly taller for mobile */
     }

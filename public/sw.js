@@ -4,11 +4,12 @@
 //   - Cacheia assets estaticos para uso offline
 //   - Intercepta requisicoes fetch para servir do cache
 // ============================================================
-const CACHE_NAME = 'horizonte-v1.4';
+const CACHE_NAME = 'horizonte-v1.7';
 const ASSETS = [
   '/login.html',
   '/index.html',
   '/dashboard.html',
+  '/investments.html',
   '/goals.html',
   '/history.html',
   '/transactions.html',
