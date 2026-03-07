@@ -553,7 +553,12 @@
             });
         }
 
-        function fmt(v) { return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
+        function toSafeNumber(value, fallback = 0) {
+            const parsed = typeof value === 'number' ? value : parseFloat(value);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        }
+
+        function fmt(v) { return 'R$ ' + toSafeNumber(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
 
         // Color picker
         const colorRow = document.getElementById('colorRow');
@@ -570,13 +575,16 @@
         });
 
         function openModal(goal) {
+            const safeTargetValue = goal ? toSafeNumber(goal.targetvalue) : '';
+            const safeCurrentValue = goal ? toSafeNumber(goal.currentvalue) : 0;
+
             editingGoalId = goal ? goal.id : null;
             document.getElementById('modalTitle').textContent = goal ? 'Editar Meta' : 'Nova Meta';
             document.getElementById('modalSubmitBtn').textContent = goal ? 'Salvar Alterações' : 'Criar Meta';
             document.getElementById('goalId').value = goal ? goal.id : '';
             document.getElementById('goalTitle').value = goal ? goal.title : '';
-            document.getElementById('goalTarget').value = goal ? goal.targetvalue : '';
-            document.getElementById('goalCurrent').value = goal ? goal.currentvalue : 0;
+            document.getElementById('goalTarget').value = goal ? String(safeTargetValue) : '';
+            document.getElementById('goalCurrent').value = safeCurrentValue;
             document.getElementById('goalDeadline').value = goal ? (goal.deadline || '') : '';
             document.getElementById('goalCategory').value = goal ? (goal.category || 'geral') : 'geral';
 
@@ -693,11 +701,11 @@
                 let totalIncomes = 0;
                 let totalExpenses = 0;
                 transactions.forEach(t => {
-                    const val = parseFloat(t.value) || 0;
+                    const val = toSafeNumber(t.value);
                     if (t.type === 'income') totalIncomes += val;
                     else totalExpenses += val;
                 });
-                const currentBalance = totalIncomes - totalExpenses;
+                const currentBalance = toSafeNumber(totalIncomes - totalExpenses);
 
                 const grid = document.getElementById('goalsGrid');
                 grid.innerHTML = '';
@@ -720,8 +728,10 @@
 
                 goals.forEach(g => {
                     const isAutomatic = g.category === 'objetivo_financeiro';
-                    const currentValue = isAutomatic ? currentBalance : g.currentvalue;
-                    const pct = g.targetvalue > 0 ? Math.min(Math.round((currentValue / g.targetvalue) * 100), 100) : 0;
+                    const targetValue = toSafeNumber(g.targetvalue);
+                    const storedCurrentValue = toSafeNumber(g.currentvalue);
+                    const currentValue = isAutomatic ? currentBalance : storedCurrentValue;
+                    const pct = targetValue > 0 ? Math.min(Math.round((currentValue / targetValue) * 100), 100) : 0;
 
                     // Automatic color logic requested - based on progress
                     let barColor;
@@ -732,7 +742,7 @@
                     const icon = g.icon || icons[g.category] || 'fa-bullseye';
                     const color = g.color || '#0d9488';
                     const deadlineStr = g.deadline ? formatDate(g.deadline) : 'Sem prazo';
-                    const remaining = g.targetvalue - currentValue;
+                    const remaining = targetValue - currentValue;
                     const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
 
                     const card = document.createElement('div');
@@ -755,7 +765,7 @@
                             <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-style: italic;">${randomPhrase}</p>
                             <div class="goal-progress-header">
                                 <span class="current">${fmt(currentValue)}</span>
-                                <span class="target">de ${fmt(g.targetvalue)}</span>
+                                <span class="target">de ${fmt(targetValue)}</span>
                             </div>
                             <div class="goal-progress-bar-bg">
                                 <div class="goal-progress-bar" style="width:${pct}%;background:${barColor}"></div>

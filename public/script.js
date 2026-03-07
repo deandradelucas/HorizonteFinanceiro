@@ -328,8 +328,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Busca transações do servidor e calcula resumo (Saldo, Receitas, Despesas)
     const dashboardCards = document.querySelector('.summary-cards');
     if (dashboardCards) {
+        const toSafeNumber = (value, fallback = 0) => {
+            const parsed = typeof value === 'number' ? value : parseFloat(value);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        };
+
         const formatMoney = (value) => {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(toSafeNumber(value));
         };
 
         const carregarDashboard = async () => {
@@ -362,12 +367,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 let totalExpenses = 0;
 
                 transactions.forEach(t => {
-                    const val = parseFloat(t.value) || 0;
+                    const val = toSafeNumber(t.value);
                     if (t.type === 'income') totalIncomes += val;
                     else if (t.type === 'expense') totalExpenses += val;
                 });
 
-                const currentBalance = totalIncomes - totalExpenses;
+                const currentBalance = toSafeNumber(totalIncomes - totalExpenses);
                 const savings = currentBalance > 0 ? currentBalance : 0;
 
                 // Atualizar os Cards
@@ -386,9 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
                     const goalsWithActualProgress = goals.map(g => {
                         const isAutomatic = g.category === 'objetivo_financeiro';
-                        const currentValue = isAutomatic ? currentBalance : g.currentvalue;
-                        const pct = g.targetvalue > 0 ? (currentValue / g.targetvalue) : 0;
-                        return { ...g, actualCurrentValue: currentValue, actualPct: pct };
+                        const targetValue = toSafeNumber(g.targetvalue);
+                        const storedCurrentValue = toSafeNumber(g.currentvalue);
+                        const currentValue = isAutomatic ? currentBalance : storedCurrentValue;
+                        const pct = targetValue > 0 ? (currentValue / targetValue) : 0;
+                        return { ...g, targetvalue: targetValue, actualCurrentValue: currentValue, actualPct: pct };
                     });
 
                     const sortedGoals = goalsWithActualProgress.sort((a, b) => {
@@ -467,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ];
 
                         milestoneTrack.innerHTML = '';
-                        const currentMoney = mainGoal.currentvalue;
+                        const currentMoney = mainGoal.actualCurrentValue;
 
                         milestones.forEach(m => {
                             const step = document.createElement('div');
