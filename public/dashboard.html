@@ -157,21 +157,33 @@
                     grid-column: span 6;
                 }
 
-                .top-expenses-card,
                 .recent-transactions {
                     grid-column: 1 / -1;
                     margin-bottom: 0;
                 }
 
                 .insight-card {
-                    background: var(--card-bg);
-                    border: 1px solid var(--border-color);
-                    border-radius: 24px;
+                    position: relative;
+                    background:
+                        radial-gradient(circle at top right, rgba(96, 165, 250, 0.12), transparent 34%),
+                        linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9));
+                    border: 1px solid rgba(148, 163, 184, 0.16);
+                    border-radius: 28px;
                     padding: 24px;
+                    overflow: hidden;
+                    box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+                }
+
+                .insight-card::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%);
+                    pointer-events: none;
                 }
 
                 .insight-caption {
-                    color: var(--text-muted);
+                    color: #94a3b8;
                     font-size: 13px;
                     font-weight: 600;
                 }
@@ -185,63 +197,52 @@
                 .insight-bars {
                     display: flex;
                     flex-direction: column;
-                    gap: 14px;
-                    margin-top: 6px;
+                    gap: 16px;
+                    margin-top: 10px;
                 }
 
                 .insight-bar-item {
                     display: flex;
                     flex-direction: column;
-                    gap: 8px;
+                    gap: 10px;
+                    padding: 14px 16px;
+                    border-radius: 20px;
+                    background: rgba(255, 255, 255, 0.02);
+                    border: 1px solid rgba(148, 163, 184, 0.08);
+                    backdrop-filter: blur(6px);
                 }
 
-                .insight-bar-head,
-                .top-expense-head {
+                .insight-bar-head {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
                     gap: 12px;
                 }
 
-                .insight-bar-head strong,
-                .top-expense-head strong {
+                .insight-bar-head strong {
                     font-size: 14px;
                     color: var(--text-main);
                 }
 
-                .insight-bar-head span,
-                .top-expense-head span,
-                .top-expense-meta {
-                    color: var(--text-muted);
+                .insight-bar-head span {
+                    color: #cbd5e1;
                     font-size: 13px;
+                    font-weight: 600;
                 }
 
                 .insight-bar-track {
                     width: 100%;
-                    height: 10px;
+                    height: 12px;
                     border-radius: 999px;
-                    background: rgba(148, 163, 184, 0.12);
+                    background: rgba(148, 163, 184, 0.08);
                     overflow: hidden;
+                    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.8);
                 }
 
                 .insight-bar-fill {
                     height: 100%;
                     border-radius: 999px;
-                    background: linear-gradient(90deg, #0d9488, #4ade80);
-                }
-
-                .top-expenses-list {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                    margin-top: 6px;
-                }
-
-                .top-expense-item {
-                    border: 1px solid var(--border-color);
-                    border-radius: 18px;
-                    padding: 16px;
-                    background: rgba(15, 23, 42, 0.14);
+                    box-shadow: 0 0 22px rgba(96, 165, 250, 0.28);
                 }
 
                 .dashboard-widget.layout-hidden {
@@ -580,15 +581,6 @@
                 </div>
                 <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
                 <div id="subcategoryChartBars" class="insight-bars"></div>
-            </div>
-
-            <div class="insight-card dashboard-widget top-expenses-card" data-widget-key="top-expenses">
-                <div class="section-header">
-                    <h3>Top 5 Maiores Despesas</h3>
-                    <span id="topExpensesPeriod" class="insight-caption">Mês atual</span>
-                </div>
-                <div id="topExpensesEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
-                <div id="topExpensesList" class="top-expenses-list"></div>
             </div>
 
             <!-- Recentes -->

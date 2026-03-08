@@ -385,10 +385,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: 'Subcategorias do mês',
                 description: 'Ranking de gastos por subcategoria no mês atual.'
             },
-            'top-expenses': {
-                title: 'Top 5 despesas',
-                description: 'Maiores despesas registradas no mês atual.'
-            },
             recent: {
                 title: 'Transações recentes',
                 description: 'Lista rápida das últimas movimentações.'
@@ -611,30 +607,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         container.appendChild(row);
                     });
                 };
-
-                const renderTopExpenses = (items) => {
-                    const list = document.getElementById('topExpensesList');
-                    const empty = document.getElementById('topExpensesEmpty');
-                    if (!list || !empty) return;
-
-                    list.innerHTML = '';
-                    empty.hidden = items.length > 0;
-                    if (!items.length) return;
-
-                    items.forEach((item, index) => {
-                        const card = document.createElement('div');
-                        card.className = 'top-expense-item';
-                        card.innerHTML = `
-                            <div class="top-expense-head">
-                                <strong>#${index + 1} ${normalizeLabel(item.description || item.category)}</strong>
-                                <span>${formatMoney(item.value)}</span>
-                            </div>
-                            <div class="top-expense-meta">${normalizeLabel(item.category)} • ${item.date}</div>
-                        `;
-                        list.appendChild(card);
-                    });
-                };
-
                 // 1. Calcular Totais
                 let totalIncomes = 0;
                 let totalExpenses = 0;
@@ -669,9 +641,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const categoryChartData = aggregateByField(currentMonthExpenses, 'category');
                 const subcategoryChartData = aggregateByField(currentMonthExpenses, 'description');
-                const topExpenseItems = [...currentMonthExpenses]
-                    .sort((a, b) => b.value - a.value)
-                    .slice(0, 5);
 
                 const currentBalance = toSafeNumber(totalIncomes - totalExpenses);
                 const savings = currentBalance > 0 ? currentBalance : 0;
@@ -687,14 +656,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const categoryPeriod = document.getElementById('categoryChartPeriod');
                 const subcategoryPeriod = document.getElementById('subcategoryChartPeriod');
-                const topExpensesPeriod = document.getElementById('topExpensesPeriod');
                 if (categoryPeriod) categoryPeriod.textContent = currentMonthLabel;
                 if (subcategoryPeriod) subcategoryPeriod.textContent = currentMonthLabel;
-                if (topExpensesPeriod) topExpensesPeriod.textContent = currentMonthLabel;
 
-                renderBarChart('categoryChartBars', 'categoryChartEmpty', categoryChartData, 'linear-gradient(90deg, #0d9488, #4ade80)');
-                renderBarChart('subcategoryChartBars', 'subcategoryChartEmpty', subcategoryChartData, 'linear-gradient(90deg, #f59e0b, #f97316)');
-                renderTopExpenses(topExpenseItems);
+                renderBarChart('categoryChartBars', 'categoryChartEmpty', categoryChartData, 'linear-gradient(90deg, #7dd3fc 0%, #3b82f6 45%, #312e81 100%)');
+                renderBarChart('subcategoryChartBars', 'subcategoryChartEmpty', subcategoryChartData, 'linear-gradient(90deg, #fde68a 0%, #f59e0b 48%, #c2410c 100%)');
 
                 // 2. Meta em Destaque no Dashboard
                 const goalContainer = document.getElementById('mainGoalContainer');
@@ -940,3 +906,4 @@ if ("serviceWorker" in navigator) {
         .then(() => console.log("Service Worker registrado"))
         .catch(err => console.log("Erro SW:", err))
 }
+
