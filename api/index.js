@@ -218,6 +218,85 @@ const getUserByEmail = async (email) => {
     return data;
 };
 
+const getUserById = async (userId) => {
+    const client = requireSupabase();
+    const { data, error } = await client
+        .from('users')
+        .select('id, name, email, darkmode, role, is_active, last_login, created_at, updated_at')
+        .eq('id', userId)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+};
+
+const sanitizeUser = (user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role || 'user',
+    is_active: user.is_active !== false,
+    last_login: user.last_login || null,
+    created_at: user.created_at || null,
+    updated_at: user.updated_at || null
+});
+
+const requireSuperAdmin = async (req, res, next) => {
+    try {
+        const currentUser = await getUserById(req.userId);
+        if (!currentUser || currentUser.role !== 'super_admin') {
+            return res.status(403).json({ error: 'Acesso restrito ao super admin.' });
+        }
+
+        req.currentUser = currentUser;
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+const defaultPermissions = {
+    dashboard: true,
+    transactions: true,
+    goals: true,
+    reports: false,
+    settings: false
+};
+
+const getUserPermissionsRecord = async (userId) => {
+    const client = requireSupabase();
+    const { data, error } = await client
+        .from('user_permissions')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+};
+
+const saveUserPermissionsRecord = async (userId, permissions) => {
+    const client = requireSupabase();
+    const existing = await getUserPermissionsRecord(userId);
+
+    if (existing) {
+        const { error } = await client
+            .from('user_permissions')
+            .update({ permissions })
+            .eq('id', existing.id);
+        if (error) throw error;
+        return { ...existing, permissions };
+    }
+
+    const { data, error } = await client
+        .from('user_permissions')
+        .insert({ user_id: userId, permissions })
+        .select('*')
+        .single();
+    if (error) throw error;
+    return data;
+};
+
 app.post('/api/register', async (req, res, next) => {
     try {
         const name = String(req.body?.name || '').trim();
@@ -251,14 +330,17 @@ app.post('/api/login', async (req, res, next) => {
         const email = normalizeEmail(req.body?.email);
         const password = String(req.body?.password || '');
 
-        if (!isValidEmail(email) || !password) {
+        if (!email || !password) {
             return res.status(400).json({ error: 'Credenciais inválidas.' });
         }
 
         const client = requireSupabase();
         const user = await getUserByEmail(email);
-        const storedSecret = user?.password_hash || user?.password;
-        if (!user || !verifyPassword(password, storedSecret)) {
+        const passwordMatches = user && (
+            verifyPassword(password, user.password_hash) ||
+            verifyPassword(password, user.password)
+        );
+        if (!user || !passwordMatches) {
             return res.status(401).json({ error: 'E-mail ou senha inválidos.' });
         }
 
@@ -273,6 +355,11 @@ app.post('/api/login', async (req, res, next) => {
                 .update({ password: passwordHash, password_hash: passwordHash })
                 .eq('id', user.id);
         }
+
+        await client
+            .from('users')
+            .update({ last_login: new Date().toISOString() })
+            .eq('id', user.id);
 
         setSessionCookie(req, res, user.id);
         res.json({
@@ -545,6 +632,320 @@ app.delete('/api/goals/:id', authenticate, async (req, res, next) => {
     try {
         await db.goals.query('DELETE FROM goals WHERE id = ? AND user_id = ?', [req.params.id, req.userId]);
         res.json({ message: 'Meta excluída com sucesso!' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/admin/stats', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .select('id, is_active, last_login, updated_at');
+        if (error) throw error;
+
+        const now = Date.now();
+        const fifteenMinutesAgo = now - (15 * 60 * 1000);
+        const today = new Date().toISOString().slice(0, 10);
+        const users = data || [];
+        const stats = {
+            total: users.length,
+            online: users.filter((user) => user.last_login && new Date(user.last_login).getTime() >= fifteenMinutesAgo).length,
+            blocked: users.filter((user) => user.is_active === false).length,
+            actionsToday: users.filter((user) => (user.updated_at || '').slice(0, 10) === today).length
+        };
+
+        res.json(stats);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/admin/users', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .select('id, name, email, role, is_active, last_login, created_at, updated_at')
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        res.json((data || []).map(sanitizeUser));
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/api/admin/users', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const name = String(req.body?.name || '').trim();
+        const email = normalizeEmail(req.body?.email);
+        const password = String(req.body?.password || '');
+        const role = ['super_admin', 'admin', 'user'].includes(req.body?.role) ? req.body.role : 'user';
+
+        if (!isValidEmail(email)) return res.status(400).json({ error: 'E-mail inválido.' });
+        if (password.length < 8) return res.status(400).json({ error: 'A senha deve ter pelo menos 8 caracteres.' });
+        if (await getUserByEmail(email)) return res.status(400).json({ error: 'E-mail já cadastrado.' });
+
+        const passwordHash = hashPassword(password);
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .insert({ name, email, role, is_active: true, password: passwordHash, password_hash: passwordHash })
+            .select('id, name, email, role, is_active, last_login, created_at, updated_at')
+            .single();
+        if (error) throw error;
+
+        res.status(201).json(sanitizeUser(data));
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/api/admin/users/:id/role', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+
+        const role = ['super_admin', 'admin', 'user'].includes(req.body?.role) ? req.body.role : null;
+        const is_active = typeof req.body?.is_active === 'boolean' ? req.body.is_active : undefined;
+        if (!role) return res.status(400).json({ error: 'Role inválida.' });
+        if (targetId === req.currentUser.id && role !== 'super_admin') {
+            return res.status(400).json({ error: 'O super admin atual não pode remover o próprio acesso.' });
+        }
+
+        const patch = { role };
+        if (typeof is_active === 'boolean') patch.is_active = is_active;
+
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .update(patch)
+            .eq('id', targetId)
+            .select('id, name, email, role, is_active, last_login, created_at, updated_at')
+            .single();
+        if (error) throw error;
+
+        res.json(sanitizeUser(data));
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/api/admin/users/:id/block', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+        if (targetId === req.currentUser.id) return res.status(400).json({ error: 'Você não pode bloquear sua própria conta.' });
+
+        const client = requireSupabase();
+        const { error } = await client.from('users').update({ is_active: false }).eq('id', targetId);
+        if (error) throw error;
+        res.json({ message: 'Usuário bloqueado com sucesso.' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/api/admin/users/:id/unblock', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+
+        const client = requireSupabase();
+        const { error } = await client.from('users').update({ is_active: true }).eq('id', targetId);
+        if (error) throw error;
+        res.json({ message: 'Usuário desbloqueado com sucesso.' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/admin/permissions', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .select('id, email, role')
+            .order('email', { ascending: true });
+        if (error) throw error;
+        res.json(data || []);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/admin/permissions/:id', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+
+        const record = await getUserPermissionsRecord(targetId);
+        res.json({ permissions: record?.permissions || defaultPermissions });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/api/admin/users/:id/permissions', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+        const permissions = req.body?.permissions;
+        if (!permissions || typeof permissions !== 'object' || Array.isArray(permissions)) {
+            return res.status(400).json({ error: 'Permissions inválidas.' });
+        }
+
+        const saved = await saveUserPermissionsRecord(targetId, permissions);
+        res.json(saved);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/admin/online-users', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const client = requireSupabase();
+        const cutoffIso = new Date(Date.now() - (15 * 60 * 1000)).toISOString();
+        const { data, error } = await client
+            .from('users')
+            .select('id, email, role, last_login')
+            .gte('last_login', cutoffIso)
+            .order('last_login', { ascending: false });
+        if (error) throw error;
+
+        res.json((data || []).map((user) => ({
+            id: user.id,
+            email: user.email,
+            role: user.role || 'user',
+            last_activity: user.last_login
+        })));
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/api/admin/users/:id/disconnect', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+
+        const client = requireSupabase();
+        const { error } = await client.from('users').update({ last_login: null }).eq('id', targetId);
+        if (error) throw error;
+        res.json({ message: 'Sessão revogada.' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/admin/activity-logs', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const client = requireSupabase();
+        const [usersResult, permissionsResult] = await Promise.all([
+            client.from('users').select('id, email, role, is_active, created_at, updated_at, last_login').order('updated_at', { ascending: false }),
+            client.from('user_permissions').select('id, user_id, permissions, updated_at').order('updated_at', { ascending: false })
+        ]);
+        if (usersResult.error) throw usersResult.error;
+        if (permissionsResult.error) throw permissionsResult.error;
+
+        const userMap = new Map((usersResult.data || []).map((user) => [user.id, user]));
+        const logs = [];
+
+        (usersResult.data || []).forEach((user) => {
+            if (user.created_at) {
+                logs.push({
+                    id: `user-created-${user.id}`,
+                    action: 'Usuário registrado',
+                    description: `Conta de ${user.email} criada no sistema.`,
+                    user_id: user.id,
+                    user_email: user.email,
+                    created_at: user.created_at
+                });
+            }
+            if (user.updated_at && user.updated_at !== user.created_at) {
+                logs.push({
+                    id: `user-updated-${user.id}`,
+                    action: user.is_active === false ? 'Usuário bloqueado' : 'Usuário atualizado',
+                    description: `Última atualização da conta ${user.email}. Role atual: ${user.role}.`,
+                    user_id: user.id,
+                    user_email: user.email,
+                    created_at: user.updated_at
+                });
+            }
+            if (user.last_login) {
+                logs.push({
+                    id: `user-login-${user.id}`,
+                    action: 'Login realizado',
+                    description: `${user.email} iniciou sessão.`,
+                    user_id: user.id,
+                    user_email: user.email,
+                    created_at: user.last_login
+                });
+            }
+        });
+
+        (permissionsResult.data || []).forEach((entry) => {
+            const user = userMap.get(entry.user_id);
+            logs.push({
+                id: `permissions-${entry.id}`,
+                action: 'Permissões atualizadas',
+                description: `Permissões em JSON atualizadas para ${user?.email || `usuário ${entry.user_id}`}.`,
+                user_id: entry.user_id,
+                user_email: user?.email || 'Desconhecido',
+                created_at: entry.updated_at
+            });
+        });
+
+        logs.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+        res.json(logs.slice(0, 100));
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/api/admin/ai-execute', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const prompt = String(req.body?.prompt || '').trim();
+        if (!prompt) return res.status(400).json({ error: 'Prompt é obrigatório.' });
+
+        const normalizedPrompt = prompt.toLowerCase();
+        const client = requireSupabase();
+        const { data: users, error } = await client.from('users').select('id, email, role, is_active');
+        if (error) throw error;
+
+        const matchedUser = (users || []).find((user) => normalizedPrompt.includes(String(user.email || '').toLowerCase()));
+        if (!matchedUser) {
+            return res.status(400).json({ error: 'Não encontrei um usuário citado no comando.' });
+        }
+
+        if (/(bloquear|block)/.test(normalizedPrompt)) {
+            if (matchedUser.id === req.currentUser.id) return res.status(400).json({ error: 'Você não pode bloquear sua própria conta.' });
+            await client.from('users').update({ is_active: false }).eq('id', matchedUser.id);
+            return res.json({ action: 'Bloqueio', message: `${matchedUser.email} foi bloqueado.` });
+        }
+
+        if (/(desbloquear|unblock)/.test(normalizedPrompt)) {
+            await client.from('users').update({ is_active: true }).eq('id', matchedUser.id);
+            return res.json({ action: 'Desbloqueio', message: `${matchedUser.email} foi desbloqueado.` });
+        }
+
+        if (/(super admin|promover.*super_admin|promover.*super admin)/.test(normalizedPrompt)) {
+            await client.from('users').update({ role: 'super_admin' }).eq('id', matchedUser.id);
+            return res.json({ action: 'Role Atualizada', message: `${matchedUser.email} agora é super admin.` });
+        }
+
+        if (/(promover|admin)/.test(normalizedPrompt)) {
+            await client.from('users').update({ role: 'admin' }).eq('id', matchedUser.id);
+            return res.json({ action: 'Role Atualizada', message: `${matchedUser.email} agora é admin.` });
+        }
+
+        if (/(rebaixar|remover admin|user padrão|user padrao)/.test(normalizedPrompt)) {
+            await client.from('users').update({ role: 'user' }).eq('id', matchedUser.id);
+            return res.json({ action: 'Role Atualizada', message: `${matchedUser.email} agora é user.` });
+        }
+
+        return res.status(400).json({ error: 'Comando não reconhecido. Tente bloquear, desbloquear ou alterar role.' });
     } catch (error) {
         next(error);
     }

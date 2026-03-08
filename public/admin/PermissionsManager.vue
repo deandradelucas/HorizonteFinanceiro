@@ -177,7 +177,7 @@ export default {
         
         this.saving = true;
         try {
-            const userId = localStorage.getItem('userId');
+            const userId = sessionStorage.getItem('userId');
             const res = await fetch(`/api/admin/users/${this.selectedUser.id}/permissions`, {
                 method: 'PUT',
                 headers: { 
