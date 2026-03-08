@@ -29,26 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const nav = document.querySelector('.sidebar-nav');
         if (nav) {
             const adminLink = document.createElement('a');
-            // Hardcode navigation with JS to bypass any strange event delegation like logout
             adminLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.href = "/super-admin.html";
             });
-            adminLink.style.cursor = "pointer";
             adminLink.id = "superAdminLink";
-
-            // Add custom styling so it stands out and doesn't look like the logout button
             adminLink.className = "nav-item admin-portal-btn";
-            adminLink.style.marginTop = "auto";
-            adminLink.style.border = "1px solid rgba(168, 85, 247, 0.4)";
-            adminLink.style.backgroundColor = "rgba(168, 85, 247, 0.05)";
-            adminLink.style.color = "#a855f7";
-            adminLink.style.display = "flex";
-            adminLink.style.alignItems = "center";
-            adminLink.style.justifyContent = "center";
-            adminLink.style.gap = "8px";
-
-            adminLink.innerHTML = '<i class="fa-solid fa-shield-halved" style="color: #a855f7; font-size: 18px;"></i> <span style="font-weight: 700;">Painel Admin</span>';
+            adminLink.innerHTML = '<i class="fa-solid fa-shield-halved"></i><span>Painel Admin</span>';
             nav.appendChild(adminLink);
         }
     }

@@ -861,6 +861,39 @@ body.dark-mode .sidebar-header h2 {
     background: rgba(239, 68, 68, 0.1);
 }
 
+.admin-portal-btn {
+    margin-top: 10px;
+    border: 1px solid rgba(168, 85, 247, 0.28);
+    background: rgba(168, 85, 247, 0.06);
+    color: #a855f7;
+    justify-content: flex-start;
+    font-weight: 700;
+}
+
+.admin-portal-btn i {
+    color: #a855f7;
+}
+
+.admin-portal-btn:hover {
+    background: rgba(168, 85, 247, 0.12);
+    color: #c084fc;
+}
+
+body.dark-mode .admin-portal-btn {
+    border-color: rgba(168, 85, 247, 0.36);
+    background: rgba(168, 85, 247, 0.08);
+    color: #c084fc;
+}
+
+body.dark-mode .admin-portal-btn i {
+    color: #c084fc;
+}
+
+body.dark-mode .admin-portal-btn:hover {
+    background: rgba(168, 85, 247, 0.14);
+    color: #d8b4fe;
+}
+
 .main-content {
     margin-left: 280px;
     min-height: 100vh;

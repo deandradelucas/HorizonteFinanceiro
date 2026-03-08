@@ -2,6 +2,7 @@
 const crypto = require('crypto');
 const path = require('path');
 const db = require('./db');
+const createWhatsAppRouter = require('./routes/whatsapp');
 
 const app = express();
 const SESSION_COOKIE_NAME = 'hf_session';
@@ -119,6 +120,7 @@ const clearSessionCookie = (req, res) => {
 };
 
 const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
+const normalizePhone = (value) => String(value || '').replace(/\D+/g, '');
 const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const isValidIsoDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(String(value || ''));
 const safeNumber = (value, fallback = 0) => {
@@ -210,7 +212,7 @@ const getUserByEmail = async (email) => {
     const client = requireSupabase();
     const { data, error } = await client
         .from('users')
-        .select('id, name, email, password, password_hash, darkmode, role, is_active')
+        .select('id, name, email, phone, password, password_hash, darkmode, role, is_active')
         .eq('email', email)
         .maybeSingle();
 
@@ -222,7 +224,7 @@ const getUserById = async (userId) => {
     const client = requireSupabase();
     const { data, error } = await client
         .from('users')
-        .select('id, name, email, darkmode, role, is_active, last_login, created_at, updated_at')
+        .select('id, name, email, phone, darkmode, role, is_active, last_login, created_at, updated_at')
         .eq('id', userId)
         .maybeSingle();
 
@@ -234,6 +236,7 @@ const sanitizeUser = (user) => ({
     id: user.id,
     name: user.name,
     email: user.email,
+    phone: user.phone || null,
     role: user.role || 'user',
     is_active: user.is_active !== false,
     last_login: user.last_login || null,
@@ -667,7 +670,7 @@ app.get('/api/admin/users', authenticate, requireSuperAdmin, async (req, res, ne
         const client = requireSupabase();
         const { data, error } = await client
             .from('users')
-            .select('id, name, email, role, is_active, last_login, created_at, updated_at')
+            .select('id, name, email, phone, role, is_active, last_login, created_at, updated_at')
             .order('created_at', { ascending: false });
         if (error) throw error;
         res.json((data || []).map(sanitizeUser));
@@ -680,19 +683,21 @@ app.post('/api/admin/users', authenticate, requireSuperAdmin, async (req, res, n
     try {
         const name = String(req.body?.name || '').trim();
         const email = normalizeEmail(req.body?.email);
+        const phone = normalizePhone(req.body?.phone);
         const password = String(req.body?.password || '');
         const role = ['super_admin', 'admin', 'user'].includes(req.body?.role) ? req.body.role : 'user';
 
         if (!isValidEmail(email)) return res.status(400).json({ error: 'E-mail inválido.' });
         if (password.length < 8) return res.status(400).json({ error: 'A senha deve ter pelo menos 8 caracteres.' });
+        if (phone && phone.length < 10) return res.status(400).json({ error: 'Telefone inválido.' });
         if (await getUserByEmail(email)) return res.status(400).json({ error: 'E-mail já cadastrado.' });
 
         const passwordHash = hashPassword(password);
         const client = requireSupabase();
         const { data, error } = await client
             .from('users')
-            .insert({ name, email, role, is_active: true, password: passwordHash, password_hash: passwordHash })
-            .select('id, name, email, role, is_active, last_login, created_at, updated_at')
+            .insert({ name, email, phone: phone || null, role, is_active: true, password: passwordHash, password_hash: passwordHash })
+            .select('id, name, email, phone, role, is_active, last_login, created_at, updated_at')
             .single();
         if (error) throw error;
 
@@ -709,20 +714,25 @@ app.put('/api/admin/users/:id/role', authenticate, requireSuperAdmin, async (req
 
         const role = ['super_admin', 'admin', 'user'].includes(req.body?.role) ? req.body.role : null;
         const is_active = typeof req.body?.is_active === 'boolean' ? req.body.is_active : undefined;
+        const name = Object.prototype.hasOwnProperty.call(req.body || {}, 'name') ? String(req.body?.name || '').trim() : undefined;
+        const phone = Object.prototype.hasOwnProperty.call(req.body || {}, 'phone') ? normalizePhone(req.body?.phone) : undefined;
         if (!role) return res.status(400).json({ error: 'Role inválida.' });
+        if (phone && phone.length < 10) return res.status(400).json({ error: 'Telefone inválido.' });
         if (targetId === req.currentUser.id && role !== 'super_admin') {
             return res.status(400).json({ error: 'O super admin atual não pode remover o próprio acesso.' });
         }
 
         const patch = { role };
         if (typeof is_active === 'boolean') patch.is_active = is_active;
+        if (name !== undefined) patch.name = name;
+        if (phone !== undefined) patch.phone = phone || null;
 
         const client = requireSupabase();
         const { data, error } = await client
             .from('users')
             .update(patch)
             .eq('id', targetId)
-            .select('id, name, email, role, is_active, last_login, created_at, updated_at')
+            .select('id, name, email, phone, role, is_active, last_login, created_at, updated_at')
             .single();
         if (error) throw error;
 
@@ -950,6 +960,8 @@ app.post('/api/admin/ai-execute', authenticate, requireSuperAdmin, async (req, r
         next(error);
     }
 });
+
+app.use('/api', createWhatsAppRouter({ authenticate, requireSuperAdmin }));
 
 app.use((error, req, res, next) => {
     console.error(`[SERVER ERROR] ${error.message}`);

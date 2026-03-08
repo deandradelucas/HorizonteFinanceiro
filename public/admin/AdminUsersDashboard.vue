@@ -54,6 +54,13 @@
           >
             <i class="fa-solid fa-key w-6"></i> Permissões (RBAC)
           </button>
+          <button 
+            @click="activeTab = 'whatsapp'" 
+            :class="[activeTab === 'whatsapp' ? 'bg-primary text-white shadow' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900']"
+            class="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all"
+          >
+            <i class="fa-brands fa-whatsapp w-6"></i> WhatsApp
+          </button>
         </nav>
         
         <!-- AI Executor Mini Widget -->
@@ -155,6 +162,7 @@ export default {
     'online-users': Vue.defineAsyncComponent(() => loadModule('/admin/OnlineUsers.vue', window.vue3Options)),
     'activity-logs': Vue.defineAsyncComponent(() => loadModule('/admin/ActivityLogs.vue', window.vue3Options)),
     'permissions-manager': Vue.defineAsyncComponent(() => loadModule('/admin/PermissionsManager.vue', window.vue3Options)),
+    'whatsapp-monitor': Vue.defineAsyncComponent(() => loadModule('/admin/WhatsAppMonitor.vue', window.vue3Options)),
   },
   data() {
     return {
@@ -177,6 +185,7 @@ export default {
         case 'online': return 'online-users';
         case 'activity': return 'activity-logs';
         case 'permissions': return 'permissions-manager';
+        case 'whatsapp': return 'whatsapp-monitor';
         default: return 'user-table';
       }
     }
