@@ -16,6 +16,103 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        .currency-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0 14px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            background: var(--card-bg);
+        }
+
+        .currency-prefix {
+            color: var(--text-muted);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            min-width: 28px;
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .currency-field input {
+            flex: 1;
+            padding-left: 0 !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .form-card[data-transaction-type="expense"] .input-field input,
+        .form-card[data-transaction-type="expense"] .input-field select {
+            border-color: rgba(255, 77, 77, 0.72) !important;
+            box-shadow: 0 0 0 1px rgba(255, 77, 77, 0.16), 0 0 12px rgba(255, 77, 77, 0.14) !important;
+        }
+
+        .form-card[data-transaction-type="expense"] .currency-prefix,
+        .form-card[data-transaction-type="expense"] .input-field i:first-child {
+            color: #ff5f5f !important;
+            text-shadow: 0 0 12px rgba(255, 95, 95, 0.7);
+        }
+
+        .form-card[data-transaction-type="expense"] .input-field input:focus,
+        .form-card[data-transaction-type="expense"] .input-field select:focus {
+            border-color: #ff5f5f !important;
+            box-shadow: 0 0 0 1px rgba(255, 95, 95, 0.16), 0 0 16px rgba(255, 95, 95, 0.22) !important;
+        }
+
+        .form-card[data-transaction-type="income"] .input-field input,
+        .form-card[data-transaction-type="income"] .input-field select {
+            border-color: rgba(34, 255, 153, 0.72) !important;
+            box-shadow: 0 0 0 1px rgba(34, 255, 153, 0.16), 0 0 12px rgba(34, 255, 153, 0.14) !important;
+        }
+
+        .form-card[data-transaction-type="income"] .currency-prefix,
+        .form-card[data-transaction-type="income"] .input-field i:first-child {
+            color: #35ff9c !important;
+            text-shadow: 0 0 12px rgba(53, 255, 156, 0.72);
+        }
+
+        .form-card[data-transaction-type="income"] .input-field input:focus,
+        .form-card[data-transaction-type="income"] .input-field select:focus {
+            border-color: #35ff9c !important;
+            box-shadow: 0 0 0 1px rgba(53, 255, 156, 0.16), 0 0 16px rgba(53, 255, 156, 0.22) !important;
+        }
+
+        .form-card[data-transaction-type="expense"] .currency-field {
+            border-color: rgba(255, 77, 77, 0.72) !important;
+            box-shadow: 0 0 0 1px rgba(255, 77, 77, 0.16), 0 0 12px rgba(255, 77, 77, 0.14) !important;
+        }
+
+        .form-card[data-transaction-type="income"] .currency-field {
+            border-color: rgba(34, 255, 153, 0.72) !important;
+            box-shadow: 0 0 0 1px rgba(34, 255, 153, 0.16), 0 0 12px rgba(34, 255, 153, 0.14) !important;
+        }
+
+        .custom-input-group[hidden] {
+            display: none !important;
+        }
+
+        .category-group {
+            order: 1;
+        }
+
+        .description-group {
+            order: 2;
+        }
+
+        .value-group {
+            order: 3;
+        }
+
+        .date-group {
+            order: 4;
+        }
+
         @media (max-width: 900px) {
             .form-grid {
                 grid-template-columns: 1fr !important;
@@ -97,41 +194,51 @@
                     </div>
 
                     <div class="form-grid">
-                        <div class="input-group">
-                            <label for="itemDescription">Descrição</label>
+                        <div class="input-group description-group">
+                            <label for="itemDescription">Subcategoria</label>
                             <div class="input-field">
                                 <i class="fa-solid fa-pen"></i>
-                                <input type="text" id="itemDescription" placeholder="Ex: Supermercado" required>
+                                <select id="itemDescription" required>
+                                    <option value="" disabled selected>Selecione uma subcategoria</option>
+                                </select>
                             </div>
                         </div>
 
-                        <div class="input-group">
-                            <label for="itemValue">Valor (R$)</label>
+                        <div id="itemDescriptionCustomGroup" class="input-group custom-input-group description-group" hidden>
+                            <label for="itemDescriptionCustom">Outra subcategoria</label>
                             <div class="input-field">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <input type="number" id="itemValue" step="0.01" placeholder="0.00" required>
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <input type="text" id="itemDescriptionCustom" placeholder="Digite a subcategoria">
                             </div>
                         </div>
 
-                        <div class="input-group">
+                        <div class="input-group value-group">
+                            <label for="itemValue">Valor (R$)</label>
+                            <div class="input-field currency-field">
+                                <span class="currency-prefix">R$</span>
+                                <input type="text" id="itemValue" inputmode="decimal" placeholder="" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group category-group">
                             <label for="itemCategory">Categoria</label>
                             <div class="input-field">
                                 <i class="fa-solid fa-tags"></i>
                                 <select id="itemCategory" required>
                                     <option value="" disabled selected>Selecione uma categoria</option>
-                                    <option value="alimentacao">Alimentação</option>
-                                    <option value="transporte">Transporte</option>
-                                    <option value="contas">Contas e Serviços</option>
-                                    <option value="lazer">Lazer</option>
-                                    <option value="saude">Saúde</option>
-                                    <option value="salario">Salário</option>
-                                    <option value="investimentos">Investimentos</option>
-                                    <option value="outros">Outros</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="input-group">
+                        <div id="itemCategoryCustomGroup" class="input-group custom-input-group category-group" hidden>
+                            <label for="itemCategoryCustom">Outra categoria</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <input type="text" id="itemCategoryCustom" placeholder="Digite a categoria">
+                            </div>
+                        </div>
+
+                        <div class="input-group date-group">
                             <label for="itemDate">Data</label>
                             <div class="input-field">
                                 <i class="fa-solid fa-calendar"></i>
@@ -161,9 +268,197 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            const categoryOptionsByType = {
+                expense: [
+                    { value: 'alimentacao', label: 'Alimentação' },
+                    { value: 'transporte', label: 'Transporte' },
+                    { value: 'automovel', label: 'Automóvel' },
+                    { value: 'contas', label: 'Contas e Serviços' },
+                    { value: 'moradia', label: 'Moradia' },
+                    { value: 'lazer', label: 'Lazer' },
+                    { value: 'saude', label: 'Saúde' },
+                    { value: 'educacao', label: 'Educação' },
+                    { value: 'outros', label: 'Outros' }
+                ],
+                income: [
+                    { value: 'salario', label: 'Salário' },
+                    { value: 'freelance', label: 'Freelance' },
+                    { value: 'vendas', label: 'Vendas' },
+                    { value: 'investimentos', label: 'Investimentos' },
+                    { value: 'outros', label: 'Outros' }
+                ]
+            };
+
+            const CUSTOM_OPTION_VALUE = 'outros';
+
+            const descriptionSuggestionsByCategory = {
+                alimentacao: ['Lanche', 'Almoço', 'Café', 'Janta', 'Delivery', 'Restaurante', 'Bar', 'Supermercado', 'Padaria', 'Feira'],
+                transporte: ['Uber', '99', 'Combustível', 'Passagem de ônibus', 'Metrô', 'Pedágio', 'Estacionamento', 'Táxi'],
+                automovel: ['Lavagem', 'Manutenção', 'Conserto', 'Troca de óleo', 'Seguro', 'IPVA', 'Licenciamento', 'Pneu', 'Oficina', 'Revisão'],
+                contas: ['Conta de luz', 'Conta de água', 'Internet', 'Telefone', 'Gás', 'Streaming', 'Assinatura', 'Boleto'],
+                moradia: ['Aluguel', 'Condomínio', 'Reforma', 'Móveis', 'Decoração', 'Material de construção'],
+                lazer: ['Cinema', 'Show', 'Viagem', 'Passeio', 'Presente', 'Academia', 'Jogo'],
+                saude: ['Consulta', 'Exame', 'Farmácia', 'Plano de saúde', 'Dentista', 'Terapia'],
+                educacao: ['Curso', 'Mensalidade', 'Livro', 'Material escolar', 'Certificação', 'Pós-graduação'],
+                salario: ['Salário mensal', 'Adiantamento', 'Bônus', 'Comissão'],
+                freelance: ['Projeto freelance', 'Consultoria', 'Serviço avulso', 'Pagamento de cliente'],
+                vendas: ['Venda online', 'Marketplace', 'Venda de produto', 'Revenda'],
+                investimentos: ['Cofrinho', 'Aporte', 'Rendimento', 'Resgate', 'Dividendo'],
+                outros: ['Transferência', 'Ajuste', 'Pagamento recebido', 'Despesa diversa']
+            };
+
             const urlParams = new URLSearchParams(window.location.search);
             const transactionId = urlParams.get('id');
             const userId = sessionStorage.getItem('userId');
+            const descriptionSelect = document.getElementById('itemDescription');
+            const categorySelect = document.getElementById('itemCategory');
+            const categoryCustomGroup = document.getElementById('itemCategoryCustomGroup');
+            const categoryCustomInput = document.getElementById('itemCategoryCustom');
+            const descriptionCustomGroup = document.getElementById('itemDescriptionCustomGroup');
+            const descriptionCustomInput = document.getElementById('itemDescriptionCustom');
+            const valueInput = document.getElementById('itemValue');
+            const formCard = document.querySelector('.form-card');
+            const transactionTypeCards = document.querySelectorAll('.radio-card');
+
+            function getSelectedType() {
+                const checked = document.querySelector('input[name="transactionType"]:checked');
+                return checked ? checked.value : 'expense';
+            }
+
+            function applyTransactionTheme(type) {
+                if (formCard) {
+                    formCard.dataset.transactionType = type;
+                }
+            }
+
+            function parseCurrencyValue(value) {
+                const normalized = String(value || '')
+                    .replace(/\s/g, '')
+                    .replace('R$', '')
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                    .replace(/[^0-9.-]/g, '');
+                const parsed = parseFloat(normalized);
+                return Number.isFinite(parsed) ? parsed : 0;
+            }
+
+            function formatCurrencyValue(value) {
+                return parseCurrencyValue(value).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function setCustomFieldVisibility(group, input, visible, required) {
+                if (!group || !input) return;
+                group.hidden = !visible;
+                input.required = required;
+                if (!visible) input.value = '';
+            }
+
+            function getResolvedCategoryValue() {
+                return categorySelect.value === CUSTOM_OPTION_VALUE
+                    ? categoryCustomInput.value.trim()
+                    : categorySelect.value;
+            }
+
+            function getResolvedDescriptionValue() {
+                return descriptionSelect.value === CUSTOM_OPTION_VALUE
+                    ? descriptionCustomInput.value.trim()
+                    : descriptionSelect.value;
+            }
+
+            function applyCurrencyMask() {
+                const digits = valueInput.value.replace(/\D/g, '');
+                if (!digits) {
+                    valueInput.value = '';
+                    return;
+                }
+
+                const numeric = Number(digits || '0') / 100;
+                valueInput.value = numeric.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function renderCategoryOptions(type, selectedValue = '') {
+                const options = [...categoryOptionsByType[type]];
+                categorySelect.innerHTML = '<option value="" disabled>Selecione uma categoria</option>';
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.label;
+                    categorySelect.appendChild(opt);
+                });
+
+                categorySelect.value = selectedValue || '';
+                if (!selectedValue) categorySelect.selectedIndex = 0;
+                setCustomFieldVisibility(categoryCustomGroup, categoryCustomInput, selectedValue === CUSTOM_OPTION_VALUE, selectedValue === CUSTOM_OPTION_VALUE);
+            }
+
+            function updateDescriptionOptions(selectedValue = '', categoryValue = categorySelect.value) {
+                const category = categoryValue;
+                if (!category) {
+                    descriptionSelect.innerHTML = '<option value="" disabled selected>Selecione uma categoria primeiro</option>';
+                    descriptionSelect.disabled = true;
+                    setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, false, false);
+                    return;
+                }
+
+                const suggestions = category === CUSTOM_OPTION_VALUE
+                    ? [CUSTOM_OPTION_VALUE]
+                    : [...(descriptionSuggestionsByCategory[category] || []), CUSTOM_OPTION_VALUE];
+                descriptionSelect.disabled = false;
+                descriptionSelect.innerHTML = '<option value="" disabled>Selecione uma subcategoria</option>';
+
+                suggestions.forEach(suggestion => {
+                    const option = document.createElement('option');
+                    option.value = suggestion;
+                    option.textContent = suggestion === CUSTOM_OPTION_VALUE ? 'Outros' : suggestion;
+                    descriptionSelect.appendChild(option);
+                });
+
+                if (selectedValue && !suggestions.includes(selectedValue)) {
+                    descriptionSelect.value = CUSTOM_OPTION_VALUE;
+                    setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, true, true);
+                    descriptionCustomInput.value = selectedValue;
+                    return;
+                }
+
+                descriptionSelect.value = selectedValue || '';
+                if (!selectedValue) descriptionSelect.selectedIndex = 0;
+                setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, selectedValue === CUSTOM_OPTION_VALUE, selectedValue === CUSTOM_OPTION_VALUE);
+            }
+
+            function syncCategoryUI(selectedValue = '', selectedDescription = '', customCategoryValue = '') {
+                const normalizedCategoryValue = customCategoryValue ? CUSTOM_OPTION_VALUE : selectedValue;
+                renderCategoryOptions(getSelectedType(), normalizedCategoryValue);
+                if (customCategoryValue) {
+                    setCustomFieldVisibility(categoryCustomGroup, categoryCustomInput, true, true);
+                    categoryCustomInput.value = customCategoryValue;
+                }
+                updateDescriptionOptions(selectedDescription, normalizedCategoryValue);
+            }
+
+            function syncTransactionTypeUI(type, { resetSelections = true } = {}) {
+                transactionTypeCards.forEach((card) => {
+                    const radio = card.querySelector('input[type="radio"]');
+                    const isActive = card.dataset.type === type;
+                    card.classList.toggle('active', isActive);
+                    if (radio) radio.checked = isActive;
+                });
+
+                applyTransactionTheme(type);
+
+                if (resetSelections) {
+                    categorySelect.value = '';
+                    descriptionSelect.value = '';
+                    setCustomFieldVisibility(categoryCustomGroup, categoryCustomInput, false, false);
+                    setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, false, false);
+                    syncCategoryUI();
+                }
+            }
 
             if (!userId) {
                 window.location.href = '/login';
@@ -172,6 +467,36 @@
 
             const headerTitle = document.querySelector('.page-header h1');
             const submitBtn = document.querySelector('button[type="submit"]');
+
+            applyTransactionTheme(getSelectedType());
+            syncCategoryUI();
+            valueInput.addEventListener('input', applyCurrencyMask);
+            valueInput.addEventListener('blur', () => {
+                if (!valueInput.value.trim()) {
+                    valueInput.value = '';
+                    return;
+                }
+                valueInput.value = formatCurrencyValue(valueInput.value);
+            });
+
+            transactionTypeCards.forEach((card) => {
+                card.addEventListener('click', () => {
+                    syncTransactionTypeUI(card.dataset.type);
+                });
+            });
+
+            categorySelect.addEventListener('change', () => {
+                const isCustomCategory = categorySelect.value === CUSTOM_OPTION_VALUE;
+                setCustomFieldVisibility(categoryCustomGroup, categoryCustomInput, isCustomCategory, isCustomCategory);
+                descriptionSelect.value = '';
+                setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, false, false);
+                updateDescriptionOptions('', categorySelect.value);
+            });
+
+            descriptionSelect.addEventListener('change', () => {
+                const isCustomDescription = descriptionSelect.value === CUSTOM_OPTION_VALUE;
+                setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, isCustomDescription, isCustomDescription);
+            });
 
             if (transactionId) {
                 // Modo Edição
@@ -186,9 +511,8 @@
                         const t = await response.json();
 
                         // Preencher forma
-                        document.getElementById('itemDescription').value = t.description;
-                        document.getElementById('itemValue').value = t.value;
-                        document.getElementById('itemCategory').value = t.category;
+                        descriptionSelect.value = '';
+                        valueInput.value = formatCurrencyValue(t.value);
                         document.getElementById('itemDate').value = t.date;
                         document.getElementById('itemRecurring').checked = t.isRecurring === 1;
 
@@ -196,14 +520,15 @@
                         const radioIncome = document.querySelector('input[value="income"]');
                         const radioExpense = document.querySelector('input[value="expense"]');
                         if (t.type === 'income') {
-                            radioIncome.checked = true;
-                            radioIncome.closest('.radio-card').classList.add('active');
-                            radioExpense.closest('.radio-card').classList.remove('active');
+                            syncTransactionTypeUI('income', { resetSelections: false });
                         } else {
-                            radioExpense.checked = true;
-                            radioExpense.closest('.radio-card').classList.add('active');
-                            radioIncome.closest('.radio-card').classList.remove('active');
+                            syncTransactionTypeUI('expense', { resetSelections: false });
                         }
+
+                        const knownCategories = categoryOptionsByType[t.type] || [];
+                        const isKnownCategory = knownCategories.some((option) => option.value === t.category);
+                        const customCategoryValue = isKnownCategory ? '' : t.category;
+                        syncCategoryUI(isKnownCategory ? t.category : CUSTOM_OPTION_VALUE, t.description, customCategoryValue);
                     }
                 } catch (error) {
                     console.error('Erro ao buscar transação:', error);
@@ -218,9 +543,9 @@
 
                     const transactionData = {
                         type: document.querySelector('input[name="transactionType"]:checked').value,
-                        description: document.getElementById('itemDescription').value,
-                        value: parseFloat(document.getElementById('itemValue').value),
-                        category: document.getElementById('itemCategory').value,
+                        description: getResolvedDescriptionValue(),
+                        value: parseCurrencyValue(document.getElementById('itemValue').value),
+                        category: getResolvedCategoryValue(),
                         date: document.getElementById('itemDate').value,
                         isRecurring: document.getElementById('itemRecurring').checked
                     };

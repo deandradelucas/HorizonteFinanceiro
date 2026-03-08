@@ -181,6 +181,47 @@ const normalizeTransactionType = (type) => {
     return type;
 };
 
+app.get('/api/transactions/catalog', authenticate, async (req, res, next) => {
+    try {
+        const transactions = await db.transactions.allAsync(
+            'SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC, id DESC',
+            [req.userId]
+        );
+
+        const catalog = {
+            expense: {},
+            income: {}
+        };
+
+        transactions.forEach((transaction) => {
+            const type = normalizeTransactionType(transaction.type);
+            if (type !== 'income' && type !== 'expense') return;
+
+            const category = String(transaction.category || '').trim();
+            const subcategory = String(transaction.description || '').trim();
+            if (!category) return;
+
+            if (!catalog[type][category]) {
+                catalog[type][category] = {
+                    category,
+                    subcategories: []
+                };
+            }
+
+            if (subcategory && !catalog[type][category].subcategories.includes(subcategory)) {
+                catalog[type][category].subcategories.push(subcategory);
+            }
+        });
+
+        res.json({
+            expense: Object.values(catalog.expense),
+            income: Object.values(catalog.income)
+        });
+    } catch (err) {
+        next(err);
+    }
+});
+
 const toSafeNumber = (value, fallback = 0) => {
     const parsed = typeof value === 'number' ? value : parseFloat(value);
     return Number.isFinite(parsed) ? parsed : fallback;

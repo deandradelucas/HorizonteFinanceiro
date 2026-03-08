@@ -270,16 +270,33 @@ document.addEventListener('DOMContentLoaded', () => {
             // Pegar os valores do formulário
             const typeInput = document.querySelector('input[name="transactionType"]:checked');
             const type = typeInput ? typeInput.value : 'expense';
-            const description = document.getElementById('itemDescription').value;
+            const descriptionField = document.getElementById('itemDescription');
+            const descriptionCustomField = document.getElementById('itemDescriptionCustom');
+            const categoryField = document.getElementById('itemCategory');
+            const categoryCustomField = document.getElementById('itemCategoryCustom');
+            const description = descriptionField && descriptionField.value === 'outros' && descriptionCustomField
+                ? descriptionCustomField.value.trim()
+                : descriptionField.value;
             const valueRaw = document.getElementById('itemValue').value;
-            const category = document.getElementById('itemCategory').value;
+            const category = categoryField && categoryField.value === 'outros' && categoryCustomField
+                ? categoryCustomField.value.trim()
+                : categoryField.value;
             const date = document.getElementById('itemDate').value;
             const isRecurring = document.getElementById('itemRecurring') ? document.getElementById('itemRecurring').checked : false;
+
+            const parsedValue = parseFloat(
+                String(valueRaw || '')
+                    .replace(/\s/g, '')
+                    .replace('R$', '')
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                    .replace(/[^0-9.-]/g, '')
+            );
 
             const newTransaction = {
                 type,
                 description,
-                value: parseFloat(valueRaw),
+                value: Number.isFinite(parsedValue) ? parsedValue : 0,
                 category,
                 date,
                 isRecurring
@@ -337,6 +354,203 @@ document.addEventListener('DOMContentLoaded', () => {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(toSafeNumber(value));
         };
 
+        const normalizeTransactionType = (type) => {
+            if (type === 'receita') return 'income';
+            if (type === 'despesa') return 'expense';
+            return type;
+        };
+
+        const dashboardLayout = document.getElementById('dashboardLayout');
+        const dashboardLayoutEditor = document.getElementById('dashboardLayoutEditor');
+        const dashboardLayoutControls = document.getElementById('dashboardLayoutControls');
+        const dashboardLayoutEditBtn = document.getElementById('dashboardLayoutEditBtn');
+        const dashboardLayoutSaveBtn = document.getElementById('dashboardLayoutSaveBtn');
+        const dashboardLayoutCloseBtn = document.getElementById('dashboardLayoutCloseBtn');
+        const dashboardLayoutResetBtn = document.getElementById('dashboardLayoutResetBtn');
+        const dashboardWidgets = dashboardLayout ? Array.from(dashboardLayout.querySelectorAll('.dashboard-widget')) : [];
+        const dashboardWidgetMeta = {
+            goal: {
+                title: 'Meta em destaque',
+                description: 'Bloco com progresso da meta principal.'
+            },
+            summary: {
+                title: 'Resumo financeiro',
+                description: 'Cards de saldo, receitas, despesas e economia.'
+            },
+            'category-chart': {
+                title: 'Categorias do mês',
+                description: 'Ranking de gastos por categoria no mês atual.'
+            },
+            'subcategory-chart': {
+                title: 'Subcategorias do mês',
+                description: 'Ranking de gastos por subcategoria no mês atual.'
+            },
+            'top-expenses': {
+                title: 'Top 5 despesas',
+                description: 'Maiores despesas registradas no mês atual.'
+            },
+            recent: {
+                title: 'Transações recentes',
+                description: 'Lista rápida das últimas movimentações.'
+            }
+        };
+
+        const getDashboardLayoutStorageKey = () => `dashboard-layout:${sessionStorage.getItem('userId') || 'default'}`;
+
+        const getDefaultDashboardLayoutState = () => ({
+            order: dashboardWidgets.map((widget) => widget.dataset.widgetKey),
+            hidden: []
+        });
+
+        const sanitizeDashboardLayoutState = (state) => {
+            const defaults = getDefaultDashboardLayoutState();
+            const knownKeys = new Set(defaults.order);
+            const order = Array.isArray(state?.order)
+                ? state.order.filter((key) => knownKeys.has(key))
+                : [];
+            const hidden = Array.isArray(state?.hidden)
+                ? state.hidden.filter((key) => knownKeys.has(key))
+                : [];
+
+            defaults.order.forEach((key) => {
+                if (!order.includes(key)) order.push(key);
+            });
+
+            return { order, hidden };
+        };
+
+        const loadDashboardLayoutState = () => {
+            try {
+                const raw = localStorage.getItem(getDashboardLayoutStorageKey());
+                return raw ? sanitizeDashboardLayoutState(JSON.parse(raw)) : getDefaultDashboardLayoutState();
+            } catch (error) {
+                console.error('Erro ao carregar layout do dashboard:', error);
+                return getDefaultDashboardLayoutState();
+            }
+        };
+
+        const persistDashboardLayoutState = (state) => {
+            localStorage.setItem(getDashboardLayoutStorageKey(), JSON.stringify(sanitizeDashboardLayoutState(state)));
+        };
+
+        const applyDashboardLayoutState = (state) => {
+            if (!dashboardLayout) return;
+            const safeState = sanitizeDashboardLayoutState(state);
+            const widgetsByKey = Object.fromEntries(
+                dashboardWidgets.map((widget) => [widget.dataset.widgetKey, widget])
+            );
+
+            safeState.order.forEach((key) => {
+                if (widgetsByKey[key]) dashboardLayout.appendChild(widgetsByKey[key]);
+            });
+
+            dashboardWidgets.forEach((widget) => {
+                widget.classList.toggle('layout-hidden', safeState.hidden.includes(widget.dataset.widgetKey));
+            });
+        };
+
+        let savedDashboardLayoutState = loadDashboardLayoutState();
+        let draftDashboardLayoutState = { ...savedDashboardLayoutState, order: [...savedDashboardLayoutState.order], hidden: [...savedDashboardLayoutState.hidden] };
+
+        const renderDashboardLayoutControls = () => {
+            if (!dashboardLayoutControls) return;
+            dashboardLayoutControls.innerHTML = '';
+
+            draftDashboardLayoutState.order.forEach((key, index) => {
+                const meta = dashboardWidgetMeta[key];
+                if (!meta) return;
+
+                const item = document.createElement('div');
+                item.className = 'dashboard-layout-item';
+
+                const info = document.createElement('div');
+                info.className = 'dashboard-layout-item-info';
+                info.innerHTML = `<strong>${meta.title}</strong><span>${meta.description}</span>`;
+
+                const actions = document.createElement('div');
+                actions.className = 'dashboard-layout-item-actions';
+
+                const toggleLabel = document.createElement('label');
+                toggleLabel.className = 'layout-toggle';
+                const toggle = document.createElement('input');
+                toggle.type = 'checkbox';
+                toggle.checked = !draftDashboardLayoutState.hidden.includes(key);
+                toggle.addEventListener('change', () => {
+                    if (toggle.checked) {
+                        draftDashboardLayoutState.hidden = draftDashboardLayoutState.hidden.filter((itemKey) => itemKey !== key);
+                    } else if (!draftDashboardLayoutState.hidden.includes(key)) {
+                        draftDashboardLayoutState.hidden.push(key);
+                    }
+
+                    applyDashboardLayoutState(draftDashboardLayoutState);
+                });
+                toggleLabel.append(toggle, document.createTextNode('Mostrar'));
+
+                const moveUpBtn = document.createElement('button');
+                moveUpBtn.type = 'button';
+                moveUpBtn.className = 'btn-secondary layout-move-btn';
+                moveUpBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+                moveUpBtn.disabled = index === 0;
+                moveUpBtn.addEventListener('click', () => {
+                    const order = [...draftDashboardLayoutState.order];
+                    [order[index - 1], order[index]] = [order[index], order[index - 1]];
+                    draftDashboardLayoutState.order = order;
+                    applyDashboardLayoutState(draftDashboardLayoutState);
+                    renderDashboardLayoutControls();
+                });
+
+                const moveDownBtn = document.createElement('button');
+                moveDownBtn.type = 'button';
+                moveDownBtn.className = 'btn-secondary layout-move-btn';
+                moveDownBtn.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
+                moveDownBtn.disabled = index === draftDashboardLayoutState.order.length - 1;
+                moveDownBtn.addEventListener('click', () => {
+                    const order = [...draftDashboardLayoutState.order];
+                    [order[index], order[index + 1]] = [order[index + 1], order[index]];
+                    draftDashboardLayoutState.order = order;
+                    applyDashboardLayoutState(draftDashboardLayoutState);
+                    renderDashboardLayoutControls();
+                });
+
+                actions.append(toggleLabel, moveUpBtn, moveDownBtn);
+                item.append(info, actions);
+                dashboardLayoutControls.appendChild(item);
+            });
+        };
+
+        if (dashboardLayout && dashboardLayoutEditor && dashboardLayoutEditBtn && dashboardLayoutSaveBtn && dashboardLayoutCloseBtn && dashboardLayoutResetBtn) {
+            applyDashboardLayoutState(savedDashboardLayoutState);
+
+            dashboardLayoutEditBtn.addEventListener('click', () => {
+                draftDashboardLayoutState = {
+                    order: [...savedDashboardLayoutState.order],
+                    hidden: [...savedDashboardLayoutState.hidden]
+                };
+                dashboardLayoutEditor.hidden = false;
+                renderDashboardLayoutControls();
+            });
+
+            dashboardLayoutCloseBtn.addEventListener('click', () => {
+                dashboardLayoutEditor.hidden = true;
+                applyDashboardLayoutState(savedDashboardLayoutState);
+            });
+
+            dashboardLayoutSaveBtn.addEventListener('click', () => {
+                savedDashboardLayoutState = sanitizeDashboardLayoutState(draftDashboardLayoutState);
+                persistDashboardLayoutState(savedDashboardLayoutState);
+                applyDashboardLayoutState(savedDashboardLayoutState);
+                dashboardLayoutEditor.hidden = true;
+            });
+
+            dashboardLayoutResetBtn.addEventListener('click', () => {
+                draftDashboardLayoutState = getDefaultDashboardLayoutState();
+                savedDashboardLayoutState = getDefaultDashboardLayoutState();
+                persistDashboardLayoutState(savedDashboardLayoutState);
+                applyDashboardLayoutState(savedDashboardLayoutState);
+                renderDashboardLayoutControls();
+            });
+        }
+
         const carregarDashboard = async () => {
             try {
                 const userId = sessionStorage.getItem('userId');
@@ -361,6 +575,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const transactions = await transactionsRes.json();
                 const goals = await goalsRes.json();
+                const now = new Date();
+                const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                const currentMonthLabel = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+                const normalizeLabel = (value) => {
+                    const text = String(value || 'Sem nome').trim();
+                    if (!text) return 'Sem nome';
+                    return text.charAt(0).toUpperCase() + text.slice(1);
+                };
+
+                const renderBarChart = (containerId, emptyId, items, color) => {
+                    const container = document.getElementById(containerId);
+                    const empty = document.getElementById(emptyId);
+                    if (!container || !empty) return;
+
+                    container.innerHTML = '';
+                    empty.hidden = items.length > 0;
+                    if (!items.length) return;
+
+                    const maxValue = items[0]?.total || 0;
+                    items.forEach((item) => {
+                        const row = document.createElement('div');
+                        row.className = 'insight-bar-item';
+                        const pct = maxValue > 0 ? (item.total / maxValue) * 100 : 0;
+                        row.innerHTML = `
+                            <div class="insight-bar-head">
+                                <strong>${normalizeLabel(item.label)}</strong>
+                                <span>${formatMoney(item.total)}</span>
+                            </div>
+                            <div class="insight-bar-track">
+                                <div class="insight-bar-fill" style="width: ${pct}%; background: ${color};"></div>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    });
+                };
+
+                const renderTopExpenses = (items) => {
+                    const list = document.getElementById('topExpensesList');
+                    const empty = document.getElementById('topExpensesEmpty');
+                    if (!list || !empty) return;
+
+                    list.innerHTML = '';
+                    empty.hidden = items.length > 0;
+                    if (!items.length) return;
+
+                    items.forEach((item, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'top-expense-item';
+                        card.innerHTML = `
+                            <div class="top-expense-head">
+                                <strong>#${index + 1} ${normalizeLabel(item.description || item.category)}</strong>
+                                <span>${formatMoney(item.value)}</span>
+                            </div>
+                            <div class="top-expense-meta">${normalizeLabel(item.category)} • ${item.date}</div>
+                        `;
+                        list.appendChild(card);
+                    });
+                };
 
                 // 1. Calcular Totais
                 let totalIncomes = 0;
@@ -368,9 +641,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 transactions.forEach(t => {
                     const val = toSafeNumber(t.value);
-                    if (t.type === 'income') totalIncomes += val;
-                    else if (t.type === 'expense') totalExpenses += val;
+                    const normalizedType = normalizeTransactionType(t.type);
+                    if (normalizedType === 'income') totalIncomes += val;
+                    else if (normalizedType === 'expense') totalExpenses += val;
                 });
+
+                const currentMonthExpenses = transactions
+                    .filter((t) => normalizeTransactionType(t.type) === 'expense' && String(t.date || '').startsWith(currentMonthKey))
+                    .map((t) => ({
+                        ...t,
+                        value: toSafeNumber(t.value),
+                        category: String(t.category || 'Sem categoria'),
+                        description: String(t.description || 'Sem subcategoria')
+                    }));
+
+                const aggregateByField = (items, field) => {
+                    const groups = new Map();
+                    items.forEach((item) => {
+                        const key = String(item[field] || 'Sem nome').trim() || 'Sem nome';
+                        groups.set(key, (groups.get(key) || 0) + toSafeNumber(item.value));
+                    });
+                    return [...groups.entries()]
+                        .map(([label, total]) => ({ label, total }))
+                        .sort((a, b) => b.total - a.total)
+                        .slice(0, 5);
+                };
+
+                const categoryChartData = aggregateByField(currentMonthExpenses, 'category');
+                const subcategoryChartData = aggregateByField(currentMonthExpenses, 'description');
+                const topExpenseItems = [...currentMonthExpenses]
+                    .sort((a, b) => b.value - a.value)
+                    .slice(0, 5);
 
                 const currentBalance = toSafeNumber(totalIncomes - totalExpenses);
                 const savings = currentBalance > 0 ? currentBalance : 0;
@@ -383,6 +684,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     amountElements[2].textContent = formatMoney(totalExpenses);
                     if (amountElements[3]) amountElements[3].textContent = formatMoney(savings);
                 }
+
+                const categoryPeriod = document.getElementById('categoryChartPeriod');
+                const subcategoryPeriod = document.getElementById('subcategoryChartPeriod');
+                const topExpensesPeriod = document.getElementById('topExpensesPeriod');
+                if (categoryPeriod) categoryPeriod.textContent = currentMonthLabel;
+                if (subcategoryPeriod) subcategoryPeriod.textContent = currentMonthLabel;
+                if (topExpensesPeriod) topExpensesPeriod.textContent = currentMonthLabel;
+
+                renderBarChart('categoryChartBars', 'categoryChartEmpty', categoryChartData, 'linear-gradient(90deg, #0d9488, #4ade80)');
+                renderBarChart('subcategoryChartBars', 'subcategoryChartEmpty', subcategoryChartData, 'linear-gradient(90deg, #f59e0b, #f97316)');
+                renderTopExpenses(topExpenseItems);
 
                 // 2. Meta em Destaque no Dashboard
                 const goalContainer = document.getElementById('mainGoalContainer');

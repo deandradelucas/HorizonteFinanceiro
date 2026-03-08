@@ -72,8 +72,32 @@
                     Lançamento</a>
             </div>
 
+            <div id="dashboardLayoutEditor" class="dashboard-layout-editor" hidden>
+                <div class="dashboard-layout-editor-header">
+                    <div>
+                        <h3>Personalizar dashboard</h3>
+                        <p>Organize a ordem dos blocos e esconda o que não quiser ver na tela inicial.</p>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button type="button" id="dashboardLayoutCloseBtn" class="btn-secondary">Fechar</button>
+                        <button type="button" id="dashboardLayoutSaveBtn" class="btn-primary" style="width: auto;">Salvar layout</button>
+                    </div>
+                </div>
+                <div id="dashboardLayoutControls" class="dashboard-layout-controls"></div>
+                <div class="dashboard-layout-editor-actions">
+                    <button type="button" id="dashboardLayoutResetBtn" class="btn-secondary">Restaurar padrão</button>
+                </div>
+            </div>
+
+            <div class="dashboard-actions dashboard-actions-mobile">
+                <button type="button" id="dashboardLayoutEditBtn" class="btn-secondary dashboard-layout-trigger">
+                    <i class="fa-solid fa-pen-to-square"></i> Editar layout
+                </button>
+            </div>
+
+            <div id="dashboardLayout" class="dashboard-layout">
             <!-- Meta em Destaque -->
-            <div id="mainGoalContainer" class="main-goal-container" style="display: none;">
+            <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal" style="display: none;">
                 <div class="goal-info-header">
                     <div class="goal-text">
                         <span class="goal-label">Meta em Destaque</span>
@@ -102,12 +126,219 @@
             </div>
 
             <style>
+                .dashboard-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                }
+
+                .dashboard-actions-mobile {
+                    margin-bottom: 16px;
+                }
+
+                .dashboard-layout {
+                    display: grid;
+                    grid-template-columns: repeat(12, minmax(0, 1fr));
+                    gap: 24px;
+                    align-items: start;
+                }
+
+                .dashboard-widget {
+                    min-width: 0;
+                }
+
+                .summary-cards {
+                    grid-column: 1 / -1;
+                    margin-bottom: 0;
+                }
+
+                .dashboard-chart-card {
+                    grid-column: span 6;
+                }
+
+                .top-expenses-card,
+                .recent-transactions {
+                    grid-column: 1 / -1;
+                    margin-bottom: 0;
+                }
+
+                .insight-card {
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 24px;
+                    padding: 24px;
+                }
+
+                .insight-caption {
+                    color: var(--text-muted);
+                    font-size: 13px;
+                    font-weight: 600;
+                }
+
+                .insight-empty {
+                    color: var(--text-muted);
+                    font-size: 14px;
+                    padding: 12px 0 4px;
+                }
+
+                .insight-bars {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                    margin-top: 6px;
+                }
+
+                .insight-bar-item {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+
+                .insight-bar-head,
+                .top-expense-head {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                }
+
+                .insight-bar-head strong,
+                .top-expense-head strong {
+                    font-size: 14px;
+                    color: var(--text-main);
+                }
+
+                .insight-bar-head span,
+                .top-expense-head span,
+                .top-expense-meta {
+                    color: var(--text-muted);
+                    font-size: 13px;
+                }
+
+                .insight-bar-track {
+                    width: 100%;
+                    height: 10px;
+                    border-radius: 999px;
+                    background: rgba(148, 163, 184, 0.12);
+                    overflow: hidden;
+                }
+
+                .insight-bar-fill {
+                    height: 100%;
+                    border-radius: 999px;
+                    background: linear-gradient(90deg, #0d9488, #4ade80);
+                }
+
+                .top-expenses-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    margin-top: 6px;
+                }
+
+                .top-expense-item {
+                    border: 1px solid var(--border-color);
+                    border-radius: 18px;
+                    padding: 16px;
+                    background: rgba(15, 23, 42, 0.14);
+                }
+
+                .dashboard-widget.layout-hidden {
+                    display: none !important;
+                }
+
+                .dashboard-layout-editor {
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 20px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .dashboard-layout-editor-header,
+                .dashboard-layout-item,
+                .dashboard-layout-editor-actions {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 16px;
+                }
+
+                .dashboard-layout-editor-header {
+                    margin-bottom: 18px;
+                }
+
+                .dashboard-layout-editor-header h3 {
+                    margin: 0 0 4px;
+                    font-size: 18px;
+                }
+
+                .dashboard-layout-editor-header p {
+                    margin: 0;
+                    color: var(--text-muted);
+                    font-size: 14px;
+                }
+
+                .dashboard-layout-controls {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .dashboard-layout-item {
+                    padding: 14px 16px;
+                    border-radius: 16px;
+                    border: 1px solid var(--border-color);
+                    background: rgba(15, 23, 42, 0.18);
+                }
+
+                .dashboard-layout-item-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                }
+
+                .dashboard-layout-item-info strong {
+                    font-size: 15px;
+                }
+
+                .dashboard-layout-item-info span {
+                    font-size: 13px;
+                    color: var(--text-muted);
+                }
+
+                .dashboard-layout-item-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                }
+
+                .layout-toggle {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 13px;
+                    color: var(--text-muted);
+                }
+
+                .layout-move-btn {
+                    width: 40px;
+                    height: 40px;
+                    padding: 0;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
                 .main-goal-container {
+                    grid-column: 1 / -1;
                     background: var(--card-bg);
                     border: 1px solid var(--border-color);
                     border-radius: 20px;
                     padding: 24px;
-                    margin-bottom: 24px;
+                    margin-bottom: 0;
                     transition: var(--transition);
                 }
 
@@ -178,7 +409,31 @@
                     color: var(--primary-color);
                 }
 
+                @media (max-width: 1100px) {
+                    .dashboard-chart-card,
+                    .summary-cards,
+                    .recent-transactions {
+                        grid-column: 1 / -1;
+                    }
+                }
+
                 @media (max-width: 600px) {
+                    .dashboard-layout {
+                        grid-template-columns: 1fr;
+                        gap: 16px;
+                    }
+
+                    .dashboard-layout-editor-header,
+                    .dashboard-layout-item,
+                    .dashboard-layout-editor-actions {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .dashboard-layout-item-actions {
+                        justify-content: space-between;
+                    }
+
                     .goal-info-header {
                         flex-direction: column;
                         gap: 8px;
@@ -278,7 +533,7 @@
             </style>
 
             <!-- Resumo Cards -->
-            <div class="summary-cards">
+            <div class="summary-cards dashboard-widget" data-widget-key="summary">
                 <div class="summary-card">
                     <div class="card-icon blue"><i class="fa-solid fa-building-columns"></i></div>
                     <div class="card-info">
@@ -309,8 +564,35 @@
                 </div>
             </div>
 
+            <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="category-chart">
+                <div class="section-header">
+                    <h3>Categorias do Mês</h3>
+                    <span id="categoryChartPeriod" class="insight-caption">Mês atual</span>
+                </div>
+                <div id="categoryChartEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
+                <div id="categoryChartBars" class="insight-bars"></div>
+            </div>
+
+            <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="subcategory-chart">
+                <div class="section-header">
+                    <h3>Subcategorias do Mês</h3>
+                    <span id="subcategoryChartPeriod" class="insight-caption">Mês atual</span>
+                </div>
+                <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
+                <div id="subcategoryChartBars" class="insight-bars"></div>
+            </div>
+
+            <div class="insight-card dashboard-widget top-expenses-card" data-widget-key="top-expenses">
+                <div class="section-header">
+                    <h3>Top 5 Maiores Despesas</h3>
+                    <span id="topExpensesPeriod" class="insight-caption">Mês atual</span>
+                </div>
+                <div id="topExpensesEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
+                <div id="topExpensesList" class="top-expenses-list"></div>
+            </div>
+
             <!-- Recentes -->
-            <div class="recent-transactions">
+            <div class="recent-transactions dashboard-widget" data-widget-key="recent">
                 <div class="section-header">
                     <h3>Transações Recentes</h3>
                     <a href="/transactions" class="view-all">Ver todas</a>
@@ -340,6 +622,7 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
             </div>
         </div>
     </main>
