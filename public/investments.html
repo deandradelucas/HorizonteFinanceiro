@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -47,12 +47,12 @@
   <aside class="sidebar">
     <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> InÃ­cio</a>
       <a href="/investments" class="nav-item active"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transacoes</a>
-      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Historico</a>
+      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> TransaÃ§Ãµes</a>
+      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> HistÃ³rico</a>
       <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-      <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configuracoes</a>
+      <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> ConfiguraÃ§Ãµes</a>
     </nav>
     <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
   </aside>
@@ -66,9 +66,9 @@
       <div class="page-header">
         <div>
           <h1>Investimentos</h1>
-          <p class="subtitle">Esta area substitui a antiga carteira e concentra aportes, resgates e leitura rapida da sua carteira investida.</p>
+          <p class="subtitle">Esta Ã¡rea substitui a antiga carteira e concentra aportes, resgates e leitura rÃ¡pida da sua carteira investida.</p>
         </div>
-        <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo Lancamento</a>
+        <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo LanÃ§amento</a>
       </div>
 
       <section class="invest-filters">
@@ -81,42 +81,43 @@
           <select id="investmentType">
             <option value="all">Todos</option>
             <option value="expense">Aportes</option>
+            <option value="investment">Investimento</option>
             <option value="income">Resgates / Rendimentos</option>
           </select>
         </div>
         <div class="filter-field">
           <label for="investmentSearch">Buscar</label>
-          <input id="investmentSearch" type="text" placeholder="Descricao">
+          <input id="investmentSearch" type="text" placeholder="DescriÃ§Ã£o">
         </div>
         <button class="btn-primary btn-action" onclick="loadInvestments()">Atualizar</button>
       </section>
 
       <section class="invest-stats">
         <div class="invest-card">
-          <div class="stat-label">Total Aportado</div>
+          <div class="stat-label">Investimento Total</div>
           <div class="stat-value negative" id="totalApplied">R$ 0,00</div>
-          <div class="stat-sub">Saidas classificadas como investimentos</div>
+          <div class="stat-sub">Total aplicado em investimentos</div>
         </div>
         <div class="invest-card">
-          <div class="stat-label">Retornos / Resgates</div>
+          <div class="stat-label">Resgates</div>
           <div class="stat-value positive" id="totalReturned">R$ 0,00</div>
-          <div class="stat-sub">Entradas da categoria investimentos</div>
+          <div class="stat-sub">Entradas vindas de investimentos</div>
         </div>
         <div class="invest-card">
-          <div class="stat-label">Saldo Investido</div>
-          <div class="stat-value neutral" id="netInvested">R$ 0,00</div>
-          <div class="stat-sub">Aportes menos retiradas</div>
+          <div class="stat-label">M?s</div>
+          <div class="stat-value neutral" id="monthMovement">R$ 0,00</div>
+          <div class="stat-sub" id="monthMovementLabel">Movimenta??o do m?s atual</div>
         </div>
         <div class="invest-card">
-          <div class="stat-label">Movimento do Mes</div>
-          <div class="stat-value" id="monthMovement">R$ 0,00</div>
-          <div class="stat-sub" id="movementLabel">Baseado no mes atual</div>
+          <div class="stat-label">Dia</div>
+          <div class="stat-value neutral" id="dayMovement">R$ 0,00</div>
+          <div class="stat-sub" id="dayMovementLabel">Movimenta??o de hoje</div>
         </div>
       </section>
 
       <section class="invest-grid">
         <div class="invest-panel">
-          <div class="section-header"><h3>Evolucao Mensal</h3></div>
+          <div class="section-header"><h3>EvoluÃ§Ã£o Mensal</h3></div>
           <div class="month-list" id="monthList"></div>
         </div>
         <div class="invest-panel">
@@ -126,11 +127,11 @@
       </section>
 
       <section class="invest-panel">
-        <div class="section-header"><h3>Movimentacoes de Investimento</h3></div>
+        <div class="section-header"><h3>MovimentaÃ§Ãµes de Investimento</h3></div>
         <div class="invest-list" id="investmentList"></div>
         <div class="empty-state" id="investmentEmpty" style="display:none;">
           <i class="fa-solid fa-chart-line"></i>
-          <p>Nenhum investimento encontrado. Use a categoria <strong>investimentos</strong> ao registrar um lancamento.</p>
+          <p>Nenhum investimento encontrado. Use a categoria <strong>investimentos</strong> ao registrar um lanÃ§amento.</p>
         </div>
       </section>
     </div>
@@ -149,6 +150,7 @@
     const safe = (value, fallback = 0) => { const parsed = typeof value === 'number' ? value : parseFloat(value); return Number.isFinite(parsed) ? parsed : fallback; };
     const fmt = (value) => 'R$ ' + safe(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     const normalize = (value) => (value || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const normalizeType = (value) => value === 'receita' ? 'income' : value === 'despesa' ? 'expense' : value;
     const categoryMatchesInvestment = (category) => ['investimento', 'investimentos'].includes(normalize(category));
     const formatDate = (dateString) => !dateString ? 'Sem data' : `${dateString.slice(8,10)}/${dateString.slice(5,7)}/${dateString.slice(0,4)}`;
     const monthLabel = (dateString) => new Date(`${dateString}T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
@@ -164,23 +166,28 @@
       const type = typeInput.value;
       return transactions
         .filter((item) => categoryMatchesInvestment(item.category))
-        .filter((item) => type === 'all' || item.type === type)
+        .filter((item) => type === 'all' || normalizeType(item.type) === type)
         .filter((item) => !dateInput.value || item.date === dateInput.value || item.date.startsWith(dateInput.value.slice(0, 7)))
         .filter((item) => !term || normalize(`${item.description || ''} ${item.category || ''}`).includes(term));
     }
 
     function renderStats(transactions) {
-      const applied = transactions.filter((item) => item.type === 'expense').reduce((sum, item) => sum + safe(item.value), 0);
-      const returned = transactions.filter((item) => item.type === 'income').reduce((sum, item) => sum + safe(item.value), 0);
-      const net = applied - returned;
-      const monthPrefix = new Date().toISOString().slice(0, 7);
-      const monthNet = transactions.filter((item) => item.date && item.date.startsWith(monthPrefix)).reduce((sum, item) => sum + (item.type === 'expense' ? safe(item.value) : -safe(item.value)), 0);
+      const applied = transactions.filter((item) => ['expense', 'investment'].includes(normalizeType(item.type))).reduce((sum, item) => sum + safe(item.value), 0);
+      const returned = transactions.filter((item) => normalizeType(item.type) === 'income').reduce((sum, item) => sum + safe(item.value), 0);
+      const referenceDate = dateInput.value || new Date().toLocaleDateString('sv-SE');
+      const referenceMonth = referenceDate.slice(0, 7);
+      const signedValue = (item) => ['expense', 'investment'].includes(normalizeType(item.type)) ? safe(item.value) : -safe(item.value);
+      const monthNet = transactions.filter((item) => item.date && item.date.startsWith(referenceMonth)).reduce((sum, item) => sum + signedValue(item), 0);
+      const dayNet = transactions.filter((item) => item.date === referenceDate).reduce((sum, item) => sum + signedValue(item), 0);
+
       document.getElementById('totalApplied').textContent = fmt(applied);
       document.getElementById('totalReturned').textContent = fmt(returned);
-      document.getElementById('netInvested').textContent = fmt(net);
       document.getElementById('monthMovement').textContent = fmt(monthNet);
       document.getElementById('monthMovement').className = 'stat-value ' + (monthNet > 0 ? 'negative' : monthNet < 0 ? 'positive' : 'neutral');
-      document.getElementById('movementLabel').textContent = dateInput.value ? `Filtro ativo em ${formatDate(dateInput.value)}` : 'Baseado no mes atual';
+      document.getElementById('dayMovement').textContent = fmt(dayNet);
+      document.getElementById('dayMovement').className = 'stat-value ' + (dayNet > 0 ? 'negative' : dayNet < 0 ? 'positive' : 'neutral');
+      document.getElementById('monthMovementLabel').textContent = dateInput.value ? `Movimentação em ${referenceMonth}` : 'Movimentação do mês atual';
+      document.getElementById('dayMovementLabel').textContent = dateInput.value ? `Movimentação em ${formatDate(referenceDate)}` : 'Movimentação de hoje';
     }
 
     function renderMonthlyEvolution(transactions) {
@@ -189,28 +196,28 @@
         const key = (item.date || '').slice(0, 7);
         if (!key) return;
         if (!grouped[key]) grouped[key] = { expenses: 0, incomes: 0 };
-        if (item.type === 'expense') grouped[key].expenses += safe(item.value);
+        if (['expense', 'investment'].includes(normalizeType(item.type))) grouped[key].expenses += safe(item.value);
         else grouped[key].incomes += safe(item.value);
       });
 
       const entries = Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 6);
-      monthList.innerHTML = entries.length ? '' : '<div class="empty-state" style="display:block;"><i class="fa-solid fa-calendar-xmark"></i><p>Sem meses com movimentacao.</p></div>';
+      monthList.innerHTML = entries.length ? '' : '<div class="empty-state" style="display:block;"><i class="fa-solid fa-calendar-xmark"></i><p>Sem meses com movimentaÃ§Ã£o.</p></div>';
       entries.forEach(([key, value]) => {
         const net = value.expenses - value.incomes;
-        monthList.innerHTML += `<div class="month-row"><div><strong>${monthLabel(`${key}-01`)}</strong><span>Aportes ${fmt(value.expenses)} • Retornos ${fmt(value.incomes)}</span></div><strong class="${net >= 0 ? 'negative' : 'positive'}">${fmt(net)}</strong></div>`;
+        monthList.innerHTML += `<div class="month-row"><div><strong>${monthLabel(`${key}-01`)}</strong><span>Aportes ${fmt(value.expenses)} â€¢ Retornos ${fmt(value.incomes)}</span></div><strong class="${net >= 0 ? 'negative' : 'positive'}">${fmt(net)}</strong></div>`;
       });
     }
 
     function renderSummary(transactions) {
       const last = transactions[0];
       const highest = transactions.slice().sort((a, b) => safe(b.value) - safe(a.value))[0];
-      const typeCount = transactions.reduce((acc, item) => { acc[item.type] = (acc[item.type] || 0) + 1; return acc; }, {});
+      const typeCount = transactions.reduce((acc, item) => { const type = normalizeType(item.type); acc[type] = (acc[type] || 0) + 1; return acc; }, {});
       summaryList.innerHTML = `
-        <div class="month-row"><div><strong>Operacoes registradas</strong><span>Total filtrado na carteira</span></div><strong>${transactions.length}</strong></div>
-        <div class="month-row"><div><strong>Aportes</strong><span>Quantidade de saidas em investimentos</span></div><strong class="negative">${typeCount.expense || 0}</strong></div>
+        <div class="month-row"><div><strong>OperaÃ§Ãµes registradas</strong><span>Total filtrado na carteira</span></div><strong>${transactions.length}</strong></div>
+        <div class="month-row"><div><strong>Aportes</strong><span>Quantidade de saÃ­das em investimentos</span></div><strong class="negative">${(typeCount.expense || 0) + (typeCount.investment || 0)}</strong></div>
         <div class="month-row"><div><strong>Resgates / Rendimentos</strong><span>Quantidade de entradas em investimentos</span></div><strong class="positive">${typeCount.income || 0}</strong></div>
-        <div class="month-row"><div><strong>Maior movimento</strong><span>${highest ? highest.description || 'Sem descricao' : 'Sem dados'}</span></div><strong>${highest ? fmt(highest.value) : '-'}</strong></div>
-        <div class="month-row"><div><strong>Ultimo lancamento</strong><span>${last ? formatDate(last.date) : 'Sem dados'}</span></div><strong>${last ? fmt(last.value) : '-'}</strong></div>
+        <div class="month-row"><div><strong>Maior movimento</strong><span>${highest ? highest.description || 'Sem descriÃ§Ã£o' : 'Sem dados'}</span></div><strong>${highest ? fmt(highest.value) : '-'}</strong></div>
+        <div class="month-row"><div><strong>Ãšltimo lanÃ§amento</strong><span>${last ? formatDate(last.date) : 'Sem dados'}</span></div><strong>${last ? fmt(last.value) : '-'}</strong></div>
       `;
     }
 
@@ -222,14 +229,16 @@
       }
       investmentEmpty.style.display = 'none';
       transactions.forEach((item) => {
-        const isIncome = item.type === 'income';
+        const normalizedType = normalizeType(item.type);
+        const isIncome = normalizedType === 'income';
+        const isInvestment = normalizedType === 'investment';
         investmentList.innerHTML += `
           <article class="invest-item">
             <div class="invest-main">
-              <div class="invest-icon"><i class="fa-solid ${isIncome ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}"></i></div>
+              <div class="invest-icon"><i class="fa-solid ${isIncome ? 'fa-arrow-trend-up' : isInvestment ? 'fa-chart-line' : 'fa-arrow-trend-down'}"></i></div>
               <div class="invest-text">
-                <strong>${item.description || 'Sem descricao'}</strong>
-                <span><span class="tag-chip">${isIncome ? 'Retorno' : 'Aporte'}</span> • ${formatDate(item.date)}</span>
+                <strong>${item.description || 'Sem descriÃ§Ã£o'}</strong>
+                <span><span class="tag-chip">${isIncome ? 'Retorno' : isInvestment ? 'Investimento' : 'Aporte'}</span> â€¢ ${formatDate(item.date)}</span>
               </div>
             </div>
             <strong class="${isIncome ? 'positive' : 'negative'}">${isIncome ? '+' : '-'}${fmt(item.value)}</strong>

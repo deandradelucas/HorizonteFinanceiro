@@ -12,7 +12,7 @@
   <style>
     .history-shell,.history-filters,.history-stats,.history-months,.detail-stats,.category-grid,.timeline{display:grid;gap:16px}
     .history-shell{gap:24px}
-    .history-filters{grid-template-columns:repeat(3,minmax(0,1fr)) auto auto;align-items:end}
+    .history-filters{grid-template-columns:repeat(4,minmax(0,1fr)) auto auto;align-items:end}
     .filter-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
     .filter-field input,.filter-field select{width:100%;padding:11px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font:inherit}
     .filter-actions{display:flex;gap:10px}
@@ -64,7 +64,7 @@
     .tag-chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
     .empty-state{padding:32px 24px;text-align:center;color:var(--text-muted)}
     .empty-state i{display:block;margin-bottom:12px;font-size:28px;color:var(--primary-color)}
-    @media (max-width: 1100px){.history-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.detail-stats,.history-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width: 1100px){.history-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.detail-stats,.history-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media (max-width: 720px){.history-filters,.history-stats,.detail-stats,.history-months,.category-grid{grid-template-columns:1fr}.filter-actions,.detail-controls{width:100%}.filter-actions button,.detail-controls button,.detail-controls input{width:100%}.timeline-item,.month-head,.timeline-day-head{flex-direction:column;align-items:flex-start}.timeline-value{text-align:left}.history-detail{padding:18px}.history-card{padding:18px}}
   </style>
 </head>
@@ -98,8 +98,12 @@
 
       <section class="history-filters">
         <div class="filter-field">
-          <label for="historyDate">Data</label>
-          <input id="historyDate" type="date">
+          <label for="historyStartDate">De</label>
+          <input id="historyStartDate" type="date">
+        </div>
+        <div class="filter-field">
+          <label for="historyEndDate">Até</label>
+          <input id="historyEndDate" type="date">
         </div>
         <div class="filter-field">
           <label for="typeSelect">Tipo</label>
@@ -139,8 +143,8 @@
         </div>
         <div class="history-card">
           <div class="stat-label">Periodo em Foco</div>
-          <div class="stat-value" id="focusPeriod">Historico completo</div>
-          <div class="stat-sub" id="focusPeriodSub">Selecione uma data para abrir direto no dia.</div>
+          <div class="stat-value" id="focusPeriod">Histórico completo</div>
+          <div class="stat-sub" id="focusPeriodSub">Selecione um período para filtrar as movimentações.</div>
         </div>
       </section>
 
@@ -203,7 +207,8 @@
     let currentDay = null;
     let allTransactions = [];
 
-    const historyDate = document.getElementById('historyDate');
+    const historyStartDate = document.getElementById('historyStartDate');
+    const historyEndDate = document.getElementById('historyEndDate');
     const typeSelect = document.getElementById('typeSelect');
     const historySearch = document.getElementById('historySearch');
     const historySearchTop = document.getElementById('historySearchTop');
@@ -229,7 +234,14 @@
     const categoryColor = (value) => categoryColors[normalize(value)] || '#64748b';
     const formatDate = (dateString) => !dateString ? 'Sem data' : `${dateString.slice(8, 10)}/${dateString.slice(5, 7)}/${dateString.slice(0, 4)}`;
     const formatDayTitle = (dateString) => !dateString ? 'Sem data' : new Date(`${dateString}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+    const formatMonthLabel = (yearMonth) => !yearMonth ? 'Sem período' : new Date(`${yearMonth}-01T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
     const getSearchTerm = () => normalize(historySearch.value || historySearchTop.value);
+    const dateInRange = (dateString) => {
+      if (!dateString) return false;
+      if (historyStartDate.value && dateString < historyStartDate.value) return false;
+      if (historyEndDate.value && dateString > historyEndDate.value) return false;
+      return true;
+    };
 
     function syncSearch(source) {
       const value = source.value || '';
@@ -238,15 +250,16 @@
     }
 
     function resetHistoryFilters() {
-      historyDate.value = '';
+      historyStartDate.value = '';
+      historyEndDate.value = '';
       typeSelect.value = 'all';
       historySearch.value = '';
       historySearchTop.value = '';
       dayFilter.value = '';
       currentMonth = null;
       currentDay = null;
-      document.getElementById('focusPeriod').textContent = 'Historico completo';
-      document.getElementById('focusPeriodSub').textContent = 'Selecione uma data para abrir direto no dia.';
+      document.getElementById('focusPeriod').textContent = 'Histórico completo';
+      document.getElementById('focusPeriodSub').textContent = 'Selecione um período para filtrar as movimentações.';
       loadHistorySummary();
     }
 
@@ -261,15 +274,15 @@
     function buildMonthRows(transactions) {
       const months = {};
       transactions.forEach((item) => {
-        const month = (item.date || '').slice(5, 7);
-        if (!month) return;
-        if (!months[month]) months[month] = { month, receitas: 0, despesas: 0, saldo: 0 };
-        if (item.type === 'income') months[month].receitas += safe(item.value);
-        else months[month].despesas += safe(item.value);
+        const monthKey = (item.date || '').slice(0, 7);
+        if (!monthKey) return;
+        if (!months[monthKey]) months[monthKey] = { monthKey, receitas: 0, despesas: 0, saldo: 0 };
+        if (item.type === 'income') months[monthKey].receitas += safe(item.value);
+        else months[monthKey].despesas += safe(item.value);
       });
       return Object.values(months)
         .map((item) => ({ ...item, saldo: item.receitas - item.despesas }))
-        .sort((a, b) => a.month.localeCompare(b.month));
+        .sort((a, b) => b.monthKey.localeCompare(a.monthKey));
     }
 
     function renderMonths(rows) {
@@ -288,13 +301,14 @@
         const balanceClass = row.saldo >= 0 ? 'positive' : 'negative';
         const monthCard = document.createElement('button');
         monthCard.type = 'button';
-        monthCard.className = 'month-card' + (currentMonth === row.month && !currentDay ? ' active' : '');
+        monthCard.className = 'month-card' + (currentMonth === row.monthKey && !currentDay ? ' active' : '');
         monthCard.style.opacity = hasData ? '1' : '0.55';
+        monthCard.dataset.monthKey = row.monthKey;
         monthCard.innerHTML = `
           <div class="month-head">
             <div>
-              <div class="month-name">${monthNames[parseInt(row.month, 10) - 1]}</div>
-              <div class="stat-sub">${new Date().getFullYear()}</div>
+              <div class="month-name">${formatMonthLabel(row.monthKey)}</div>
+              <div class="stat-sub">${row.monthKey}</div>
             </div>
             <div class="month-balance ${balanceClass}">${hasData ? fmt(row.saldo) : '—'}</div>
           </div>
@@ -302,19 +316,29 @@
           <div class="month-line"><span>Despesas</span><strong class="negative">${fmt(row.despesas)}</strong></div>
           <div class="month-bar"><div class="month-bar-fill" style="width:${percent}%;background:${row.saldo >= 0 ? 'var(--success-color)' : 'var(--error-color)'}"></div></div>
         `;
-        if (hasData) monthCard.onclick = () => openMonthDetail(row.month);
+        if (hasData) monthCard.onclick = () => openMonthDetail(row.monthKey);
         monthGrid.appendChild(monthCard);
       });
     }
 
     function updateFocusLabel() {
-      if (historyDate.value) {
-        document.getElementById('focusPeriod').textContent = formatDate(historyDate.value);
-        document.getElementById('focusPeriodSub').textContent = 'A tela abre detalhada diretamente na data escolhida.';
+      if (historyStartDate.value && historyEndDate.value) {
+        document.getElementById('focusPeriod').textContent = `${formatDate(historyStartDate.value)} até ${formatDate(historyEndDate.value)}`;
+        document.getElementById('focusPeriodSub').textContent = 'Intervalo filtrado no histórico.';
         return;
       }
-      document.getElementById('focusPeriod').textContent = 'Historico completo';
-      document.getElementById('focusPeriodSub').textContent = `${allTransactions.length} transacoes carregadas do banco.`;
+      if (historyStartDate.value) {
+        document.getElementById('focusPeriod').textContent = `A partir de ${formatDate(historyStartDate.value)}`;
+        document.getElementById('focusPeriodSub').textContent = 'Mostrando lançamentos desde a data inicial.';
+        return;
+      }
+      if (historyEndDate.value) {
+        document.getElementById('focusPeriod').textContent = `Até ${formatDate(historyEndDate.value)}`;
+        document.getElementById('focusPeriodSub').textContent = 'Mostrando lançamentos até a data final.';
+        return;
+      }
+      document.getElementById('focusPeriod').textContent = 'Histórico completo';
+      document.getElementById('focusPeriodSub').textContent = `${allTransactions.length} transações carregadas do banco.`;
     }
 
     async function loadHistorySummary() {
@@ -333,7 +357,7 @@
         const filteredTransactions = allTransactions.filter((item) => {
           const matchesType = typeFilter === 'all' || item.type === typeFilter;
           const matchesSearch = !searchTerm || normalize(`${item.description || ''} ${item.category || ''}`).includes(searchTerm);
-          const matchesDate = !historyDate.value || item.date === historyDate.value || item.date.startsWith(historyDate.value.slice(0, 7));
+          const matchesDate = dateInRange(item.date);
           return matchesType && matchesSearch && matchesDate;
         });
         const rows = buildMonthRows(filteredTransactions);
@@ -342,10 +366,10 @@
         updateFocusLabel();
         renderMonths(rows);
 
-        if (historyDate.value) {
-          await openMonthDetail(historyDate.value.slice(5, 7), historyDate.value.slice(8, 10), false);
-        } else if (currentMonth && !currentDay) {
-          await openMonthDetail(currentMonth, undefined, false);
+        if (historyStartDate.value && historyEndDate.value && historyStartDate.value === historyEndDate.value) {
+          await openMonthDetail(historyStartDate.value.slice(0, 7), historyStartDate.value.slice(8, 10), false);
+        } else if (currentMonth) {
+          await openMonthDetail(currentMonth, currentDay || undefined, false);
         } else {
           closeDetail();
         }
@@ -454,16 +478,17 @@
       });
     }
 
-    async function openMonthDetail(month, day, scroll = true) {
-      currentMonth = month;
+    async function openMonthDetail(monthKey, day, scroll = true) {
+      currentMonth = monthKey;
       currentDay = day || null;
 
       try {
         const term = getSearchTerm();
         const typeFilter = typeSelect.value;
-        const monthPrefix = `-${month.padStart(2, '0')}-`;
+        const monthPrefix = `${monthKey}-`;
         const transactions = allTransactions
-          .filter((item) => item.date && item.date.includes(monthPrefix))
+          .filter((item) => item.date && item.date.startsWith(monthPrefix))
+          .filter((item) => dateInRange(item.date))
           .filter((item) => !day || item.date.slice(8, 10) === day.padStart(2, '0'))
           .filter((item) => (typeFilter === 'all' || item.type === typeFilter) && (!term || normalize(`${item.description || ''} ${item.category || ''}`).includes(term)));
         const groups = {};
@@ -476,8 +501,8 @@
         const categoryTotals = Object.values(groups).sort((a, b) => b.total - a.total);
 
         detailPanel.classList.add('visible');
-        detailTitle.textContent = day ? `${monthNames[parseInt(month, 10) - 1]} - Dia ${day}` : `${monthNames[parseInt(month, 10) - 1]}`;
-        detailSubtitle.textContent = day ? 'Detalhe completo do dia selecionado.' : 'Visao detalhada do mes com agrupamento por dia.';
+        detailTitle.textContent = day ? `${formatMonthLabel(monthKey)} - Dia ${day}` : formatMonthLabel(monthKey);
+        detailSubtitle.textContent = day ? 'Detalhe completo do dia selecionado.' : 'Visão detalhada do mês com agrupamento por dia.';
         dayFilter.value = day || '';
 
         renderDetailStats(transactions, categoryTotals);
@@ -485,7 +510,7 @@
         renderTimeline(transactions);
 
         document.querySelectorAll('.month-card').forEach((element) => element.classList.remove('active'));
-        const target = Array.from(document.querySelectorAll('.month-card')).find((element) => element.textContent.includes(monthNames[parseInt(month, 10) - 1]));
+        const target = document.querySelector(`.month-card[data-month-key="${monthKey}"]`);
         if (target) target.classList.add('active');
 
         if (scroll) detailPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -506,7 +531,8 @@
 
     historySearch.addEventListener('input', () => { syncSearch(historySearch); loadHistorySummary(); });
     historySearchTop.addEventListener('input', () => { syncSearch(historySearchTop); loadHistorySummary(); });
-    historyDate.addEventListener('change', () => loadHistorySummary());
+    historyStartDate.addEventListener('change', () => loadHistorySummary());
+    historyEndDate.addEventListener('change', () => loadHistorySummary());
     typeSelect.addEventListener('change', () => loadHistorySummary());
 
     document.addEventListener('DOMContentLoaded', () => {

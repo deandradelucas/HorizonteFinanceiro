@@ -32,12 +32,12 @@ body.dark-mode {
     --sidebar-text: #f1f5f9;
     --sidebar-hover: #111111;
     --sidebar-border: #1a1a1a;
-    --primary-color: #00ff88;
-    /* Neon Green */
-    --primary-hover: #00e67a;
+    --primary-color: #14c97b;
+    /* Green toned down for dark mode */
+    --primary-hover: #10b86f;
     --error-color: #ff3131;
     /* Neon Red */
-    --success-color: #00ff88;
+    --success-color: #14c97b;
 }
 
 /* === Centered Auth Layout (Login / Cadastro) === */
@@ -498,6 +498,14 @@ body.dark-mode::before {
     background: var(--primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 15px 25px -5px rgba(13, 148, 136, 0.4);
+}
+
+body.dark-mode .btn-primary {
+    box-shadow: 0 8px 18px -8px rgba(20, 201, 123, 0.35);
+}
+
+body.dark-mode .btn-primary:hover {
+    box-shadow: 0 12px 22px -10px rgba(20, 201, 123, 0.4);
 }
 
 .btn-primary:active {
@@ -1309,6 +1317,15 @@ body.dark-mode .sidebar-header h2 {
     color: #22c55e;
 }
 
+.radio-card.active[data-type="investment"] {
+    border-color: #a855f7;
+    background: rgba(168, 85, 247, 0.08);
+}
+
+.radio-card.active[data-type="investment"] .label {
+    color: #a855f7;
+}
+
 .radio-card.active[data-type="expense"] .icon {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
@@ -1317,6 +1334,11 @@ body.dark-mode .sidebar-header h2 {
 .radio-card.active[data-type="income"] .icon {
     background: rgba(34, 197, 94, 0.1);
     color: #22c55e;
+}
+
+.radio-card.active[data-type="investment"] .icon {
+    background: rgba(168, 85, 247, 0.12);
+    color: #a855f7;
 }
 
 .radio-card .label {
