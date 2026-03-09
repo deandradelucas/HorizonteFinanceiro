@@ -1,5 +1,5 @@
-<template>
-  <div class="flex flex-col h-full w-full gap-6">
+﻿<template>
+  <div class="flex flex-col h-full w-full gap-6 text-slate-900">
     <div class="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-6">
       <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-5">
         <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
@@ -13,39 +13,39 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-3 mt-5">
-          <input v-model="filters.search" type="text" placeholder="Buscar texto ou telefone" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-          <select v-model="filters.status" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+          <input v-model="filters.search" type="text" placeholder="Buscar texto ou telefone" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+          <select v-model="filters.status" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
             <option value="">Todos os status</option>
             <option value="processed">Processadas</option>
             <option value="pending_confirmation">Pendente confirmação</option>
             <option value="needs_reformulation">Pedir reformulação</option>
             <option value="rejected">Rejeitadas</option>
-            <option value="unmatched_user">Sem usuário</option>
+            <option value="unmatched_user">Sem usuÃ¡rio</option>
           </select>
-          <select v-model="filters.type" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+          <select v-model="filters.type" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
             <option value="">Todos os tipos</option>
             <option value="expense">Despesa</option>
             <option value="income">Receita</option>
             <option value="investment">Investimento</option>
             <option value="query">Consulta</option>
           </select>
-          <select v-model="filters.confidenceBand" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+          <select v-model="filters.confidenceBand" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
             <option value="">Qualquer confiança</option>
             <option value="high">Alta</option>
-            <option value="medium">Média</option>
+            <option value="medium">MÃ©dia</option>
             <option value="low">Baixa</option>
           </select>
-          <input v-model="filters.phone" type="text" placeholder="Telefone" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-          <input v-model="filters.from" type="date" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-          <input v-model="filters.to" type="date" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+          <input v-model="filters.phone" type="text" placeholder="Telefone" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+          <input v-model="filters.from" type="date" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+          <input v-model="filters.to" type="date" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
         </div>
       </div>
 
       <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-5">
         <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide mb-3">Teste de envio</h3>
         <div class="space-y-3">
-          <input v-model="outbound.phone" type="text" placeholder="Telefone com DDI" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-          <textarea v-model="outbound.messageText" rows="4" placeholder="Mensagem de teste" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+          <input v-model="outbound.phone" type="text" placeholder="Telefone com DDI" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+          <textarea v-model="outbound.messageText" rows="4" placeholder="Mensagem de teste" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
           <button @click="sendTestMessage" :disabled="sendingOutbound" class="w-full px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition-colors disabled:opacity-50">
             <i :class="sendingOutbound ? 'fa-solid fa-spinner fa-spin mr-2' : 'fa-brands fa-whatsapp mr-2'"></i>
             Enviar mensagem
@@ -109,9 +109,9 @@
                   <div v-if="message.interpretation" class="space-y-2 text-sm text-slate-700">
                     <p><strong>Tipo:</strong> {{ typeLabel(message.interpretation.detected_type) }}</p>
                     <p><strong>Valor:</strong> {{ formatCurrency(message.interpretation.detected_amount) }}</p>
-                    <p><strong>Categoria:</strong> {{ message.interpretation.detected_category || '—' }}</p>
-                    <p><strong>Descrição:</strong> {{ message.interpretation.detected_description || '—' }}</p>
-                    <p><strong>Data:</strong> {{ message.interpretation.detected_date || '—' }}</p>
+                    <p><strong>Categoria:</strong> {{ message.interpretation.detected_category || 'â€”' }}</p>
+                    <p><strong>Descrição:</strong> {{ message.interpretation.detected_description || 'â€”' }}</p>
+                    <p><strong>Data:</strong> {{ message.interpretation.detected_date || 'â€”' }}</p>
                     <p><strong>Confiança:</strong> {{ formatConfidence(message.interpretation.confidence) }}</p>
                     <p><strong>Origem:</strong> {{ message.interpretation.used_ai ? 'IA' : 'Parser por regras' }}</p>
                   </div>
@@ -143,15 +143,15 @@
               </div>
 
               <div v-if="editingMessageId === message.id" class="rounded-xl border border-slate-200 p-4 space-y-3">
-                <select v-model="correction.type" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+                <select v-model="correction.type" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
                   <option value="expense">Despesa</option>
                   <option value="income">Receita</option>
                   <option value="investment">Investimento</option>
                 </select>
-                <input v-model="correction.amount" type="number" step="0.01" placeholder="Valor" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-                <input v-model="correction.category" type="text" placeholder="Categoria" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-                <input v-model="correction.description" type="text" placeholder="Descrição" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
-                <input v-model="correction.transaction_date" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+                <input v-model="correction.amount" type="number" step="0.01" placeholder="Valor" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+                <input v-model="correction.category" type="text" placeholder="Categoria" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+                <input v-model="correction.description" type="text" placeholder="Descrição" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
+                <input v-model="correction.transaction_date" type="date" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-primary">
                 <button @click="saveCorrection(message)" class="w-full px-3 py-2 rounded-lg bg-primary hover:bg-blue-700 text-white text-sm font-medium transition-colors">Salvar correção</button>
               </div>
             </div>
@@ -238,11 +238,20 @@ export default {
       return new Date(value).toLocaleString('pt-BR');
     },
     formatCurrency(value) {
-      if (value === null || value === undefined || value === '') return '—';
+      if (value === null || value === undefined || value === '') return 'â€”';
       return Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     },
     formatConfidence(value) {
       return `${Math.round((Number(value || 0) || 0) * 100)}%`;
+    },
+    deliveryStatusLabel(status) {
+      const map = {
+        sent: 'Enviado ao provedor',
+        skipped: 'Configuração do provedor ausente',
+        failed: 'Falha no provedor',
+        queued: 'Na fila de envio'
+      };
+      return map[status] || status || 'Status desconhecido';
     },
     statusLabel(status) {
       const map = {
@@ -250,7 +259,7 @@ export default {
         pending_confirmation: 'Pendente confirmação',
         needs_reformulation: 'Pedir reformulação',
         rejected: 'Rejeitada',
-        unmatched_user: 'Sem usuário',
+        unmatched_user: 'Sem usuÃ¡rio',
         unsupported_message: 'Não suportada'
       };
       return map[status] || status || 'Recebida';
@@ -353,7 +362,18 @@ export default {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Falha ao enviar mensagem.');
-        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `Envio registrado (${data.delivery_status})`, showConfirmButton: false, timer: 2600 });
+        const providerMessage =
+          data?.raw_payload?.message ||
+          data?.raw_payload?.error?.message ||
+          data?.raw_payload?.reason ||
+          '';
+
+        Swal.fire({
+          icon: data.delivery_status === 'failed' ? 'warning' : 'success',
+          title: this.deliveryStatusLabel(data.delivery_status),
+          text: providerMessage ? String(providerMessage) : 'A resposta do provedor foi registrada com sucesso.',
+          confirmButtonText: 'OK'
+        });
         this.outbound.messageText = '';
       } catch (error) {
         Swal.fire('Erro', error.message, 'error');
@@ -367,3 +387,5 @@ export default {
   }
 }
 </script>
+
+

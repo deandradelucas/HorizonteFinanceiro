@@ -273,6 +273,13 @@ const processSingleIncomingMessage = async (event) => {
 };
 
 const processWebhookPayload = async (payload) => {
+    await repository.logIntegrationEvent({
+        context: 'whatsapp_webhook_raw',
+        level: 'info',
+        message: 'Payload bruto recebido do provedor de WhatsApp.',
+        payload
+    });
+
     const events = provider.extractMessagesFromPayload(payload);
     const results = [];
 

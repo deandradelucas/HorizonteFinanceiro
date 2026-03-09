@@ -12,6 +12,24 @@ const requireSupabase = () => {
 
 const normalizePhone = (value) => String(value || '').replace(/\D+/g, '');
 
+const buildPhoneVariants = (value) => {
+    const normalized = normalizePhone(value);
+    const variants = new Set();
+    if (!normalized) return variants;
+
+    variants.add(normalized);
+
+    if (normalized.startsWith('55') && normalized.length > 11) {
+        variants.add(normalized.slice(2));
+    }
+
+    if (!normalized.startsWith('55') && normalized.length >= 10 && normalized.length <= 11) {
+        variants.add(`55${normalized}`);
+    }
+
+    return variants;
+};
+
 const toNullableNumber = (value) => {
     if (value === null || value === undefined || value === '') return null;
     const parsed = typeof value === 'number' ? value : parseFloat(value);
@@ -48,8 +66,8 @@ const normalizeInterpretationRow = (row) => ({
 
 const findUserByPhone = async (phone) => {
     const client = requireSupabase();
-    const normalizedPhone = normalizePhone(phone);
-    if (!normalizedPhone) return null;
+    const phoneVariants = buildPhoneVariants(phone);
+    if (phoneVariants.size === 0) return null;
 
     const { data, error } = await client
         .from('users')
@@ -58,7 +76,13 @@ const findUserByPhone = async (phone) => {
 
     if (error) throw error;
 
-    return (data || []).find((user) => normalizePhone(user.phone) === normalizedPhone) || null;
+    return (data || []).find((user) => {
+        const userVariants = buildPhoneVariants(user.phone);
+        for (const variant of userVariants) {
+            if (phoneVariants.has(variant)) return true;
+        }
+        return false;
+    }) || null;
 };
 
 const getIncomingMessageByProviderId = async (providerMessageId) => {
@@ -328,7 +352,13 @@ const listMessages = async (filters = {}) => {
 
     const [interpretationsResult, transactionsResult, usersResult] = await Promise.all([
         client.from('message_interpretations').select('*').in('incoming_message_id', incomingIds).order('created_at', { ascending: false }),
-        client.from('transactions').select('*').in('origin_message_id', incomingIds).order('created_at', { ascending: false }),
+        client
+            .from('transactions')
+            .select('*')
+            .in('origin_message_id', incomingIds)
+            .order('date', { ascending: false })
+            .order('updated_at', { ascending: false, nullsFirst: false })
+            .order('id', { ascending: false }),
         userIds.length
             ? client.from('users').select('id, name, email, phone').in('id', userIds)
             : Promise.resolve({ data: [], error: null })

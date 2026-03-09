@@ -9,39 +9,394 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .entry-shell,.scope-selector,.type-selector,.form-grid{display:grid;gap:16px}
-        .entry-shell{gap:24px}
-        .entry-form-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:28px;padding:28px;box-shadow:0 12px 32px rgba(15,23,42,.06)}
-        .scope-selector{grid-template-columns:repeat(2,minmax(0,1fr))}
-        .type-selector{grid-template-columns:repeat(3,minmax(0,1fr))}
-        .scope-card,.radio-card{position:relative;display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:20px;border:1px solid var(--border-color);background:var(--bg-color);cursor:pointer;transition:var(--transition)}
-        .scope-card input,.radio-card input{position:absolute;opacity:0;pointer-events:none}
-        .scope-icon,.radio-card .icon{width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0}
-        .scope-card .scope-text strong,.radio-card .label{color:var(--text-main);font-size:15px;font-weight:700}
-        .scope-card .scope-text span{display:block;margin-top:4px;color:var(--text-muted);font-size:12px}
-        .scope-card[data-scope="pf"] .scope-icon{background:linear-gradient(135deg,#0ea5e9,#2563eb)}
-        .scope-card[data-scope="pj"] .scope-icon{background:linear-gradient(135deg,#f59e0b,#ea580c)}
-        .red-icon{background:linear-gradient(135deg,#ef4444,#dc2626)} .green-icon{background:linear-gradient(135deg,#22c55e,#16a34a)} .purple-icon{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
-        .scope-card.active,.radio-card.active{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.08)}
-        .scope-card[data-scope="pf"].active{border-color:rgba(37,99,235,.42);box-shadow:0 0 0 1px rgba(37,99,235,.14),0 14px 28px rgba(37,99,235,.12)}
-        .scope-card[data-scope="pj"].active{border-color:rgba(234,88,12,.42);box-shadow:0 0 0 1px rgba(234,88,12,.14),0 14px 28px rgba(234,88,12,.12)}
-        .radio-card[data-type="expense"].active{border-color:rgba(239,68,68,.42)} .radio-card[data-type="income"].active{border-color:rgba(34,197,94,.32)} .radio-card[data-type="investment"].active{border-color:rgba(139,92,246,.38)}
-        .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-        .input-group{display:grid;gap:8px} .input-group label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
-        .input-field,.currency-field,.recurring-option,.context-banner{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:58px;border:1px solid var(--border-color);border-radius:18px;background:var(--bg-color);transition:var(--transition)}
-        .input-field input,.input-field select,.currency-field input{width:100%;border:0;outline:0;background:transparent;color:var(--text-main);font:inherit;min-height:54px}
-        .input-field i:first-child,.currency-prefix{color:var(--text-muted);flex-shrink:0} .currency-prefix{min-width:28px;text-align:center;font-weight:700;pointer-events:none}
-        .span-2{grid-column:span 2} .recurring-option{justify-content:flex-start;padding:16px 18px} .recurring-option input{accent-color:var(--primary-color);width:18px;height:18px;flex-shrink:0}
-        .recurring-text{display:flex;flex-direction:column;gap:4px} .recurring-text strong{color:var(--text-main);font-size:14px} .recurring-text span{color:var(--text-muted);font-size:13px}
-        .context-banner{justify-content:space-between;padding:18px 20px;margin-bottom:18px} .context-banner strong{color:var(--text-main);display:block;font-size:15px} .context-banner span{color:var(--text-muted);font-size:13px;display:block;margin-top:4px}
-        .context-pill{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent}
-        .entry-form-card[data-financial-scope="pf"] .context-banner{border-color:rgba(37,99,235,.24);background:rgba(37,99,235,.08)} .entry-form-card[data-financial-scope="pf"] .context-pill{background:rgba(37,99,235,.14);color:#2563eb;border-color:rgba(37,99,235,.18)}
-        .entry-form-card[data-financial-scope="pj"] .context-banner{border-color:rgba(234,88,12,.22);background:rgba(234,88,12,.08)} .entry-form-card[data-financial-scope="pj"] .context-pill{background:rgba(234,88,12,.14);color:#ea580c;border-color:rgba(234,88,12,.18)}
-        .entry-form-card[data-transaction-type="expense"] .input-field,.entry-form-card[data-transaction-type="expense"] .currency-field,.entry-form-card[data-transaction-type="expense"] .recurring-option{border-color:rgba(239,68,68,.34)} .entry-form-card[data-transaction-type="expense"] .input-field i:first-child,.entry-form-card[data-transaction-type="expense"] .currency-prefix{color:#ef4444}
-        .entry-form-card[data-transaction-type="income"] .input-field,.entry-form-card[data-transaction-type="income"] .currency-field,.entry-form-card[data-transaction-type="income"] .recurring-option{border-color:rgba(34,197,94,.22)} .entry-form-card[data-transaction-type="income"] .input-field i:first-child,.entry-form-card[data-transaction-type="income"] .currency-prefix{color:#22c55e}
-        .entry-form-card[data-transaction-type="investment"] .input-field,.entry-form-card[data-transaction-type="investment"] .currency-field,.entry-form-card[data-transaction-type="investment"] .recurring-option{border-color:rgba(139,92,246,.26)} .entry-form-card[data-transaction-type="investment"] .input-field i:first-child,.entry-form-card[data-transaction-type="investment"] .currency-prefix{color:#8b5cf6}
-        .form-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;flex-wrap:wrap} .custom-input-group[hidden]{display:none!important}
-        @media (max-width:900px){.scope-selector,.type-selector,.form-grid{grid-template-columns:1fr}.span-2{grid-column:span 1}.entry-form-card{padding:22px 18px}.context-banner{align-items:flex-start;flex-direction:column}.form-actions>*{width:100%}}
+        .entry-shell,
+        .scope-selector,
+        .type-selector,
+        .form-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .entry-shell {
+            gap: 28px;
+        }
+
+        .entry-form-card {
+            position: relative;
+            background: linear-gradient(180deg, rgba(7, 11, 18, 0.96), rgba(6, 10, 18, 0.92));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 26px 48px rgba(0, 0, 0, 0.28);
+            overflow: hidden;
+        }
+
+        .entry-form-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.03), transparent 28%);
+            pointer-events: none;
+        }
+
+        .entry-form-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .scope-selector {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .type-selector {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .scope-card,
+        .radio-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .scope-card:hover,
+        .radio-card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .scope-card input,
+        .radio-card input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scope-icon,
+        .radio-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+
+        .scope-card .scope-text strong,
+        .radio-card .label {
+            color: #f8fafc;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .scope-card .scope-text span {
+            display: block;
+            margin-top: 4px;
+            color: rgba(226, 232, 240, 0.68);
+            font-size: 12px;
+        }
+
+        .scope-card[data-scope="pf"] .scope-icon {
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+        }
+
+        .scope-card[data-scope="pj"] .scope-icon {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+        }
+
+        .red-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .green-icon {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .purple-icon {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .scope-card.active,
+        .radio-card.active {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 28px rgba(0, 0, 0, 0.2);
+        }
+
+        .scope-card[data-scope="pf"].active {
+            border-color: rgba(59, 130, 246, 0.34);
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.03));
+        }
+
+        .scope-card[data-scope="pj"].active {
+            border-color: rgba(249, 115, 22, 0.34);
+            background: linear-gradient(180deg, rgba(249, 115, 22, 0.08), rgba(249, 115, 22, 0.03));
+        }
+
+        .radio-card[data-type="expense"].active {
+            border-color: rgba(239, 68, 68, 0.28);
+            background: linear-gradient(180deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.03));
+        }
+
+        .radio-card[data-type="income"].active {
+            border-color: rgba(34, 197, 94, 0.24);
+            background: linear-gradient(180deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.03));
+        }
+
+        .radio-card[data-type="investment"].active {
+            border-color: rgba(139, 92, 246, 0.26);
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.03));
+        }
+
+        .form-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px 18px;
+            margin-top: 6px;
+        }
+
+        .input-group {
+            display: grid;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: rgba(148, 163, 184, 0.92);
+        }
+
+        .input-field,
+        .currency-field,
+        .recurring-option,
+        .context-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 18px;
+            min-height: 62px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: var(--transition);
+        }
+
+        .input-field:focus-within,
+        .currency-field:focus-within {
+            border-color: rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .input-field input,
+        .input-field select,
+        .currency-field input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #f8fafc;
+            font: inherit;
+            min-height: 58px;
+        }
+
+        .input-field select {
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .input-field i:first-child,
+        .currency-prefix {
+            color: rgba(226, 232, 240, 0.72);
+            flex-shrink: 0;
+        }
+
+        .currency-prefix {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        .span-2 {
+            grid-column: span 2;
+        }
+
+        .recurring-option {
+            justify-content: flex-start;
+            padding: 18px 20px;
+            align-items: flex-start;
+        }
+
+        .recurring-option input {
+            accent-color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .recurring-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .recurring-text strong {
+            color: #f8fafc;
+            font-size: 14px;
+            letter-spacing: -0.02em;
+        }
+
+        .recurring-text span {
+            color: rgba(148, 163, 184, 0.92);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .context-banner {
+            justify-content: space-between;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+        }
+
+        .context-banner strong {
+            color: #f8fafc;
+            display: block;
+            font-size: 18px;
+            letter-spacing: -0.03em;
+        }
+
+        .context-banner span {
+            color: rgba(148, 163, 184, 0.92);
+            font-size: 14px;
+            display: block;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .context-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .entry-form-card[data-financial-scope="pf"] .context-banner {
+            border-color: rgba(59, 130, 246, 0.22);
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.03));
+        }
+
+        .entry-form-card[data-financial-scope="pf"] .context-pill {
+            background: rgba(37, 99, 235, 0.14);
+            color: #60a5fa;
+            border-color: rgba(37, 99, 235, 0.18);
+        }
+
+        .entry-form-card[data-financial-scope="pj"] .context-banner {
+            border-color: rgba(249, 115, 22, 0.22);
+            background: linear-gradient(180deg, rgba(249, 115, 22, 0.08), rgba(249, 115, 22, 0.03));
+        }
+
+        .entry-form-card[data-financial-scope="pj"] .context-pill {
+            background: rgba(249, 115, 22, 0.14);
+            color: #fb923c;
+            border-color: rgba(249, 115, 22, 0.18);
+        }
+
+        .entry-form-card[data-transaction-type="expense"] .input-field,
+        .entry-form-card[data-transaction-type="expense"] .currency-field,
+        .entry-form-card[data-transaction-type="expense"] .recurring-option {
+            border-color: rgba(239, 68, 68, 0.24);
+        }
+
+        .entry-form-card[data-transaction-type="expense"] .input-field i:first-child,
+        .entry-form-card[data-transaction-type="expense"] .currency-prefix {
+            color: #f87171;
+        }
+
+        .entry-form-card[data-transaction-type="income"] .input-field,
+        .entry-form-card[data-transaction-type="income"] .currency-field,
+        .entry-form-card[data-transaction-type="income"] .recurring-option {
+            border-color: rgba(34, 197, 94, 0.2);
+        }
+
+        .entry-form-card[data-transaction-type="income"] .input-field i:first-child,
+        .entry-form-card[data-transaction-type="income"] .currency-prefix {
+            color: #4ade80;
+        }
+
+        .entry-form-card[data-transaction-type="investment"] .input-field,
+        .entry-form-card[data-transaction-type="investment"] .currency-field,
+        .entry-form-card[data-transaction-type="investment"] .recurring-option {
+            border-color: rgba(139, 92, 246, 0.22);
+        }
+
+        .entry-form-card[data-transaction-type="investment"] .input-field i:first-child,
+        .entry-form-card[data-transaction-type="investment"] .currency-prefix {
+            color: #a78bfa;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .form-actions .btn-primary,
+        .form-actions .btn-secondary {
+            min-width: 168px;
+        }
+
+        .custom-input-group[hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 900px) {
+            .scope-selector,
+            .type-selector,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .span-2 {
+                grid-column: span 1;
+            }
+
+            .entry-form-card {
+                padding: 22px 18px;
+                border-radius: 24px;
+            }
+
+            .context-banner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-actions > * {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body class="dashboard-body">
