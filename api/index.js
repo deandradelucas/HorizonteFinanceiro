@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const path = require('path');
 const db = require('./db');
 const createWhatsAppRouter = require('./routes/whatsapp');
+const createBillingRouter = require('./routes/billing');
 
 const app = express();
 const SESSION_COOKIE_NAME = 'hf_session';
@@ -133,6 +134,10 @@ const normalizeTransactionType = (type) => {
     if (type === 'investment' || type === 'investimento') return 'investment';
     return type;
 };
+const normalizeFinancialScope = (scope) => {
+    if (scope === 'pj' || scope === 'cnpj' || scope === 'business' || scope === 'empresa') return 'pj';
+    return 'pf';
+};
 
 const validateTransactionPayload = (payload = {}) => {
     const type = normalizeTransactionType(payload.type);
@@ -140,6 +145,7 @@ const validateTransactionPayload = (payload = {}) => {
     const category = String(payload.category || '').trim();
     const date = String(payload.date || '').trim();
     const value = safeNumber(payload.value, NaN);
+    const financialScope = normalizeFinancialScope(payload.financialScope);
 
     if (!['income', 'expense', 'investment'].includes(type)) return { error: 'Tipo de transação inválido.' };
     if (!description) return { error: 'Descrição é obrigatória.' };
@@ -154,7 +160,35 @@ const validateTransactionPayload = (payload = {}) => {
             category,
             date,
             value,
-            isRecurring: Boolean(payload.isRecurring)
+            isRecurring: Boolean(payload.isRecurring),
+            financialScope
+        }
+    };
+};
+
+const validateBusinessProfilePayload = (payload = {}) => {
+    const companyName = String(payload.companyName || '').trim();
+    const tradeName = String(payload.tradeName || '').trim();
+    const cnpj = String(payload.cnpj || '').replace(/\D+/g, '');
+    const taxRegime = String(payload.taxRegime || '').trim();
+    const businessEmail = normalizeEmail(payload.businessEmail || '');
+    const businessPhone = normalizePhone(payload.businessPhone || '');
+    const notes = String(payload.notes || '').trim();
+
+    if (!companyName) return { error: 'Razão social é obrigatória.' };
+    if (cnpj && cnpj.length !== 14) return { error: 'CNPJ inválido.' };
+    if (businessEmail && !isValidEmail(businessEmail)) return { error: 'E-mail empresarial inválido.' };
+    if (businessPhone && businessPhone.length < 10) return { error: 'Telefone empresarial inválido.' };
+
+    return {
+        value: {
+            company_name: companyName,
+            trade_name: tradeName || null,
+            cnpj: cnpj || null,
+            tax_regime: taxRegime || null,
+            business_email: businessEmail || null,
+            business_phone: businessPhone || null,
+            notes: notes || null
         }
     };
 };
@@ -220,14 +254,70 @@ const getUserByEmail = async (email) => {
     return data;
 };
 
+const getUserByPhone = async (phone) => {
+    const normalizedPhone = normalizePhone(phone);
+    if (!normalizedPhone) return null;
+
+    const client = requireSupabase();
+    const { data, error } = await client
+        .from('users')
+        .select('id, name, email, phone, role, is_active')
+        .eq('phone', normalizedPhone)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+};
+
 const getUserById = async (userId) => {
     const client = requireSupabase();
     const { data, error } = await client
         .from('users')
-        .select('id, name, email, phone, darkmode, role, is_active, last_login, created_at, updated_at')
+        .select('id, name, email, phone, darkmode, role, is_active, last_login, created_at, updated_at, billing_exempt, subscription_status, subscription_plan_code, subscription_payment_method, subscription_next_due_date, billing_provider, asaas_customer_id, subscription_id')
         .eq('id', userId)
         .maybeSingle();
 
+    if (error) throw error;
+    return data;
+};
+
+const getBusinessProfileByUserId = async (userId) => {
+    const client = requireSupabase();
+    const { data, error } = await client
+        .from('business_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+};
+
+const saveBusinessProfile = async (userId, payload) => {
+    const client = requireSupabase();
+    const existing = await getBusinessProfileByUserId(userId);
+    const record = {
+        user_id: userId,
+        ...payload,
+        updated_at: new Date().toISOString()
+    };
+
+    if (existing) {
+        const { data, error } = await client
+            .from('business_profiles')
+            .update(record)
+            .eq('id', existing.id)
+            .select('*')
+            .maybeSingle();
+        if (error) throw error;
+        return data;
+    }
+
+    const { data, error } = await client
+        .from('business_profiles')
+        .insert({ ...record, created_at: new Date().toISOString() })
+        .select('*')
+        .maybeSingle();
     if (error) throw error;
     return data;
 };
@@ -239,6 +329,10 @@ const sanitizeUser = (user) => ({
     phone: user.phone || null,
     role: user.role || 'user',
     is_active: user.is_active !== false,
+    billing_exempt: user.billing_exempt === true,
+    subscription_status: user.subscription_status || 'inactive',
+    subscription_next_due_date: user.subscription_next_due_date || null,
+    subscription_payment_method: user.subscription_payment_method || null,
     last_login: user.last_login || null,
     created_at: user.created_at || null,
     updated_at: user.updated_at || null
@@ -383,6 +477,83 @@ app.post('/api/logout', (req, res) => {
     res.json({ message: 'Sessão encerrada com sucesso.' });
 });
 
+app.get('/api/me', authenticate, async (req, res, next) => {
+    try {
+        const user = await getUserById(req.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        res.json({
+            ...sanitizeUser(user),
+            darkMode: user.darkmode || 'disabled'
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/api/user/profile', authenticate, async (req, res, next) => {
+    try {
+        const name = String(req.body?.name || '').trim();
+        const rawPhone = String(req.body?.phone || '').trim();
+        const phone = rawPhone ? rawPhone.replace(/\D/g, '') : null;
+
+        if (!name) {
+            return res.status(400).json({ error: 'Nome é obrigatório.' });
+        }
+
+        if (phone && phone.length < 10) {
+            return res.status(400).json({ error: 'Telefone inválido.' });
+        }
+
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .update({
+                name,
+                phone,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', req.userId)
+            .select('id, name, email, phone, darkmode, role, is_active, last_login, created_at, updated_at, billing_exempt, subscription_status, subscription_payment_method, subscription_next_due_date')
+            .maybeSingle();
+
+        if (error) throw error;
+        if (!data) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        res.json({
+            ...sanitizeUser(data),
+            darkMode: data.darkmode || 'disabled'
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/business-profile', authenticate, async (req, res, next) => {
+    try {
+        const profile = await getBusinessProfileByUserId(req.userId);
+        res.json(profile || null);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/api/business-profile', authenticate, async (req, res, next) => {
+    try {
+        const parsed = validateBusinessProfilePayload(req.body);
+        if (parsed.error) return res.status(400).json({ error: parsed.error });
+
+        const profile = await saveBusinessProfile(req.userId, parsed.value);
+        res.json(profile);
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.put('/api/user/preferences', authenticate, async (req, res, next) => {
     try {
         const darkMode = req.body?.darkMode;
@@ -399,11 +570,21 @@ app.put('/api/user/preferences', authenticate, async (req, res, next) => {
 
 app.get('/api/transactions', authenticate, async (req, res, next) => {
     try {
+        const financialScope = req.query.scope === 'all' ? 'all' : normalizeFinancialScope(req.query.scope);
         const transactions = await db.transactions.allAsync(
             'SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC, id DESC',
             [req.userId]
         );
-        res.json(transactions.map((item) => ({ ...item, value: safeNumber(item.value), type: normalizeTransactionType(item.type) })));
+        const filtered = financialScope === 'all'
+            ? transactions
+            : transactions.filter((item) => normalizeFinancialScope(item.financial_scope) === financialScope);
+
+        res.json(filtered.map((item) => ({
+            ...item,
+            value: safeNumber(item.value),
+            type: normalizeTransactionType(item.type),
+            financial_scope: normalizeFinancialScope(item.financial_scope)
+        })));
     } catch (error) {
         next(error);
     }
@@ -414,10 +595,10 @@ app.post('/api/transactions', authenticate, async (req, res, next) => {
         const parsed = validateTransactionPayload(req.body);
         if (parsed.error) return res.status(400).json({ error: parsed.error });
 
-        const { type, description, value, category, date, isRecurring } = parsed.value;
+        const { type, description, value, category, date, isRecurring, financialScope } = parsed.value;
         const result = await db.transactions.query(
-            'INSERT INTO transactions (user_id, type, description, value, category, date, isRecurring) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [req.userId, type, description, value, category, date, isRecurring ? 1 : 0]
+            'INSERT INTO transactions (user_id, type, description, value, category, date, isRecurring, financial_scope) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [req.userId, type, description, value, category, date, isRecurring ? 1 : 0, financialScope]
         );
         res.status(201).json({ id: result.id, message: 'Transação salva com sucesso!' });
     } catch (error) {
@@ -433,7 +614,12 @@ app.get('/api/transactions/:id', authenticate, async (req, res, next) => {
         );
 
         if (!transaction) return res.status(404).json({ error: 'Transação não encontrada.' });
-        res.json({ ...transaction, value: safeNumber(transaction.value), type: normalizeTransactionType(transaction.type) });
+        res.json({
+            ...transaction,
+            value: safeNumber(transaction.value),
+            type: normalizeTransactionType(transaction.type),
+            financial_scope: normalizeFinancialScope(transaction.financial_scope)
+        });
     } catch (error) {
         next(error);
     }
@@ -444,10 +630,10 @@ app.put('/api/transactions/:id', authenticate, async (req, res, next) => {
         const parsed = validateTransactionPayload(req.body);
         if (parsed.error) return res.status(400).json({ error: parsed.error });
 
-        const { type, description, value, category, date, isRecurring } = parsed.value;
+        const { type, description, value, category, date, isRecurring, financialScope } = parsed.value;
         await db.transactions.query(
-            'UPDATE transactions SET type = ?, description = ?, value = ?, category = ?, date = ?, isRecurring = ? WHERE id = ? AND user_id = ?',
-            [type, description, value, category, date, isRecurring ? 1 : 0, req.params.id, req.userId]
+            'UPDATE transactions SET type = ?, description = ?, value = ?, category = ?, date = ?, isRecurring = ?, financial_scope = ? WHERE id = ? AND user_id = ?',
+            [type, description, value, category, date, isRecurring ? 1 : 0, financialScope, req.params.id, req.userId]
         );
         res.json({ message: 'Transação atualizada com sucesso!' });
     } catch (error) {
@@ -464,6 +650,45 @@ app.delete('/api/transactions/:id', authenticate, async (req, res, next) => {
     }
 });
 
+app.get('/api/transaction-catalog', authenticate, async (req, res, next) => {
+    try {
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('transaction_catalogs')
+            .select('financial_scope, transaction_type, category, subcategory, sort_order')
+            .order('sort_order', { ascending: true })
+            .order('category', { ascending: true })
+            .order('subcategory', { ascending: true });
+
+        if (error) throw error;
+
+        const catalog = {
+            pf: { expense: [], income: [], investment: [] },
+            pj: { expense: [], income: [], investment: [] }
+        };
+
+        (data || []).forEach((item) => {
+            const scope = normalizeFinancialScope(item.financial_scope);
+            const type = normalizeTransactionType(item.transaction_type);
+            if (!catalog[scope] || !catalog[scope][type]) return;
+
+            let categoryRecord = catalog[scope][type].find((entry) => entry.category === item.category);
+            if (!categoryRecord) {
+                categoryRecord = { category: item.category, subcategories: [] };
+                catalog[scope][type].push(categoryRecord);
+            }
+
+            if (!categoryRecord.subcategories.includes(item.subcategory)) {
+                categoryRecord.subcategories.push(item.subcategory);
+            }
+        });
+
+        res.json(catalog);
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.get('/api/transactions/catalog', authenticate, async (req, res, next) => {
     try {
         const transactions = await db.transactions.allAsync(
@@ -475,6 +700,9 @@ app.get('/api/transactions/catalog', authenticate, async (req, res, next) => {
         transactions.forEach((transaction) => {
             const type = normalizeTransactionType(transaction.type);
             if (!catalog[type]) return;
+            if (req.query.scope && req.query.scope !== 'all' && normalizeFinancialScope(transaction.financial_scope) !== normalizeFinancialScope(req.query.scope)) {
+                return;
+            }
 
             const category = String(transaction.category || '').trim();
             const subcategory = String(transaction.description || '').trim();
@@ -670,7 +898,7 @@ app.get('/api/admin/users', authenticate, requireSuperAdmin, async (req, res, ne
         const client = requireSupabase();
         const { data, error } = await client
             .from('users')
-            .select('id, name, email, phone, role, is_active, last_login, created_at, updated_at')
+            .select('id, name, email, phone, role, is_active, billing_exempt, subscription_status, subscription_next_due_date, subscription_payment_method, last_login, created_at, updated_at')
             .order('created_at', { ascending: false });
         if (error) throw error;
         res.json((data || []).map(sanitizeUser));
@@ -686,18 +914,32 @@ app.post('/api/admin/users', authenticate, requireSuperAdmin, async (req, res, n
         const phone = normalizePhone(req.body?.phone);
         const password = String(req.body?.password || '');
         const role = ['super_admin', 'admin', 'user'].includes(req.body?.role) ? req.body.role : 'user';
+        const billingExempt = req.body?.billing_exempt === true || role === 'super_admin';
 
         if (!isValidEmail(email)) return res.status(400).json({ error: 'E-mail inválido.' });
         if (password.length < 8) return res.status(400).json({ error: 'A senha deve ter pelo menos 8 caracteres.' });
         if (phone && phone.length < 10) return res.status(400).json({ error: 'Telefone inválido.' });
         if (await getUserByEmail(email)) return res.status(400).json({ error: 'E-mail já cadastrado.' });
+        if (phone && await getUserByPhone(phone)) return res.status(400).json({ error: 'Telefone já cadastrado.' });
 
         const passwordHash = hashPassword(password);
         const client = requireSupabase();
         const { data, error } = await client
             .from('users')
-            .insert({ name, email, phone: phone || null, role, is_active: true, password: passwordHash, password_hash: passwordHash })
-            .select('id, name, email, phone, role, is_active, last_login, created_at, updated_at')
+            .insert({
+                name,
+                email,
+                phone: phone || null,
+                role,
+                is_active: true,
+                billing_exempt: billingExempt,
+                subscription_status: billingExempt ? 'active' : 'inactive',
+                subscription_plan_code: billingExempt ? 'super_admin_override' : null,
+                subscription_payment_method: billingExempt ? 'free' : null,
+                password: passwordHash,
+                password_hash: passwordHash
+            })
+            .select('id, name, email, phone, role, is_active, billing_exempt, subscription_status, subscription_next_due_date, subscription_payment_method, last_login, created_at, updated_at')
             .single();
         if (error) throw error;
 
@@ -714,25 +956,46 @@ app.put('/api/admin/users/:id/role', authenticate, requireSuperAdmin, async (req
 
         const role = ['super_admin', 'admin', 'user'].includes(req.body?.role) ? req.body.role : null;
         const is_active = typeof req.body?.is_active === 'boolean' ? req.body.is_active : undefined;
+        const billing_exempt = typeof req.body?.billing_exempt === 'boolean' ? req.body.billing_exempt : undefined;
         const name = Object.prototype.hasOwnProperty.call(req.body || {}, 'name') ? String(req.body?.name || '').trim() : undefined;
         const phone = Object.prototype.hasOwnProperty.call(req.body || {}, 'phone') ? normalizePhone(req.body?.phone) : undefined;
         if (!role) return res.status(400).json({ error: 'Role inválida.' });
         if (phone && phone.length < 10) return res.status(400).json({ error: 'Telefone inválido.' });
+        if (phone) {
+            const existingPhoneUser = await getUserByPhone(phone);
+            if (existingPhoneUser && existingPhoneUser.id !== targetId) {
+                return res.status(400).json({ error: 'Telefone já cadastrado.' });
+            }
+        }
         if (targetId === req.currentUser.id && role !== 'super_admin') {
             return res.status(400).json({ error: 'O super admin atual não pode remover o próprio acesso.' });
         }
 
         const patch = { role };
         if (typeof is_active === 'boolean') patch.is_active = is_active;
+        if (typeof billing_exempt === 'boolean') patch.billing_exempt = billing_exempt;
         if (name !== undefined) patch.name = name;
         if (phone !== undefined) patch.phone = phone || null;
+        if (role === 'super_admin') {
+            patch.billing_exempt = true;
+            patch.subscription_status = 'active';
+            patch.subscription_plan_code = 'super_admin_free';
+            patch.subscription_payment_method = 'free';
+        } else if (billing_exempt === true) {
+            patch.subscription_status = 'active';
+            patch.subscription_plan_code = 'super_admin_override';
+            patch.subscription_payment_method = 'free';
+        } else if (billing_exempt === false) {
+            patch.subscription_payment_method = req.body?.subscription_payment_method || 'pix';
+            patch.subscription_plan_code = null;
+        }
 
         const client = requireSupabase();
         const { data, error } = await client
             .from('users')
             .update(patch)
             .eq('id', targetId)
-            .select('id, name, email, phone, role, is_active, last_login, created_at, updated_at')
+            .select('id, name, email, phone, role, is_active, billing_exempt, subscription_status, subscription_next_due_date, subscription_payment_method, last_login, created_at, updated_at')
             .single();
         if (error) throw error;
 
@@ -766,6 +1029,67 @@ app.post('/api/admin/users/:id/unblock', authenticate, requireSuperAdmin, async 
         const { error } = await client.from('users').update({ is_active: true }).eq('id', targetId);
         if (error) throw error;
         res.json({ message: 'Usuário desbloqueado com sucesso.' });
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/api/admin/users/:id/billing', authenticate, requireSuperAdmin, async (req, res, next) => {
+    try {
+        const targetId = parseInt(req.params.id, 10);
+        if (!Number.isFinite(targetId)) return res.status(400).json({ error: 'Usuário inválido.' });
+
+        const nextDueDateRaw = req.body?.subscription_next_due_date;
+        const patch = {};
+
+        if (typeof req.body?.billing_exempt === 'boolean') patch.billing_exempt = req.body.billing_exempt;
+
+        if (req.body?.subscription_status) {
+            const allowed = ['inactive', 'pending', 'checkout_pending', 'active', 'past_due', 'cancelled'];
+            if (!allowed.includes(req.body.subscription_status)) {
+                return res.status(400).json({ error: 'Status de assinatura inválido.' });
+            }
+            patch.subscription_status = req.body.subscription_status;
+        }
+
+        if (req.body?.subscription_payment_method) {
+            const allowedMethods = ['pix', 'credit_card', 'free'];
+            if (!allowedMethods.includes(req.body.subscription_payment_method)) {
+                return res.status(400).json({ error: 'Método de pagamento inválido.' });
+            }
+            patch.subscription_payment_method = req.body.subscription_payment_method;
+        }
+
+        if (nextDueDateRaw !== undefined) {
+            const nextDueDate = String(nextDueDateRaw || '').trim();
+            if (nextDueDate && !isValidIsoDate(nextDueDate)) {
+                return res.status(400).json({ error: 'Data de vencimento inválida.' });
+            }
+            patch.subscription_next_due_date = nextDueDate || null;
+        }
+
+        if (patch.billing_exempt === true) {
+            patch.subscription_status = 'active';
+            patch.subscription_plan_code = 'super_admin_override';
+            patch.subscription_payment_method = patch.subscription_payment_method || 'free';
+        }
+
+        if (Object.keys(patch).length === 0) {
+            return res.status(400).json({ error: 'Nenhuma alteração de cobrança foi enviada.' });
+        }
+
+        patch.updated_at = new Date().toISOString();
+
+        const client = requireSupabase();
+        const { data, error } = await client
+            .from('users')
+            .update(patch)
+            .eq('id', targetId)
+            .select('id, name, email, phone, role, is_active, billing_exempt, subscription_status, subscription_next_due_date, subscription_payment_method, last_login, created_at, updated_at')
+            .single();
+        if (error) throw error;
+
+        res.json(sanitizeUser(data));
     } catch (error) {
         next(error);
     }
@@ -940,6 +1264,16 @@ app.post('/api/admin/ai-execute', authenticate, requireSuperAdmin, async (req, r
             return res.json({ action: 'Desbloqueio', message: `${matchedUser.email} foi desbloqueado.` });
         }
 
+        if (/(isentar cobranca|isentar cobrança|liberar cobranca|liberar cobrança|free)/.test(normalizedPrompt)) {
+            await client.from('users').update({
+                billing_exempt: true,
+                subscription_status: 'active',
+                subscription_payment_method: 'free',
+                updated_at: new Date().toISOString()
+            }).eq('id', matchedUser.id);
+            return res.json({ action: 'Cobrança liberada', message: `${matchedUser.email} ficou isento de cobrança.` });
+        }
+
         if (/(super admin|promover.*super_admin|promover.*super admin)/.test(normalizedPrompt)) {
             await client.from('users').update({ role: 'super_admin' }).eq('id', matchedUser.id);
             return res.json({ action: 'Role Atualizada', message: `${matchedUser.email} agora é super admin.` });
@@ -961,6 +1295,7 @@ app.post('/api/admin/ai-execute', authenticate, requireSuperAdmin, async (req, r
     }
 });
 
+app.use('/api', createBillingRouter({ authenticate, getUserById }));
 app.use('/api', createWhatsAppRouter({ authenticate, requireSuperAdmin }));
 
 app.use((error, req, res, next) => {

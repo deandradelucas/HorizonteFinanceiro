@@ -62,7 +62,8 @@ function createSupabaseProxy(table) {
                         value: params[3],
                         category: params[4],
                         date: params[5],
-                        isrecurring: params[6] === 1
+                        isrecurring: params[6] === 1,
+                        financial_scope: params[7] || 'pf'
                     })
                     .select()
                     .single();
@@ -79,10 +80,11 @@ function createSupabaseProxy(table) {
                         value: params[2],
                         category: params[3],
                         date: params[4],
-                        isrecurring: params[5] === 1
+                        isrecurring: params[5] === 1,
+                        financial_scope: params[6] || 'pf'
                     })
-                    .eq('id', params[6])
-                    .eq('user_id', params[7]);
+                    .eq('id', params[7])
+                    .eq('user_id', params[8]);
                 if (error) throw error;
                 return { changes: 1 };
             }

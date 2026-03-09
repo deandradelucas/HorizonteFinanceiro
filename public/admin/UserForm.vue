@@ -59,6 +59,14 @@
             >
           </div>
 
+          <div class="pt-1">
+            <label class="flex items-center cursor-pointer gap-2">
+              <input type="checkbox" v-model="formData.billing_exempt" class="w-4 h-4 text-primary bg-slate-100 border-slate-300 rounded focus:ring-primary">
+              <span class="text-sm font-medium text-slate-700">Usuário isento de cobrança</span>
+            </label>
+            <p class="text-xs text-slate-500 mt-1 pl-6">Se marcado, a assinatura fica ativa sem cobrança.</p>
+          </div>
+
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Nível de acesso</label>
             <select v-model="formData.role" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-primary">
@@ -106,6 +114,7 @@ export default {
         name: '',
         phone: '',
         password: '',
+        billing_exempt: false,
         role: 'user',
         is_active: true
       },
@@ -170,6 +179,7 @@ export default {
         email: this.user.email,
         name: this.user.name || '',
         phone: this.user.phone || '',
+        billing_exempt: this.user.billing_exempt === true,
         role: this.user.role,
         is_active: this.user.is_active
       };

@@ -320,16 +320,11 @@ const listMessages = async (filters = {}) => {
     const { data: incomingMessages, error: incomingError } = await query;
     if (incomingError) throw incomingError;
 
-    const filteredIncoming = (incomingMessages || []).filter((item) => {
-        if (!filters.search) return true;
-        const term = String(filters.search).trim().toLowerCase();
-        return String(item.message_text || '').toLowerCase().includes(term) || String(item.phone || '').includes(term);
-    });
+    const baseIncoming = incomingMessages || [];
+    if (baseIncoming.length === 0) return [];
 
-    if (filteredIncoming.length === 0) return [];
-
-    const incomingIds = filteredIncoming.map((item) => item.id);
-    const userIds = [...new Set(filteredIncoming.map((item) => item.user_id).filter(Boolean))];
+    const incomingIds = baseIncoming.map((item) => item.id);
+    const userIds = [...new Set(baseIncoming.map((item) => item.user_id).filter(Boolean))];
 
     const [interpretationsResult, transactionsResult, usersResult] = await Promise.all([
         client.from('message_interpretations').select('*').in('incoming_message_id', incomingIds).order('created_at', { ascending: false }),
@@ -359,12 +354,22 @@ const listMessages = async (filters = {}) => {
         }
     });
 
-    return filteredIncoming.map((message) => ({
+    const rows = baseIncoming.map((message) => ({
         ...message,
         user: message.user_id ? userMap.get(message.user_id) || null : null,
         interpretation: interpretationMap.get(message.id) || null,
         transaction: transactionMap.get(message.id) || null
     }));
+
+    if (!filters.search) return rows;
+
+    const term = String(filters.search).trim().toLowerCase();
+    return rows.filter((row) => (
+        String(row.message_text || '').toLowerCase().includes(term) ||
+        String(row.phone || '').includes(term) ||
+        String(row.user?.email || '').toLowerCase().includes(term) ||
+        String(row.user?.name || '').toLowerCase().includes(term)
+    ));
 };
 
 const getMessageDetails = async (messageId) => {

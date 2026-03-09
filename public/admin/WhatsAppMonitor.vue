@@ -12,7 +12,7 @@
           </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3 mt-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-3 mt-5">
           <input v-model="filters.search" type="text" placeholder="Buscar texto ou telefone" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
           <select v-model="filters.status" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
             <option value="">Todos os status</option>
@@ -21,6 +21,19 @@
             <option value="needs_reformulation">Pedir reformulação</option>
             <option value="rejected">Rejeitadas</option>
             <option value="unmatched_user">Sem usuário</option>
+          </select>
+          <select v-model="filters.type" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+            <option value="">Todos os tipos</option>
+            <option value="expense">Despesa</option>
+            <option value="income">Receita</option>
+            <option value="investment">Investimento</option>
+            <option value="query">Consulta</option>
+          </select>
+          <select v-model="filters.confidenceBand" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
+            <option value="">Qualquer confiança</option>
+            <option value="high">Alta</option>
+            <option value="medium">Média</option>
+            <option value="low">Baixa</option>
           </select>
           <input v-model="filters.phone" type="text" placeholder="Telefone" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
           <input v-model="filters.from" type="date" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary">
@@ -160,6 +173,8 @@ export default {
       filters: {
         search: '',
         status: '',
+        type: '',
+        confidenceBand: '',
         phone: '',
         from: '',
         to: ''
@@ -202,7 +217,16 @@ export default {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Falha ao carregar mensagens.');
-        this.messages = data;
+        this.messages = data.filter((item) => {
+          const detectedType = item.interpretation?.detected_type || '';
+          const confidence = Number(item.interpretation?.confidence || 0);
+          const matchesType = !this.filters.type || detectedType === this.filters.type;
+          const matchesConfidence = !this.filters.confidenceBand ||
+            (this.filters.confidenceBand === 'high' && confidence >= 0.85) ||
+            (this.filters.confidenceBand === 'medium' && confidence >= 0.6 && confidence < 0.85) ||
+            (this.filters.confidenceBand === 'low' && confidence < 0.6);
+          return matchesType && matchesConfidence;
+        });
       } catch (error) {
         Swal.fire('Erro', error.message, 'error');
       } finally {

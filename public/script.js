@@ -1,16 +1,26 @@
 ﻿// ============================================================
 // LEGEND: Este script pertence ao "Horizonte Financeiro"
 // LEGEND (PT): Script principal do frontend.
-//   - LÃ³gica de cadastro de usuÃ¡rio (formulÃ¡rio + validaÃ§Ã£o de senha)
-//   - LÃ³gica de login (autenticaÃ§Ã£o + "lembrar e-mail")
-//   - Registro de transaÃ§Ãµes (receitas/despesas)
+//   - Lógica de cadastro de usuário (formulário + validação de senha)
+//   - Lógica de login (autenticação + "lembrar e-mail")
+//   - Registro de transações (receitas/despesas)
 //   - Carregamento do dashboard (cards de resumo + tabela)
-//   - Modo escuro (toggle + sincronizaÃ§Ã£o com o servidor)
+//   - Modo escuro (toggle + sincronização com o servidor)
 //   - Menu mobile (sidebar responsiva)
 //   - Registro do Service Worker (PWA)
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     const BASE_PATH = '';
+    const applyStoredTheme = () => {
+        const siteTheme = localStorage.getItem('siteTheme') || 'default';
+        if (siteTheme === 'default') {
+            document.body.removeAttribute('data-theme');
+        } else {
+            document.body.dataset.theme = siteTheme;
+        }
+    };
+
+    applyStoredTheme();
 
     // --- DISPLAY CURRENT DATE ---
     const dateDisplay = document.getElementById('currentDateDisplay');
@@ -22,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
         dateDisplay.innerHTML = `<i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${formattedDate}`;
     }
 
-    // --- PERMISSÃ•ES GLOBAIS DE UI ---
-    // Checa se o usuÃ¡rio logado Ã© Super Admin e injeta o botÃ£o em qualquer pÃ¡gina que tenha o sidebar
+    // --- PERMISSÕES GLOBAIS DE UI ---
+    // Checa se o usuário logado é Super Admin e injeta o botão em qualquer página que tenha o sidebar
     const globalUserRole = localStorage.getItem('userRole');
     if (globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
         const nav = document.querySelector('.sidebar-nav');
@@ -37,6 +47,41 @@ document.addEventListener('DOMContentLoaded', () => {
             adminLink.className = "nav-item admin-portal-btn";
             adminLink.innerHTML = '<i class="fa-solid fa-shield-halved"></i><span>Painel Admin</span>';
             nav.appendChild(adminLink);
+        }
+    }
+
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (sidebarNav) {
+        const businessLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
+            .find((item) => (item.getAttribute('href') || '') === '/cnpj');
+        const investmentsLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
+            .find((item) => (item.getAttribute('href') || '') === '/investments');
+
+        if (!businessLink && investmentsLink) {
+            const cnpjLink = document.createElement('a');
+            cnpjLink.href = '/cnpj';
+            cnpjLink.className = 'nav-item';
+            cnpjLink.innerHTML = '<i class="fa-solid fa-building"></i> CNPJ';
+            if (window.location.pathname === '/cnpj' || window.location.pathname === '/cnpj.html') {
+                cnpjLink.classList.add('active');
+            }
+            investmentsLink.insertAdjacentElement('afterend', cnpjLink);
+        }
+
+        const pfLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
+            .find((item) => (item.getAttribute('href') || '') === '/transactions');
+        if (pfLink) {
+            pfLink.innerHTML = '<i class="fa-solid fa-user"></i> PF';
+        }
+
+        const billingLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
+            .find((item) => (item.getAttribute('href') || '') === '/billing');
+        const configPlaceholder = Array.from(sidebarNav.querySelectorAll('.nav-item'))
+            .find((item) => (item.getAttribute('href') || '') === '#');
+
+        if (!billingLink && configPlaceholder) {
+            configPlaceholder.setAttribute('href', '/billing');
+            configPlaceholder.innerHTML = '<i class="fa-solid fa-credit-card"></i> Assinatura';
         }
     }
 
@@ -60,10 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Nota: A inicializaÃ§Ã£o do modo escuro Ã© tratada via scripts inline nos arquivos HTML para evitar o "flash" de cor clara.
+    // Nota: A inicialização do modo escuro é tratada via scripts inline nos arquivos HTML para evitar o "flash" de cor clara.
 
-    // --- LÃ“GICA DE CADASTRO ---
-    // Gerencia o formulÃ¡rio de criaÃ§Ã£o de nova conta e validaÃ§Ã£o de forÃ§a de senha
+    // --- LÓGICA DE CADASTRO ---
+    // Gerencia o formulário de criação de nova conta e validação de força de senha
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     const form = document.getElementById('registerForm');
@@ -120,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             if (password !== confirmPassword) {
-                alert('As senhas nÃ£o coincidem. Por favor, verifique.');
+                alert('As senhas não coincidem. Por favor, verifique.');
                 return;
             }
 
@@ -152,15 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro na conexÃ£o com o servidor.');
+                alert('Erro na conexão com o servidor.');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         });
     }
 
-    // --- LÃ“GICA DE LOGIN ---
-    // Gerencia a autenticaÃ§Ã£o do usuÃ¡rio e a funcionalidade "Lembrar-me"
+    // --- LÓGICA DE LOGIN ---
+    // Gerencia a autenticação do usuário e a funcionalidade "Lembrar-me"
     const toggleLoginPassword = document.getElementById('toggleLoginPassword');
     const loginPasswordInput = document.getElementById('loginPassword');
     const loginForm = document.getElementById('loginForm');
@@ -243,15 +288,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro na conexÃ£o com o servidor.');
+                alert('Erro na conexão com o servidor.');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         });
     }
 
-    // --- LÃ“GICA DE REGISTRO DE ITEM (DASHBOARD) ---
-    // Gerencia a adiÃ§Ã£o de novas receitas e despesas
+    // --- LÓGICA DE REGISTRO DE ITEM (DASHBOARD) ---
+    // Gerencia a adição de novas receitas e despesas
     const radioCards = document.querySelectorAll('.radio-card');
     if (radioCards.length > 0) {
         radioCards.forEach(card => {
@@ -274,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
             btn.disabled = true;
 
-            // Pegar os valores do formulÃ¡rio
+            // Pegar os valores do formulário
             const typeInput = document.querySelector('input[name="transactionType"]:checked');
             const type = typeInput ? typeInput.value : 'expense';
             const descriptionField = document.getElementById('itemDescription');
@@ -287,6 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const category = categoryField ? categoryField.value : '';
             const date = document.getElementById('itemDate').value;
             const isRecurring = document.getElementById('itemRecurring') ? document.getElementById('itemRecurring').checked : false;
+            const financialScopeField = document.getElementById('financialScope');
+            const financialScope = financialScopeField ? financialScopeField.value : 'pf';
 
             const parsedValue = parseFloat(
                 String(valueRaw || '')
@@ -303,7 +350,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 value: Number.isFinite(parsedValue) ? parsedValue : 0,
                 category,
                 date,
-                isRecurring
+                isRecurring,
+                financialScope
             };
 
             try {
@@ -331,14 +379,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         btn.innerHTML = originalText;
                         btn.style.background = '';
                         btn.disabled = false;
-                        window.location.href = `${BASE_PATH}/dashboard`;
+                        window.location.href = financialScope === 'pj' ? `${BASE_PATH}/cnpj` : `${BASE_PATH}/dashboard`;
                     }, 1000);
                 } else {
                     throw new Error('Falha ao salvar no servidor');
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao salvar transaÃ§Ã£o. Tente novamente.');
+                alert('Erro ao salvar transação. Tente novamente.');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
@@ -346,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- CARREGAR DADOS NO DASHBOARD ---
-    // Busca transaÃ§Ãµes do servidor e calcula resumo (Saldo, Receitas, Despesas)
+    // Busca transações do servidor e calcula resumo (Saldo, Receitas, Despesas)
     const dashboardCards = document.querySelector('.summary-cards');
     if (dashboardCards) {
         const toSafeNumber = (value, fallback = 0) => {
@@ -382,16 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: 'Cards de saldo, receitas, despesas e economia.'
             },
             'category-chart': {
-                title: 'Categorias do mÃªs',
-                description: 'Ranking de gastos por categoria no mÃªs atual.'
+                title: 'Categorias do mês',
+                description: 'Ranking de gastos por categoria no mês atual.'
             },
             'subcategory-chart': {
-                title: 'Subcategorias do mÃªs',
-                description: 'Ranking de gastos por subcategoria no mÃªs atual.'
+                title: 'Subcategorias do mês',
+                description: 'Ranking de gastos por subcategoria no mês atual.'
             },
             recent: {
-                title: 'TransaÃ§Ãµes recentes',
-                description: 'Lista rÃ¡pida das Ãºltimas movimentaÃ§Ãµes.'
+                title: 'Transações recentes',
+                description: 'Lista rápida das últimas movimentações.'
             }
         };
 
@@ -561,20 +609,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Atualizar saudaÃ§Ã£o e checar permissÃ£o Super Admin
+                // Atualizar saudação e checar permissão Super Admin
                 const welcomeEl = document.getElementById('userWelcome');
                 if (welcomeEl && userName) {
-                    welcomeEl.textContent = `Bem-vindo(a), ${userName}! Aqui estÃ¡ o resumo das suas finanÃ§as.`;
+                    welcomeEl.textContent = `Bem-vindo(a), ${userName}! Aqui está o resumo das suas finanças.`;
                 }
 
-                // Carregar TransaÃ§Ãµes e Metas em paralelo
-                const [transactionsRes, goalsRes] = await Promise.all([
+                const billingStatusPill = document.getElementById('billingStatusPill');
+                const renderBillingStatus = (billing) => {
+                    if (!billingStatusPill || !billing || !billing.user) return;
+
+                    const billingUser = billing.user;
+                    let text = 'Assinatura inativa';
+                    let statusClass = 'inactive';
+
+                    if (billingUser.billing_exempt) {
+                        text = 'Isento de cobrança';
+                        statusClass = 'exempt';
+                    } else if (billingUser.subscription_status === 'active') {
+                        text = billingUser.subscription_next_due_date
+                            ? `Vence em ${new Date(`${billingUser.subscription_next_due_date}T12:00:00`).toLocaleDateString('pt-BR')}`
+                            : 'Assinatura ativa';
+                        statusClass = 'active';
+                    } else if (billingUser.subscription_status === 'pending' || billingUser.subscription_status === 'checkout_pending') {
+                        text = 'Assinatura pendente';
+                        statusClass = 'pending';
+                    } else if (billingUser.subscription_status === 'past_due') {
+                        text = 'Cobrança em atraso';
+                        statusClass = 'past_due';
+                    } else if (billingUser.subscription_status === 'cancelled') {
+                        text = 'Assinatura cancelada';
+                    }
+
+                    billingStatusPill.textContent = text;
+                    billingStatusPill.className = `dashboard-status-pill ${statusClass}`;
+                    billingStatusPill.hidden = false;
+                };
+
+                // Carregar Transações, Metas e Cobrança em paralelo
+                const [transactionsRes, goalsRes, billingRes] = await Promise.all([
                     fetch(`${BASE_PATH}/api/transactions`, { headers: { 'user-id': userId } }),
-                    fetch(`${BASE_PATH}/api/goals`, { headers: { 'user-id': userId } })
+                    fetch(`${BASE_PATH}/api/goals`, { headers: { 'user-id': userId } }),
+                    fetch(`${BASE_PATH}/api/billing/me`, { headers: { 'user-id': userId } })
                 ]);
 
                 const transactions = await transactionsRes.json();
                 const goals = await goalsRes.json();
+                const billing = billingRes.ok ? await billingRes.json() : null;
+                renderBillingStatus(billing);
                 const now = new Date();
                 const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
                 const currentMonthLabel = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
@@ -672,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const goalContainer = document.getElementById('mainGoalContainer');
                 if (goalContainer && goals.length > 0) {
                     goalContainer.style.display = 'block'; // Make it visible
-                    // Pegar a meta com maior progresso que ainda nÃ£o terminou, ou a primeira
+                    // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
                     const goalsWithActualProgress = goals.map(g => {
                         const isAutomatic = g.category === 'objetivo_financeiro';
                         const targetValue = toSafeNumber(g.targetvalue);
@@ -708,27 +790,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Frases Motivacionais baseadas no progresso
                     const phrases = {
                         start: [
-                            "O primeiro passo Ã© sempre o mais importante! ðŸš€",
-                            "Toda grande jornada comeÃ§a com uma pequena economia.",
+                            "O primeiro passo é sempre o mais importante!",
+                            "Toda grande jornada começa com uma pequena economia.",
                             "Mantenha o foco, o seu futuro agradece!",
-                            "Cada passo conta! Continue economizando e vocÃª vai chegar lÃ¡!"
+                            "Cada passo conta! Continue economizando e você vai chegar lá!"
                         ],
                         middle: [
-                            "VocÃª estÃ¡ no caminho certo! Continue firme. ðŸ’ª",
-                            "Mais da metade jÃ¡ foi! O sucesso estÃ¡ logo ali.",
-                            "Sua disciplina estÃ¡ dando frutos, parabÃ©ns!",
-                            "Continue economizando e vocÃª vai chegar lÃ¡!"
+                            "Você está no caminho certo! Continue firme.",
+                            "Mais da metade já foi! O sucesso está logo ali.",
+                            "Sua disciplina está dando frutos, parabéns!",
+                            "Continue economizando e você vai chegar lá!"
                         ],
                         end: [
-                            "Quase lÃ¡! SÃ³ mais um pouco de esforÃ§o. âœ¨",
-                            "A linha de chegada estÃ¡ Ã  vista! NÃ£o pare agora.",
-                            "VocÃª Ã© uma inspiraÃ§Ã£o na gestÃ£o financeira!",
-                            "Cada passo conta! VocÃª vai chegar lÃ¡!"
+                            "Quase lá! Só mais um pouco de esforço.",
+                            "A linha de chegada está à vista! Não pare agora.",
+                            "Você é uma inspiração na gestão financeira!",
+                            "Cada passo conta! Você vai chegar lá!"
                         ],
                         complete: [
-                            "PARABÃ‰NS! VocÃª conquistou seu objetivo! ðŸ†",
-                            "Meta batida! Hora de celebrar e planejar a prÃ³xima.",
-                            "IncrÃ­vel! VocÃª provou que com foco tudo Ã© possÃ­vel."
+                            "PARABÉNS! Você conquistou seu objetivo!",
+                            "Meta batida! Hora de celebrar e planejar a próxima.",
+                            "Incrível! Você provou que com foco tudo é possível."
                         ]
                     };
 
@@ -741,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const randomPhrase = selectedPhrases[Math.floor(Math.random() * selectedPhrases.length)];
                     document.getElementById('motivationPhrase').textContent = `"${randomPhrase}"`;
 
-                    // --- LÃ³gica da Trilha de Marcos ---
+                    // --- Lógica da Trilha de Marcos ---
                     const milestoneTrack = document.getElementById('milestoneTrack');
                     if (milestoneTrack) {
                         const milestones = [
@@ -767,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (currentMoney >= m.val) {
                                 step.classList.add('achieved');
                             } else {
-                                // Primeiro marco nÃ£o alcanÃ§ado Ã© o 'current' (prÃ³ximo objetivo)
+                                // Primeiro marco não alcançado é o 'current' (próximo objetivo)
                                 const isNext = milestones.find(ms => currentMoney < ms.val) === m;
                                 if (isNext) step.classList.add('current');
                             }
@@ -793,8 +875,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <tr>
                                 <td colspan="2" style="text-align: center; padding: 40px; color: var(--text-muted);">
                                     <div style="font-size: 32px; margin-bottom: 12px;"><i class="fa-solid fa-receipt"></i></div>
-                                    <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma transaÃ§Ã£o encontrada</h3>
-                                    <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo LanÃ§amento" para adicionar sua primeira transaÃ§Ã£o.</p>
+                                    <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma transação encontrada</h3>
+                                    <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo Lançamento" para adicionar sua primeira transação.</p>
                                 </td>
                             </tr>
                         `;
@@ -845,12 +927,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- MODO ESCURO ---
-    // Alterna o tema visual e sincroniza a preferÃªncia com o servidor
+    // Alterna o tema visual e sincroniza a preferência com o servidor
     const darkModeBtn = document.getElementById('darkModeToggle');
     const body = document.body;
 
     if (darkModeBtn) {
-        // Atualizar Ã­cone inicial se jÃ¡ estiver dark
+        // Atualizar ícone inicial se já estiver dark
         if (body.classList.contains('dark-mode')) {
             darkModeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
         }
@@ -891,7 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sidebar.classList.toggle('active');
         });
 
-        // Fechar ao clicar em um link (Ãºtil no mobile)
+        // Fechar ao clicar em um link (útil no mobile)
         const navLinks = sidebar.querySelectorAll('.nav-item');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {

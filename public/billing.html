@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinatura - Horizonte Financeiro</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .billing-shell,.billing-grid,.billing-stats,.billing-actions{display:grid;gap:20px}
+        .billing-shell{gap:28px}
+        .billing-grid{grid-template-columns:1.2fr .8fr}
+        .billing-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+        .billing-card,.billing-panel,.billing-payment-item,.billing-history-empty{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-lg)}
+        .billing-card,.billing-panel{padding:28px}
+        .billing-card h3,.billing-panel h3{margin-bottom:6px}
+        .billing-kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+        .billing-price{font-size:38px;font-weight:800;letter-spacing:-.04em;margin:12px 0 8px}
+        .billing-feature-list{display:grid;gap:12px;margin-top:18px}
+        .billing-feature-list li{list-style:none;display:flex;align-items:flex-start;gap:10px;color:var(--text-main)}
+        .billing-feature-list i{color:#38bdf8;margin-top:2px}
+        .billing-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700}
+        .billing-badge.active{background:rgba(20,201,123,.12);color:#14c97b;border:1px solid rgba(20,201,123,.18)}
+        .billing-badge.pending{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.18)}
+        .billing-badge.inactive{background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.18)}
+        .billing-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .billing-action-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
+        .billing-meta{display:grid;gap:10px;margin-top:18px}
+        .billing-meta-row{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--border-color)}
+        .billing-meta-row:last-child{border-bottom:none;padding-bottom:0}
+        .billing-qr{display:grid;gap:16px;justify-items:center;padding-top:16px}
+        .billing-qr img{width:min(100%,260px);border-radius:20px;border:1px solid var(--border-color);background:#fff;padding:14px}
+        .billing-copy{width:100%;min-height:110px;padding:14px 16px;border-radius:18px;border:1px solid var(--border-color);background:var(--bg-color);color:var(--text-main);resize:vertical}
+        .billing-payment-list{display:grid;gap:14px}
+        .billing-payment-item{padding:20px 22px}
+        .billing-payment-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+        .billing-payment-head strong{font-size:15px}
+        .billing-payment-meta{display:flex;flex-wrap:wrap;gap:8px;color:var(--text-muted);font-size:13px}
+        .billing-history-empty{padding:30px;text-align:center;color:var(--text-muted)}
+        @media (max-width: 1080px){.billing-grid{grid-template-columns:1fr}.billing-stats{grid-template-columns:1fr 1fr}}
+        @media (max-width: 720px){.billing-stats,.billing-actions{grid-template-columns:1fr}.billing-card,.billing-panel{padding:18px}.billing-price{font-size:32px}}
+    </style>
+</head>
+<body class="dashboard-body">
+    <script>
+        const siteTheme = localStorage.getItem('siteTheme');
+        if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    </script>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
+            <h2>Horizonte Financeiro</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
+            <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+            <a href="/billing" class="nav-item active"><i class="fa-solid fa-credit-card"></i> Assinatura</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <div class="search-bar">
+                <i class="fa-solid fa-crown"></i>
+                <input type="text" value="Gestão de assinatura mensal" readonly>
+            </div>
+            <div class="user-profile" style="display:flex;align-items:center;">
+                <span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span>
+                <button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="dashboard-content billing-shell">
+            <div class="page-header">
+                <div>
+                    <h1>Assinatura</h1>
+                    <p class="subtitle" style="margin-bottom:0;">Gerencie seu plano mensal, cobrança por Pix ou cartão e histórico de pagamentos.</p>
+                </div>
+            </div>
+
+            <section class="billing-stats">
+                <div class="billing-card">
+                    <div class="billing-kicker">Status</div>
+                    <div id="billingStatusBadge" class="billing-badge inactive">Carregando</div>
+                </div>
+                <div class="billing-card">
+                    <div class="billing-kicker">Próximo vencimento</div>
+                    <div id="billingNextDue" class="billing-price" style="font-size:26px;">—</div>
+                </div>
+                <div class="billing-card">
+                    <div class="billing-kicker">Forma de pagamento</div>
+                    <div id="billingMethod" class="billing-price" style="font-size:26px;">—</div>
+                </div>
+            </section>
+
+            <section class="billing-grid">
+                <div class="billing-card">
+                    <div class="billing-kicker">Plano disponível</div>
+                    <h3 id="planName">Plano mensal</h3>
+                    <div id="planPrice" class="billing-price">R$ 29,90</div>
+                    <p id="planDescription" class="subtitle" style="margin-bottom:0;">Acesso mensal com cobrança recorrente e integração financeira.</p>
+
+                    <ul class="billing-feature-list">
+                        <li><i class="fa-solid fa-check"></i><span>Lançamentos, metas, histórico e investimentos</span></li>
+                        <li><i class="fa-solid fa-check"></i><span>Automação financeira por WhatsApp</span></li>
+                        <li><i class="fa-solid fa-check"></i><span>Cobrança mensal por Pix ou cartão</span></li>
+                    </ul>
+
+                    <div class="billing-actions" style="margin-top:22px;">
+                        <button id="subscribePixBtn" class="btn-primary billing-action-btn"><i class="fa-solid fa-qrcode"></i> Assinar com Pix</button>
+                        <button id="subscribeCardBtn" class="btn-secondary billing-action-btn"><i class="fa-solid fa-credit-card"></i> Assinar com cartão</button>
+                    </div>
+
+                    <div id="billingExemptNotice" class="billing-panel" style="display:none;margin-top:20px;background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.18);">
+                        <div class="billing-kicker" style="color:#8b5cf6;">Acesso liberado</div>
+                        <h3 style="margin-top:8px;">Super admin isento de cobrança</h3>
+                        <p class="subtitle" style="margin:8px 0 0;">Sua conta fica ativa sem cobrança mensal por causa do papel administrativo.</p>
+                    </div>
+                </div>
+
+                <div class="billing-panel">
+                    <div class="billing-kicker">Cobrança atual</div>
+                    <h3>Pix e checkout</h3>
+                    <div id="billingMeta" class="billing-meta"></div>
+                    <div id="pixArea" class="billing-qr" style="display:none;">
+                        <img id="pixQrImage" alt="QR Code Pix">
+                        <textarea id="pixPayload" class="billing-copy" readonly></textarea>
+                        <div class="billing-actions" style="width:100%;">
+                            <button id="copyPixBtn" class="btn-secondary billing-action-btn"><i class="fa-regular fa-copy"></i> Copiar código Pix</button>
+                            <a id="invoiceLink" href="#" target="_blank" rel="noopener" class="btn-primary billing-action-btn" style="text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir cobrança</a>
+                        </div>
+                    </div>
+                    <div id="checkoutArea" class="billing-actions" style="display:none;margin-top:18px;grid-template-columns:1fr;">
+                        <a id="checkoutLink" href="#" target="_blank" rel="noopener" class="btn-primary billing-action-btn" style="text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir checkout recorrente</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="billing-panel">
+                <div class="billing-kicker">Histórico</div>
+                <h3>Pagamentos recentes</h3>
+                <div id="paymentList" class="billing-payment-list" style="margin-top:18px;"></div>
+                <div id="paymentEmpty" class="billing-history-empty" style="display:none;">Nenhum pagamento registrado ainda.</div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/script.js"></script>
+    <script>
+        const billingState = {
+            snapshot: null,
+            activePlan: null
+        };
+
+        const formatCurrency = (value) => Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const formatDate = (value) => value ? new Date(`${value}T12:00:00`).toLocaleDateString('pt-BR') : '—';
+        const statusLabel = (status) => ({
+            active: 'Ativa',
+            pending: 'Pendente',
+            checkout_pending: 'Aguardando checkout',
+            past_due: 'Em atraso',
+            cancelled: 'Cancelada',
+            inactive: 'Inativa'
+        }[status] || status || 'Inativa');
+
+        function updateStatusBadge(status) {
+            const badge = document.getElementById('billingStatusBadge');
+            badge.textContent = statusLabel(status);
+            badge.className = `billing-badge ${status === 'active' ? 'active' : status === 'pending' || status === 'checkout_pending' ? 'pending' : 'inactive'}`;
+        }
+
+        function renderPayments(payments) {
+            const list = document.getElementById('paymentList');
+            const empty = document.getElementById('paymentEmpty');
+            if (!payments || !payments.length) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = payments.map((payment) => `
+                <article class="billing-payment-item">
+                    <div class="billing-payment-head">
+                        <strong>${formatCurrency(payment.amount)}</strong>
+                        <span class="billing-badge ${['RECEIVED','CONFIRMED','RECEIVED_IN_CASH'].includes(payment.status) ? 'active' : ['PENDING'].includes(payment.status) ? 'pending' : 'inactive'}">${payment.status}</span>
+                    </div>
+                    <div class="billing-payment-meta">
+                        <span>Vencimento: ${formatDate(payment.due_date)}</span>
+                        <span>Método: ${payment.billing_type || '—'}</span>
+                        ${payment.invoice_url ? `<a href="${payment.invoice_url}" target="_blank" rel="noopener">Abrir cobrança</a>` : ''}
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function renderBillingMeta(snapshot) {
+            const meta = document.getElementById('billingMeta');
+            meta.innerHTML = `
+                <div class="billing-meta-row"><span>Plano</span><strong>${snapshot.user.subscription_plan_code || billingState.activePlan?.name || 'Plano mensal'}</strong></div>
+                <div class="billing-meta-row"><span>Status</span><strong>${statusLabel(snapshot.user.subscription_status)}</strong></div>
+                <div class="billing-meta-row"><span>Próximo vencimento</span><strong>${formatDate(snapshot.user.subscription_next_due_date)}</strong></div>
+            `;
+        }
+
+        function clearPaymentArtifacts() {
+            document.getElementById('pixArea').style.display = 'none';
+            document.getElementById('checkoutArea').style.display = 'none';
+        }
+
+        function renderCurrentCharge(snapshot) {
+            clearPaymentArtifacts();
+            const subscription = snapshot.subscription;
+            if (!subscription) return;
+
+            if (subscription.payment_method === 'pix' && (subscription.pix_encoded_image || subscription.invoice_url)) {
+                document.getElementById('pixArea').style.display = 'grid';
+                document.getElementById('pixQrImage').src = subscription.pix_encoded_image || '';
+                document.getElementById('pixPayload').value = subscription.pix_payload || '';
+                document.getElementById('invoiceLink').href = subscription.invoice_url || '#';
+            }
+
+            if (subscription.payment_method === 'credit_card' && subscription.checkout_url) {
+                document.getElementById('checkoutArea').style.display = 'grid';
+                document.getElementById('checkoutLink').href = subscription.checkout_url;
+            }
+        }
+
+        async function loadBilling() {
+            const userId = sessionStorage.getItem('userId');
+            const response = await fetch('/api/billing/me', { headers: { 'user-id': userId } });
+            const snapshot = await response.json();
+            if (!response.ok) throw new Error(snapshot.error || 'Não foi possível carregar sua assinatura.');
+
+            billingState.snapshot = snapshot;
+            billingState.activePlan = (snapshot.plans || [])[0] || null;
+
+            if (billingState.activePlan) {
+                document.getElementById('planName').textContent = billingState.activePlan.name;
+                document.getElementById('planPrice').textContent = formatCurrency(billingState.activePlan.amount);
+                document.getElementById('planDescription').textContent = billingState.activePlan.description || 'Plano mensal ativo.';
+            }
+
+            updateStatusBadge(snapshot.user.subscription_status);
+            document.getElementById('billingNextDue').textContent = formatDate(snapshot.user.subscription_next_due_date);
+            document.getElementById('billingMethod').textContent = snapshot.user.subscription_payment_method === 'credit_card' ? 'Cartão' : snapshot.user.subscription_payment_method === 'pix' ? 'Pix' : snapshot.user.billing_exempt ? 'Isento' : '—';
+            renderBillingMeta(snapshot);
+            renderPayments(snapshot.payments || []);
+            renderCurrentCharge(snapshot);
+
+            const exempt = snapshot.user.billing_exempt === true || snapshot.user.role === 'super_admin';
+            document.getElementById('billingExemptNotice').style.display = exempt ? 'block' : 'none';
+            document.getElementById('subscribePixBtn').disabled = exempt;
+            document.getElementById('subscribeCardBtn').disabled = exempt;
+        }
+
+        async function subscribe(paymentMethod) {
+            const userId = sessionStorage.getItem('userId');
+            const response = await fetch('/api/billing/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-id': userId
+                },
+                body: JSON.stringify({
+                    planCode: billingState.activePlan?.code || 'pro_monthly',
+                    paymentMethod
+                })
+            });
+
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.error || 'Não foi possível iniciar a assinatura.');
+
+            if (payload.checkoutUrl) {
+                window.open(payload.checkoutUrl, '_blank', 'noopener');
+            }
+
+            if (paymentMethod === 'pix') {
+                if (payload.pixQrCode?.encodedImage) {
+                    document.getElementById('pixArea').style.display = 'grid';
+                    document.getElementById('pixQrImage').src = payload.pixQrCode.encodedImage;
+                    document.getElementById('pixPayload').value = payload.pixQrCode.payload || '';
+                    document.getElementById('invoiceLink').href = payload.invoiceUrl || '#';
+                }
+            }
+
+            await loadBilling();
+        }
+
+        document.getElementById('subscribePixBtn').addEventListener('click', async () => {
+            try {
+                await subscribe('pix');
+                alert('Cobrança Pix criada. Pague o QR Code para ativar sua assinatura.');
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        document.getElementById('subscribeCardBtn').addEventListener('click', async () => {
+            try {
+                await subscribe('credit_card');
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        document.getElementById('copyPixBtn').addEventListener('click', async () => {
+            const payload = document.getElementById('pixPayload').value;
+            if (!payload) return;
+            await navigator.clipboard.writeText(payload);
+            alert('Código Pix copiado.');
+        });
+
+        loadBilling().catch((error) => {
+            console.error(error);
+            alert(error.message || 'Erro ao carregar assinatura.');
+        });
+    </script>
+</body>
+</html>

@@ -1,21 +1,33 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transações - Horizonte Financeiro</title>
+    <title>PF - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .pf-panel{display:grid;gap:24px}
+        .pf-actions{display:flex;gap:12px;flex-wrap:wrap}
+        .pf-actions .btn-action-alt{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 18px;min-height:48px;border-radius:14px;border:1px solid rgba(245,158,11,.24);background:rgba(245,158,11,.08);color:#b45309;font-weight:700;text-decoration:none;transition:var(--transition);box-shadow:var(--shadow-xs)}
+        .pf-actions .btn-action-alt:hover{transform:translateY(-1px);background:rgba(245,158,11,.14)}
+        .pf-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+        .pf-stat{padding:22px;border-radius:var(--radius-lg);border:1px solid var(--border-color);background:var(--card-bg);box-shadow:var(--shadow-sm)}
+        .pf-stat span{display:block;color:var(--text-muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+        .pf-stat strong{color:var(--text-main);font-size:28px;line-height:1}
+        .pf-stat p{margin-top:8px;color:var(--text-muted);font-size:13px}
+        .pf-empty{text-align:center;padding:44px 24px;color:var(--text-muted)}
+        @media (max-width:900px){.pf-summary{grid-template-columns:1fr}.pf-actions{width:100%}.pf-actions a{flex:1 1 100%}}
+    </style>
 </head>
-
 <body class="dashboard-body">
     <script>
+        const siteTheme = localStorage.getItem('siteTheme');
+        if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
@@ -24,48 +36,61 @@
         <nav class="sidebar-nav">
             <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
             <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-            <a href="/horizontefinanceiro/transactions" class="nav-item active"><i
-                    class="fa-solid fa-arrow-right-arrow-left"></i>
-                Transações</a>
-            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>
-                Histórico</a>
+            <a href="/cnpj" class="nav-item"><i class="fa-solid fa-building"></i> CNPJ</a>
+            <a href="/transactions" class="nav-item active"><i class="fa-solid fa-user"></i> PF</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
             <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
         </nav>
         <div class="sidebar-footer">
             <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
         </div>
     </aside>
-
-    <!-- Main Content -->
     <main class="main-content">
         <header class="topbar">
-            <button id="mobileMenuBtn" class="mobile-menu-btn">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Filtrar histórico...">
+                <input id="pfSearchInput" type="text" placeholder="Filtrar lançamentos PF...">
             </div>
-            <div class="user-profile" style="display: flex; align-items: center;">
-                <span id="currentDateDisplay" class="date-display"
-                    style="margin-right: 15px; font-weight: 500; color: var(--text-muted); font-size: 14px; display: flex; align-items: center;"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
+            <div class="user-profile" style="display:flex;align-items:center;">
+                <span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span>
+                <button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
             </div>
         </header>
-
-        <div class="dashboard-content">
+        <div class="dashboard-content pf-panel">
             <div class="page-header">
                 <div>
-                    <h1>Histórico de Transações</h1>
-                    <p class="subtitle">Veja todas as suas movimentações financeiras aqui.</p>
+                    <h1>Pessoa Física</h1>
+                    <p class="subtitle">Centralize os lançamentos da sua rotina pessoal sem misturar com o financeiro do CNPJ.</p>
                 </div>
-                <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
-                    Lançamento</a>
+                <div class="page-header-actions">
+                    <div class="context-switcher" aria-label="Alternar entre PF e CNPJ">
+                        <a href="/transactions" class="context-switch-link active"><i class="fa-solid fa-user"></i> Pessoa Física</a>
+                        <a href="/cnpj" class="context-switch-link pj"><i class="fa-solid fa-building"></i> CNPJ</a>
+                    </div>
+                    <div class="pf-actions">
+                        <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo Lançamento PF</a>
+                    </div>
+                </div>
             </div>
-
+            <section class="pf-summary">
+                <article class="pf-stat">
+                    <span>Receitas do mês</span>
+                    <strong id="pfIncomeMonth">R$ 0,00</strong>
+                    <p>Total recebido na pessoa física no mês atual.</p>
+                </article>
+                <article class="pf-stat">
+                    <span>Despesas do mês</span>
+                    <strong id="pfExpenseMonth">R$ 0,00</strong>
+                    <p>Total gasto na pessoa física no mês atual.</p>
+                </article>
+                <article class="pf-stat">
+                    <span>Saldo do mês</span>
+                    <strong id="pfBalanceMonth">R$ 0,00</strong>
+                    <p>Resultado líquido do seu fluxo pessoal.</p>
+                </article>
+            </section>
             <div class="recent-transactions">
                 <div class="table-container">
                     <table class="data-table">
@@ -74,13 +99,11 @@
                                 <th>Descrição</th>
                                 <th class="hide-mobile">Categoria</th>
                                 <th class="hide-mobile">Data</th>
-                                <th style="text-align: right;">Valor</th>
-                                <th style="text-align: center; width: 100px;">Ações</th>
+                                <th style="text-align:right;">Valor</th>
+                                <th style="text-align:center; width:100px;">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="fullTransactionsBody">
-                            <!-- Preenchido via JS -->
-                        </tbody>
+                        <tbody id="fullTransactionsBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -88,9 +111,11 @@
     </main>
     <script src="script.js"></script>
     <script>
-        // Função global para excluir transação
+        const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(value || 0));
+        const normalizeText = (value) => String(value || '').trim().toLowerCase();
+
         async function deleteTransaction(id) {
-            if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
+            if (!confirm('Tem certeza que deseja excluir este lançamento PF?')) return;
 
             const userId = sessionStorage.getItem('userId');
             try {
@@ -98,95 +123,127 @@
                     method: 'DELETE',
                     headers: { 'user-id': userId }
                 });
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert('Erro ao excluir transação.');
+
+                if (!response.ok) {
+                    alert('Erro ao excluir lançamento.');
+                    return;
                 }
+
+                window.location.reload();
             } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro na conexão.');
+                console.error('Erro ao excluir lançamento:', error);
+                alert('Erro na conexão com o servidor.');
             }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const userId = sessionStorage.getItem('userId');
-            const userName = sessionStorage.getItem('userName');
-
-            // Proteção de rota
             if (!userId) {
                 window.location.href = '/login';
                 return;
             }
 
             const tbody = document.getElementById('fullTransactionsBody');
-            if (tbody) {
-                try {
-                    const response = await fetch('/api/transactions', {
-                        headers: {
-                            'user-id': userId
-                        }
-                    });
-                    const transactions = await response.json();
+            const searchInput = document.getElementById('pfSearchInput');
+            const incomeMonth = document.getElementById('pfIncomeMonth');
+            const expenseMonth = document.getElementById('pfExpenseMonth');
+            const balanceMonth = document.getElementById('pfBalanceMonth');
+            const currentMonthKey = new Date().toISOString().slice(0, 7);
+            let pfTransactions = [];
 
-                    tbody.innerHTML = '';
+            const renderTable = (items) => {
+                tbody.innerHTML = '';
 
-                    if (transactions.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px;">Nenhuma transação cadastrada.</td></tr>';
-                    } else {
-                        transactions.forEach(t => {
-                            const tr = document.createElement('tr');
-                            const isIncome = t.type === 'income';
-                            const iconBg = isIncome ? 'green-bg' : 'red-bg';
-                            const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
-
-                            const formatMoney = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
-                            const valueText = isIncome ? `+ ${formatMoney(t.value)}` : `- ${formatMoney(t.value)}`;
-
-                            let tagClass = 'tag-blue';
-                            if (t.category === 'alimentacao') tagClass = 'tag-orange';
-                            if (t.category === 'contas') tagClass = 'tag-purple';
-
-                            const dateObj = new Date(t.date);
-                            dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset());
-                            const formattedDate = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(dateObj);
-
-                            tr.innerHTML = `
-                                <td>
-                                    <div class="item-desc">
-                                        <div class="item-icon ${iconBg}"><i class="fa-solid ${iconClass}"></i></div>
-                                        <span style="display: flex; flex-direction: column;">
-                                            <span class="desc-text">${t.description}</span>
-                                            <div class="item-meta">
-                                                <span class="tag ${tagClass}">${t.category}</span>
-                                                <small>${formattedDate}</small>
-                                            </div>
-                                            <small style="color: var(--text-muted); font-size: 12px; font-weight: normal; margin-top: 2px;">
-                                                ${t.isRecurring ? '<i class="fa-solid fa-rotate"></i> Recorrente' : 'Única'}
-                                            </small>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td class="hide-mobile"><span class="tag ${tagClass}">${t.category}</span></td>
-                                <td class="hide-mobile">${formattedDate}</td>
-                                <td class="${isIncome ? 'text-green' : 'text-red'} text-right">${valueText}</td>
-                                <td style="text-align: center;">
-                                    <div style="display: flex; gap: 8px; justify-content: center;">
-                                        <a href="/horizontefinanceiro/register-item?id=${t.id}" class="action-btn-edit" title="Editar" style="color: var(--primary-color);"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <button onclick="deleteTransaction(${t.id})" class="action-btn-delete" title="Excluir" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0;"><i class="fa-solid fa-trash"></i></button>
-                                    </div>
-                                </td>
-                            `;
-                            tbody.appendChild(tr);
-                        });
-                    }
-                } catch (error) {
-                    console.error('Erro ao carregar transações:', error);
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:red;">Erro ao conectar com o servidor.</td></tr>';
+                if (!items.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="pf-empty">Nenhum lançamento PF encontrado para este filtro.</td></tr>';
+                    return;
                 }
+
+                items.forEach((transaction) => {
+                    const row = document.createElement('tr');
+                    const isIncome = transaction.type === 'income';
+                    const isInvestment = transaction.type === 'investment';
+                    const iconBg = isIncome ? 'green-bg' : isInvestment ? 'purple-bg' : 'red-bg';
+                    const iconClass = isIncome ? 'fa-arrow-down' : isInvestment ? 'fa-chart-line' : 'fa-arrow-up';
+                    const tagClass = transaction.category === 'streaming' ? 'tag-purple' : transaction.category === 'alimentacao' ? 'tag-orange' : 'tag-blue';
+                    const valuePrefix = isIncome ? '+' : '-';
+                    const numericValue = Number(transaction.value || 0);
+
+                    const dateObj = new Date(transaction.date);
+                    dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset());
+                    const formattedDate = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(dateObj);
+
+                    row.innerHTML = `
+                        <td>
+                            <div class="item-desc">
+                                <div class="item-icon ${iconBg}"><i class="fa-solid ${iconClass}"></i></div>
+                                <span style="display:flex; flex-direction:column;">
+                                    <span class="desc-text">${transaction.description || 'Sem descrição'}</span>
+                                    <div class="item-meta">
+                                        <span class="tag ${tagClass}">${transaction.category}</span>
+                                        <span class="tag tag-blue">PF</span>
+                                        <small>${formattedDate}</small>
+                                    </div>
+                                    <small style="color: var(--text-muted); font-size: 12px; font-weight: normal; margin-top: 2px;">
+                                        ${transaction.isRecurring ? '<i class="fa-solid fa-rotate"></i> Recorrente' : 'Única'}
+                                    </small>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="hide-mobile"><span class="tag ${tagClass}">${transaction.category}</span></td>
+                        <td class="hide-mobile">${formattedDate}</td>
+                        <td class="${isIncome ? 'text-green' : isInvestment ? 'text-purple' : 'text-red'} text-right">${valuePrefix} ${formatMoney(numericValue)}</td>
+                        <td style="text-align:center;">
+                            <div style="display:flex; gap:8px; justify-content:center;">
+                                <a href="/register-item?id=${transaction.id}" class="action-btn-edit" title="Editar" style="color: var(--primary-color);"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <button onclick="deleteTransaction(${transaction.id})" class="action-btn-delete" title="Excluir" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            };
+
+            const renderSummary = (items) => {
+                const monthly = items.filter((item) => String(item.date || '').startsWith(currentMonthKey));
+                const incomes = monthly.filter((item) => item.type === 'income').reduce((sum, item) => sum + Number(item.value || 0), 0);
+                const expenses = monthly.filter((item) => item.type === 'expense').reduce((sum, item) => sum + Number(item.value || 0), 0);
+                const investments = monthly.filter((item) => item.type === 'investment').reduce((sum, item) => sum + Number(item.value || 0), 0);
+
+                incomeMonth.textContent = formatMoney(incomes);
+                expenseMonth.textContent = formatMoney(expenses + investments);
+                balanceMonth.textContent = formatMoney(incomes - expenses - investments);
+            };
+
+            try {
+                const response = await fetch('/api/transactions?scope=pf', {
+                    headers: { 'user-id': userId }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao carregar lançamentos PF.');
+                }
+
+                pfTransactions = await response.json();
+                renderSummary(pfTransactions);
+                renderTable(pfTransactions);
+
+                searchInput.addEventListener('input', () => {
+                    const term = normalizeText(searchInput.value);
+                    const filtered = !term
+                        ? pfTransactions
+                        : pfTransactions.filter((transaction) =>
+                            [transaction.description, transaction.category, transaction.date]
+                                .some((field) => normalizeText(field).includes(term))
+                        );
+
+                    renderTable(filtered);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar PF:', error);
+                tbody.innerHTML = '<tr><td colspan="5" class="pf-empty" style="color:#ef4444;">Erro ao carregar os lançamentos da pessoa física.</td></tr>';
             }
         });
     </script>
 </body>
-
 </html>

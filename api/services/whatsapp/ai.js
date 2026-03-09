@@ -71,7 +71,9 @@ const interpretWithAI = async (messageText) => {
         throw error;
     }
 
-    const outputText = Array.isArray(raw.output)
+    const outputText = typeof raw.output_text === 'string' && raw.output_text
+        ? raw.output_text
+        : Array.isArray(raw.output)
         ? raw.output
             .flatMap((item) => item.content || [])
             .map((item) => item.text || '')

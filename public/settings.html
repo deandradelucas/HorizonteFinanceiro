@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações - Horizonte Financeiro</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .settings-shell,.settings-grid,.settings-list,.theme-picker{display:grid;gap:20px}
+    .settings-shell{gap:28px}
+    .settings-grid{grid-template-columns:1.15fr .85fr}
+    .settings-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:28px;box-shadow:var(--shadow-sm)}
+    .settings-card h3{margin:0 0 6px}
+    .settings-subtitle{margin:0;color:var(--text-muted);font-size:14px}
+    .settings-form{display:grid;gap:16px;margin-top:20px}
+    .settings-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+    .settings-field input{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg-color);color:var(--text-main);font:inherit}
+    .settings-field input[readonly]{opacity:.75;cursor:not-allowed}
+    .settings-list{margin-top:18px}
+    .settings-row{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-color)}
+    .settings-row:last-child{border-bottom:none;padding-bottom:0}
+    .settings-row span{color:var(--text-muted);font-size:14px}
+    .settings-row strong{color:var(--text-main);text-align:right}
+    .settings-highlight{display:flex;align-items:flex-start;gap:14px;padding:20px;border-radius:18px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.14);margin-top:18px}
+    .settings-highlight i{font-size:20px;color:#60a5fa;margin-top:2px}
+    .settings-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .settings-theme-status{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(20,201,123,.12);color:#14c97b;border:1px solid rgba(20,201,123,.18)}
+    .settings-theme-status.disabled{background:rgba(148,163,184,.12);color:#94a3b8;border-color:rgba(148,163,184,.18)}
+    .theme-picker{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:18px}
+    .theme-option{border:1px solid var(--border-color);background:var(--bg-color);border-radius:18px;padding:18px;cursor:pointer;text-align:left;transition:var(--transition)}
+    .theme-option strong{display:block;color:var(--text-main);font-size:14px}
+    .theme-option span{display:block;margin-top:6px;font-size:12px;color:var(--text-muted)}
+    .theme-option.active{border-color:var(--primary-color);box-shadow:0 0 0 1px var(--primary-color) inset, var(--shadow-xs)}
+    .theme-swatch{display:flex;gap:8px;margin-bottom:12px}
+    .theme-swatch i{width:18px;height:18px;border-radius:999px;display:block}
+    @media (max-width: 980px){.settings-grid{grid-template-columns:1fr}}
+    @media (max-width: 720px){.theme-picker{grid-template-columns:1fr}}
+  </style>
+</head>
+<body class="dashboard-body">
+  <script>
+    const siteTheme = localStorage.getItem('siteTheme');
+    if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
+    if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+  </script>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
+      <h2>Horizonte Financeiro</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
+      <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
+      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+      <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+      <a href="/settings" class="nav-item active"><i class="fa-solid fa-gear"></i> Configurações</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+      <div class="search-bar">
+        <i class="fa-solid fa-gear"></i>
+        <input type="text" value="Preferências da conta" readonly>
+      </div>
+      <div class="user-profile" style="display:flex;align-items:center;">
+        <span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span>
+        <button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </header>
+
+    <div class="dashboard-content settings-shell">
+      <div class="page-header">
+        <div>
+          <h1>Configurações</h1>
+          <p class="subtitle" style="margin-bottom:0;">Gerencie seus dados principais, preferências visuais e o status da sua conta.</p>
+        </div>
+      </div>
+
+      <section class="settings-grid">
+        <div class="settings-card">
+          <h3>Perfil</h3>
+          <p class="settings-subtitle">Atualize as informações básicas usadas no app e na automação por WhatsApp.</p>
+
+          <form id="settingsProfileForm" class="settings-form">
+            <div class="settings-field">
+              <label for="settingsName">Nome</label>
+              <input id="settingsName" type="text" placeholder="Seu nome">
+            </div>
+            <div class="settings-field">
+              <label for="settingsEmail">E-mail</label>
+              <input id="settingsEmail" type="email" readonly>
+            </div>
+            <div class="settings-field">
+              <label for="settingsPhone">WhatsApp</label>
+              <input id="settingsPhone" type="text" placeholder="5511999999999">
+            </div>
+            <div class="settings-actions">
+              <button type="submit" class="btn-primary" style="width:auto;"><i class="fa-solid fa-floppy-disk"></i> Salvar perfil</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="settings-card">
+          <h3>Aparência e Conta</h3>
+          <p class="settings-subtitle">Resumo rápido do acesso, cobrança e preferência visual.</p>
+
+          <div>
+            <div class="settings-row" style="padding-top:0;">
+              <span>Tema</span>
+              <strong><span id="settingsThemeStatus" class="settings-theme-status">Carregando</span></strong>
+            </div>
+            <div class="theme-picker">
+              <button type="button" class="theme-option" data-theme-option="default">
+                <div class="theme-swatch"><i style="background:#0d9488"></i><i style="background:#0f172a"></i><i style="background:#f8fafc;border:1px solid #e2e8f0"></i></div>
+                <strong>Padrão</strong>
+                <span>Visual original do app.</span>
+              </button>
+              <button type="button" class="theme-option" data-theme-option="safira">
+                <div class="theme-swatch"><i style="background:#2563eb"></i><i style="background:#0f172a"></i><i style="background:#dbeafe"></i></div>
+                <strong>Safira</strong>
+                <span>Azul limpo e mais tecnológico.</span>
+              </button>
+              <button type="button" class="theme-option" data-theme-option="cobre">
+                <div class="theme-swatch"><i style="background:#c2410c"></i><i style="background:#7c2d12"></i><i style="background:#ffedd5"></i></div>
+                <strong>Cobre</strong>
+                <span>Mais quente e sofisticado.</span>
+              </button>
+              <button type="button" class="theme-option" data-theme-option="starwars">
+                <div class="theme-swatch"><i style="background:#eab308"></i><i style="background:#111827"></i><i style="background:#60a5fa"></i></div>
+                <strong>Star Wars</strong>
+                <span>Campo estelar com brilho galáctico.</span>
+              </button>
+              <button type="button" class="theme-option" data-theme-option="mario">
+                <div class="theme-swatch"><i style="background:#dc2626"></i><i style="background:#1d4ed8"></i><i style="background:#16a34a"></i></div>
+                <strong>Super Mario</strong>
+                <span>Céu, tijolos e clima clássico da Nintendo.</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-list">
+            <div class="settings-row">
+              <span>Nível de acesso</span>
+              <strong id="settingsRole">-</strong>
+            </div>
+            <div class="settings-row">
+              <span>Status da assinatura</span>
+              <strong id="settingsBillingStatus">-</strong>
+            </div>
+            <div class="settings-row">
+              <span>Próximo vencimento</span>
+              <strong id="settingsNextDue">-</strong>
+            </div>
+            <div class="settings-row">
+              <span>Último acesso</span>
+              <strong id="settingsLastLogin">-</strong>
+            </div>
+          </div>
+
+          <div class="settings-highlight">
+            <i class="fa-solid fa-shield-heart"></i>
+            <div>
+              <strong style="display:block;color:var(--text-main);">Conta protegida no servidor</strong>
+              <p style="margin:6px 0 0;color:var(--text-muted);font-size:14px;">Suas preferências visuais e dados do perfil são persistidos com autenticação válida.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/script.js"></script>
+  <script>
+    const userId = sessionStorage.getItem('userId');
+    if (!userId) window.location.href = '/login';
+
+    const formatDateTime = (value) => value ? new Date(value).toLocaleString('pt-BR') : '—';
+    const formatDateOnly = (value) => value ? new Date(`${value}T12:00:00`).toLocaleDateString('pt-BR') : '—';
+    const billingLabel = (user) => {
+      if (user.billing_exempt) return 'Isento';
+      return ({
+        active: 'Ativa',
+        pending: 'Pendente',
+        checkout_pending: 'Checkout pendente',
+        past_due: 'Em atraso',
+        cancelled: 'Cancelada',
+        inactive: 'Inativa'
+      }[user.subscription_status] || 'Inativa');
+    };
+    const roleLabel = (role) => ({
+      super_admin: 'Super Admin',
+      admin: 'Admin',
+      user: 'Usuário'
+    }[role] || 'Usuário');
+    const themeLabel = (theme) => ({
+      default: 'Padrão',
+      safira: 'Safira',
+      cobre: 'Cobre',
+      starwars: 'Star Wars',
+      mario: 'Super Mario'
+    }[theme] || 'Padrão');
+    const getSiteTheme = () => localStorage.getItem('siteTheme') || 'default';
+    const applySiteTheme = (theme) => {
+      if (!theme || theme === 'default') {
+        localStorage.setItem('siteTheme', 'default');
+        document.body.removeAttribute('data-theme');
+        return;
+      }
+      localStorage.setItem('siteTheme', theme);
+      document.body.dataset.theme = theme;
+    };
+
+    function renderThemeStatus() {
+      const status = getSiteTheme();
+      const badge = document.getElementById('settingsThemeStatus');
+      badge.textContent = themeLabel(status);
+      badge.classList.toggle('disabled', status === 'default');
+      document.querySelectorAll('[data-theme-option]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.themeOption === status);
+      });
+    }
+
+    async function loadSettings() {
+      const response = await fetch('/api/me', { headers: { 'user-id': userId } });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Não foi possível carregar as configurações.');
+
+      document.getElementById('settingsName').value = data.name || '';
+      document.getElementById('settingsEmail').value = data.email || '';
+      document.getElementById('settingsPhone').value = data.phone || '';
+      document.getElementById('settingsRole').textContent = roleLabel(data.role);
+      document.getElementById('settingsBillingStatus').textContent = billingLabel(data);
+      document.getElementById('settingsNextDue').textContent = formatDateOnly(data.subscription_next_due_date);
+      document.getElementById('settingsLastLogin').textContent = formatDateTime(data.last_login);
+      renderThemeStatus();
+    }
+
+    document.getElementById('settingsProfileForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = {
+        name: document.getElementById('settingsName').value.trim(),
+        phone: document.getElementById('settingsPhone').value.trim()
+      };
+
+      try {
+        const response = await fetch('/api/user/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'user-id': userId
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Não foi possível salvar o perfil.');
+
+        sessionStorage.setItem('userName', data.name || '');
+        await loadSettings();
+        alert('Perfil atualizado com sucesso.');
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-theme-option]').forEach((button) => {
+        button.addEventListener('click', () => {
+          applySiteTheme(button.dataset.themeOption);
+          renderThemeStatus();
+        });
+      });
+      loadSettings().catch((error) => {
+        console.error(error);
+        alert(error.message || 'Erro ao carregar configurações.');
+      });
+      renderThemeStatus();
+    });
+  </script>
+</body>
+</html>

@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Historico - Horizonte Financeiro</title>
+  <title>Histórico - Horizonte Financeiro</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    .history-shell,.history-filters,.history-stats,.history-months,.detail-stats,.category-grid,.timeline{display:grid;gap:16px}
-    .history-shell{gap:24px}
-    .history-filters{grid-template-columns:repeat(4,minmax(0,1fr)) auto auto;align-items:end}
-    .filter-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
-    .filter-field input,.filter-field select{width:100%;padding:11px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font:inherit}
+    .history-shell,.history-filters,.history-stats,.history-months,.detail-stats,.category-grid,.timeline{display:grid;gap:20px}
+    .history-shell{gap:28px}
+    .history-filters{grid-template-columns:repeat(5,minmax(0,1fr)) auto auto;align-items:end;padding:20px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--card-bg);box-shadow:var(--shadow-sm)}
+    .filter-field label{display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+    .filter-field input,.filter-field select{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg-color);color:var(--text-main);font:inherit}
     .filter-actions{display:flex;gap:10px}
-    .history-card,.history-detail,.month-card,.timeline-day,.empty-state{background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px}
-    .history-card{padding:20px}
+    .history-card,.history-detail,.month-card,.timeline-day,.empty-state{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-lg)}
+    .history-card{padding:24px}
     .history-stats,.detail-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
     .stat-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
     .stat-value{margin-top:8px;font-size:26px;font-weight:700;color:var(--text-main)}
@@ -26,8 +26,10 @@
     .negative{color:var(--error-color)}
     .neutral{color:var(--primary-color)}
     .history-months{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-    .month-card{padding:18px;cursor:pointer;transition:var(--transition)}
-    .month-card:hover,.month-card.active{border-color:var(--primary-color);transform:translateY(-2px);box-shadow:0 10px 30px rgba(15,23,42,.08)}
+    .month-card{padding:20px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;border-color:rgba(148,163,184,.18)}
+    .month-card::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--accent, var(--primary-color));opacity:.9}
+    .month-card:hover,.month-card.active{border-color:var(--accent, var(--primary-color));transform:translateY(-2px);box-shadow:0 10px 30px rgba(15,23,42,.08)}
+    .month-card.active .month-name{color:var(--accent, var(--primary-color))}
     .month-head,.month-line,.timeline-item{display:flex;justify-content:space-between;gap:12px}
     .month-head{align-items:flex-start;margin-bottom:14px}
     .month-name{font-size:18px;font-weight:700}
@@ -35,7 +37,7 @@
     .month-line{font-size:13px;color:var(--text-muted);margin-bottom:6px}
     .month-bar{height:7px;margin-top:12px;background:var(--border-color);border-radius:999px;overflow:hidden}
     .month-bar-fill{height:100%}
-    .history-detail{padding:24px;display:none}
+    .history-detail{padding:28px;display:none}
     .history-detail.visible{display:block}
     .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
     .detail-title h2{font-size:24px;font-weight:700}
@@ -43,18 +45,18 @@
     .detail-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .detail-controls input{padding:10px 12px;border:1px solid var(--border-color);border-radius:12px;background:var(--card-bg);color:var(--text-main)}
     .category-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:8px}
-    .category-card{display:flex;gap:12px;align-items:center;padding:14px;border-radius:16px;background:var(--bg-color)}
+    .category-card{display:flex;gap:12px;align-items:center;padding:16px;border-radius:18px;background:var(--bg-color);border:1px solid color-mix(in srgb, var(--accent, var(--primary-color)) 22%, transparent)}
     .category-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
     .category-name{font-size:14px;font-weight:700}
     .category-total{margin-top:4px;font-size:16px;font-weight:700}
     .category-meta{margin-top:4px;font-size:12px;color:var(--text-muted)}
     .timeline{margin-top:8px}
-    .timeline-day{padding:18px}
+    .timeline-day{padding:20px}
     .timeline-day-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
     .timeline-day-title{font-size:16px;font-weight:700}
     .timeline-day-total{font-size:13px;font-weight:700;color:var(--text-muted)}
     .timeline-items{display:grid;gap:10px}
-    .timeline-item{align-items:center;padding:12px 14px;border-radius:14px;background:var(--bg-color)}
+    .timeline-item{align-items:center;padding:14px 16px;border-radius:16px;background:var(--bg-color);border-left:3px solid var(--accent, var(--primary-color))}
     .timeline-main{display:flex;align-items:center;gap:12px;min-width:0}
     .timeline-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .timeline-text{min-width:0}
@@ -69,30 +71,30 @@
   </style>
 </head>
 <body class="dashboard-body">
-  <script>if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
+  <script>const siteTheme=localStorage.getItem('siteTheme');if(siteTheme&&siteTheme!=='default')document.body.dataset.theme=siteTheme;if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
   <aside class="sidebar">
     <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
       <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transacoes</a>
-      <a href="/history" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> Historico</a>
+      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+      <a href="/history" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
       <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-      <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configuracoes</a>
+      <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
     </nav>
     <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
   </aside>
   <main class="main-content">
     <header class="topbar">
       <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-      <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="historySearchTop" type="text" placeholder="Buscar descricao ou categoria..."></div>
+      <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="historySearchTop" type="text" placeholder="Buscar descrição ou categoria..."></div>
       <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar Tema"><i class="fa-solid fa-moon"></i></button></div>
     </header>
     <div class="dashboard-content history-shell">
       <div class="page-header">
         <div>
-          <h1>Historico Financeiro</h1>
-          <p class="subtitle">Escolha uma data, filtre por tipo e navegue pelo seu historico com detalhe por mes e por dia.</p>
+          <h1>Histórico Financeiro</h1>
+          <p class="subtitle">Escolha uma data, filtre por tipo e navegue pelo seu histórico com detalhe por mês e por dia.</p>
         </div>
       </div>
 
@@ -111,11 +113,20 @@
             <option value="all">Todos</option>
             <option value="income">Receitas</option>
             <option value="expense">Despesas</option>
+            <option value="investment">Investimentos</option>
           </select>
         </div>
         <div class="filter-field">
           <label for="historySearch">Buscar</label>
-          <input id="historySearch" type="text" placeholder="Descricao ou categoria">
+          <input id="historySearch" type="text" placeholder="Descrição ou categoria">
+        </div>
+        <div class="filter-field">
+          <label for="scopeSelect">Escopo</label>
+          <select id="scopeSelect">
+            <option value="all">Todos</option>
+            <option value="pf">Pessoa Física</option>
+            <option value="pj">CNPJ</option>
+          </select>
         </div>
         <div class="filter-actions">
           <button class="btn-primary btn-action" onclick="loadHistorySummary()">Consultar</button>
@@ -139,10 +150,10 @@
         <div class="history-card">
           <div class="stat-label">Saldo</div>
           <div class="stat-value neutral" id="yearBalance">R$ 0,00</div>
-          <div class="stat-sub">Resultado do periodo carregado</div>
+          <div class="stat-sub">Resultado do período carregado</div>
         </div>
         <div class="history-card">
-          <div class="stat-label">Periodo em Foco</div>
+          <div class="stat-label">Período em Foco</div>
           <div class="stat-value" id="focusPeriod">Histórico completo</div>
           <div class="stat-sub" id="focusPeriodSub">Selecione um período para filtrar as movimentações.</div>
         </div>
@@ -151,14 +162,14 @@
       <section class="history-months" id="monthGrid"></section>
       <div class="empty-state" id="historyEmpty" style="display:none;">
         <i class="fa-solid fa-chart-column"></i>
-        <p>Nenhuma movimentacao encontrada para os filtros atuais.</p>
+        <p>Nenhuma movimentação encontrada para os filtros atuais.</p>
       </div>
 
       <section class="history-detail" id="detailPanel">
         <div class="detail-head">
           <div class="detail-title">
-            <h2 id="detailTitle">Detalhes do periodo</h2>
-            <p id="detailSubtitle">Resumo aprofundado com categorias e transacoes.</p>
+            <h2 id="detailTitle">Detalhes do período</h2>
+            <p id="detailSubtitle">Resumo aprofundado com categorias e transações.</p>
           </div>
           <div class="detail-controls">
             <input id="dayFilter" type="number" min="1" max="31" placeholder="Dia">
@@ -169,22 +180,22 @@
 
         <div class="detail-stats">
           <div class="history-card">
-            <div class="stat-label">Transacoes</div>
+            <div class="stat-label">Transações</div>
             <div class="stat-value" id="periodCount">0</div>
-            <div class="stat-sub">Quantidade no periodo aberto</div>
+            <div class="stat-sub">Quantidade no período aberto</div>
           </div>
           <div class="history-card">
-            <div class="stat-label">Saldo do Periodo</div>
+            <div class="stat-label">Saldo do Período</div>
             <div class="stat-value neutral" id="periodBalance">R$ 0,00</div>
             <div class="stat-sub">Resultado do intervalo selecionado</div>
           </div>
           <div class="history-card">
-            <div class="stat-label">Ticket Medio</div>
+            <div class="stat-label">Ticket Médio</div>
             <div class="stat-value" id="periodAverage">R$ 0,00</div>
-            <div class="stat-sub">Media por transacao</div>
+            <div class="stat-sub">Média por transação</div>
           </div>
           <div class="history-card">
-            <div class="stat-label">Categoria Lider</div>
+            <div class="stat-label">Categoria Líder</div>
             <div class="stat-value" id="topCategory">-</div>
             <div class="stat-sub" id="topCategorySub">Sem dados ainda</div>
           </div>
@@ -194,15 +205,16 @@
         <div class="timeline" id="timeline"></div>
         <div class="empty-state" id="detailEmpty" style="display:none;">
           <i class="fa-solid fa-folder-open"></i>
-          <p>Nenhuma transacao encontrada nesse periodo.</p>
+          <p>Nenhuma transação encontrada nesse período.</p>
         </div>
       </section>
     </div>
   </main>
   <script src="script.js"></script>
   <script>
-    const monthNames = ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     const categoryColors = { alimentacao: '#f97316', transporte: '#3b82f6', saude: '#ef4444', educacao: '#8b5cf6', lazer: '#ec4899', moradia: '#06b6d4', salario: '#22c55e', investimento: '#0d9488', freelance: '#f59e0b', vendas: '#10b981', contas: '#6366f1', outros: '#64748b' };
+    const accentPalette = ['#0ea5e9', '#8b5cf6', '#f59e0b', '#14b8a6', '#ef4444', '#6366f1'];
     let currentMonth = null;
     let currentDay = null;
     let allTransactions = [];
@@ -212,6 +224,7 @@
     const typeSelect = document.getElementById('typeSelect');
     const historySearch = document.getElementById('historySearch');
     const historySearchTop = document.getElementById('historySearchTop');
+    const scopeSelect = document.getElementById('scopeSelect');
     const monthGrid = document.getElementById('monthGrid');
     const historyEmpty = document.getElementById('historyEmpty');
     const detailPanel = document.getElementById('detailPanel');
@@ -229,9 +242,14 @@
 
     const fmt = (value) => 'R$ ' + safe(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     const normalize = (value) => (value || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    const normalizeType = (type) => (type === 'income' || type === 'receita') ? 'income' : 'expense';
+    const normalizeType = (type) => {
+      if (type === 'income' || type === 'receita') return 'income';
+      if (type === 'investment' || type === 'investimento') return 'investment';
+      return 'expense';
+    };
     const categoryLabel = (value) => { const text = (value || 'outros').replace(/_/g, ' '); return text.charAt(0).toUpperCase() + text.slice(1); };
     const categoryColor = (value) => categoryColors[normalize(value)] || '#64748b';
+    const accentForIndex = (index) => accentPalette[index % accentPalette.length];
     const formatDate = (dateString) => !dateString ? 'Sem data' : `${dateString.slice(8, 10)}/${dateString.slice(5, 7)}/${dateString.slice(0, 4)}`;
     const formatDayTitle = (dateString) => !dateString ? 'Sem data' : new Date(`${dateString}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
     const formatMonthLabel = (yearMonth) => !yearMonth ? 'Sem período' : new Date(`${yearMonth}-01T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
@@ -255,6 +273,7 @@
       typeSelect.value = 'all';
       historySearch.value = '';
       historySearchTop.value = '';
+      scopeSelect.value = 'all';
       dayFilter.value = '';
       currentMonth = null;
       currentDay = null;
@@ -265,7 +284,7 @@
 
     function renderYearStats(transactions) {
       const incomes = transactions.filter((item) => item.type === 'income').reduce((total, item) => total + safe(item.value), 0);
-      const expenses = transactions.filter((item) => item.type === 'expense').reduce((total, item) => total + safe(item.value), 0);
+      const expenses = transactions.filter((item) => item.type !== 'income').reduce((total, item) => total + safe(item.value), 0);
       document.getElementById('yearIncome').textContent = fmt(incomes);
       document.getElementById('yearExpense').textContent = fmt(expenses);
       document.getElementById('yearBalance').textContent = fmt(incomes - expenses);
@@ -295,7 +314,7 @@
       historyEmpty.style.display = 'none';
       const maxValue = Math.max(...rows.map((row) => Math.max(row.receitas, row.despesas)), 1);
 
-      rows.forEach((row) => {
+      rows.forEach((row, index) => {
         const hasData = row.receitas > 0 || row.despesas > 0;
         const percent = hasData ? Math.round((Math.max(row.receitas, row.despesas) / maxValue) * 100) : 0;
         const balanceClass = row.saldo >= 0 ? 'positive' : 'negative';
@@ -303,6 +322,7 @@
         monthCard.type = 'button';
         monthCard.className = 'month-card' + (currentMonth === row.monthKey && !currentDay ? ' active' : '');
         monthCard.style.opacity = hasData ? '1' : '0.55';
+        monthCard.style.setProperty('--accent', accentForIndex(index));
         monthCard.dataset.monthKey = row.monthKey;
         monthCard.innerHTML = `
           <div class="month-head">
@@ -358,7 +378,8 @@
           const matchesType = typeFilter === 'all' || item.type === typeFilter;
           const matchesSearch = !searchTerm || normalize(`${item.description || ''} ${item.category || ''}`).includes(searchTerm);
           const matchesDate = dateInRange(item.date);
-          return matchesType && matchesSearch && matchesDate;
+          const matchesScope = scopeSelect.value === 'all' || String(item.financial_scope || 'pf').toLowerCase() === scopeSelect.value;
+          return matchesType && matchesSearch && matchesDate && matchesScope;
         });
         const rows = buildMonthRows(filteredTransactions);
 
@@ -374,10 +395,10 @@
           closeDetail();
         }
       } catch (error) {
-        console.error('Erro ao carregar historico:', error);
+        console.error('Erro ao carregar histórico:', error);
         monthGrid.innerHTML = '';
         historyEmpty.style.display = 'block';
-        historyEmpty.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i><p>Nao foi possivel carregar o historico agora.</p>';
+        historyEmpty.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i><p>Não foi possível carregar o histórico agora.</p>';
         closeDetail();
       }
     }
@@ -385,7 +406,7 @@
     function renderCategoryBreakdown(items) {
       categoryBreakdown.innerHTML = '';
       if (!items.length) {
-        categoryBreakdown.innerHTML = '<div class="empty-state" style="display:block;grid-column:1 / -1;"><i class="fa-solid fa-tags"></i><p>Sem categorias para esse periodo.</p></div>';
+        categoryBreakdown.innerHTML = '<div class="empty-state" style="display:block;grid-column:1 / -1;"><i class="fa-solid fa-tags"></i><p>Sem categorias para esse período.</p></div>';
         return;
       }
 
@@ -393,12 +414,12 @@
         const isExpense = normalizeType(item.type) === 'expense';
         const color = categoryColor(item.category);
         categoryBreakdown.innerHTML += `
-          <div class="category-card">
+          <div class="category-card" style="--accent:${color}">
             <div class="category-icon" style="background:${color}"><i class="fa-solid ${isExpense ? 'fa-arrow-down' : 'fa-arrow-up'}"></i></div>
             <div>
               <div class="category-name">${categoryLabel(item.category)}</div>
               <div class="category-total ${isExpense ? 'negative' : 'positive'}">${fmt(item.total)}</div>
-              <div class="category-meta">${item.count} ${item.count === 1 ? 'transacao' : 'transacoes'}</div>
+              <div class="category-meta">${item.count} ${item.count === 1 ? 'transação' : 'transações'}</div>
             </div>
           </div>
         `;
@@ -407,7 +428,7 @@
 
     function renderDetailStats(transactions, categoryTotals) {
       const incomes = transactions.filter((item) => item.type === 'income').reduce((sum, item) => sum + safe(item.value), 0);
-      const expenses = transactions.filter((item) => item.type === 'expense').reduce((sum, item) => sum + safe(item.value), 0);
+      const expenses = transactions.filter((item) => item.type !== 'income').reduce((sum, item) => sum + safe(item.value), 0);
       const balance = incomes - expenses;
       const average = transactions.length ? transactions.reduce((sum, item) => sum + Math.abs(safe(item.value)), 0) / transactions.length : 0;
       const topCategory = categoryTotals.slice().sort((a, b) => safe(b.total) - safe(a.total))[0];
@@ -417,7 +438,7 @@
       document.getElementById('periodBalance').className = 'stat-value ' + (balance > 0 ? 'positive' : balance < 0 ? 'negative' : 'neutral');
       document.getElementById('periodAverage').textContent = fmt(average);
       document.getElementById('topCategory').textContent = topCategory ? categoryLabel(topCategory.category) : '-';
-      document.getElementById('topCategorySub').textContent = topCategory ? `${fmt(topCategory.total)} acumulados na lideranca` : 'Sem dados suficientes';
+      document.getElementById('topCategorySub').textContent = topCategory ? `${fmt(topCategory.total)} acumulados na liderança` : 'Sem dados suficientes';
     }
 
     function renderTimeline(transactions) {
@@ -452,18 +473,19 @@
         `;
         const itemsContainer = block.querySelector('.timeline-items');
 
-        items.forEach((item) => {
-          const isExpense = item.type === 'expense';
+        items.forEach((item, index) => {
+          const isExpense = item.type !== 'income';
           const color = categoryColor(item.category);
           const row = document.createElement('article');
           row.className = 'timeline-item';
+          row.style.setProperty('--accent', accentForIndex(index));
           row.innerHTML = `
             <div class="timeline-main">
               <div class="timeline-icon" style="background:${color}22;color:${color}">
                 <i class="fa-solid ${isExpense ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
               </div>
               <div class="timeline-text">
-                <strong>${item.description || 'Sem descricao'}</strong>
+                <strong>${item.description || 'Sem descrição'}</strong>
                 <span><span class="tag-chip" style="background:${color}22;color:${color}">${categoryLabel(item.category)}</span></span>
               </div>
             </div>
@@ -489,6 +511,7 @@
         const transactions = allTransactions
           .filter((item) => item.date && item.date.startsWith(monthPrefix))
           .filter((item) => dateInRange(item.date))
+          .filter((item) => scopeSelect.value === 'all' || String(item.financial_scope || 'pf').toLowerCase() === scopeSelect.value)
           .filter((item) => !day || item.date.slice(8, 10) === day.padStart(2, '0'))
           .filter((item) => (typeFilter === 'all' || item.type === typeFilter) && (!term || normalize(`${item.description || ''} ${item.category || ''}`).includes(term)));
         const groups = {};
@@ -515,7 +538,7 @@
 
         if (scroll) detailPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (error) {
-        console.error('Erro ao carregar detalhes do historico:', error);
+        console.error('Erro ao carregar detalhes do histórico:', error);
       }
     }
 
@@ -534,6 +557,7 @@
     historyStartDate.addEventListener('change', () => loadHistorySummary());
     historyEndDate.addEventListener('change', () => loadHistorySummary());
     typeSelect.addEventListener('change', () => loadHistorySummary());
+    scopeSelect.addEventListener('change', () => loadHistorySummary());
 
     document.addEventListener('DOMContentLoaded', () => {
       const userId = sessionStorage.getItem('userId');

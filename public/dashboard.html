@@ -19,6 +19,8 @@
 
 <body class="dashboard-body">
     <script>
+        const siteTheme = localStorage.getItem('siteTheme');
+        if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
     <!-- Sidebar -->
@@ -35,7 +37,7 @@
             <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>
                 Histórico</a>
             <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
         </nav>
         <div class="sidebar-footer">
             <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
@@ -64,12 +66,15 @@
         <div class="dashboard-content">
             <div class="page-header">
                 <div>
-                    <h1>Visão Geral</h1>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <h1 style="margin:0;">Visão Geral</h1>
+                        <span id="billingStatusPill" class="dashboard-status-pill" hidden>Carregando vencimento</span>
+                    </div>
                     <p id="userWelcome" class="subtitle" style="margin-bottom: 0;">Bem-vindo(a) de volta! Aqui está o
                         resumo das suas finanças.</p>
                 </div>
                 <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
-                    Lançamento</a>
+                    lançamento PF</a>
             </div>
 
             <div id="dashboardLayoutEditor" class="dashboard-layout-editor" hidden>
@@ -98,6 +103,14 @@
             <div id="dashboardLayout" class="dashboard-layout">
             <!-- Meta em Destaque -->
             <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal" style="display: none;">
+                <div class="mario-hero-art" aria-hidden="true">
+                    <span class="coin coin-a"></span>
+                    <span class="coin coin-b"></span>
+                    <span class="coin coin-c"></span>
+                    <span class="brick brick-a"></span>
+                    <span class="brick brick-b"></span>
+                    <span class="pipe"></span>
+                </div>
                 <div class="goal-info-header">
                     <div class="goal-text">
                         <span class="goal-label">Meta em Destaque</span>
@@ -133,6 +146,44 @@
                     flex-wrap: wrap;
                 }
 
+                .dashboard-status-pill {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    border-radius: 999px;
+                    padding: 8px 12px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    border: 1px solid var(--border-color);
+                    background: rgba(255, 255, 255, 0.72);
+                    color: var(--text-muted);
+                    box-shadow: var(--shadow-xs);
+                }
+
+                .dashboard-status-pill.active {
+                    border-color: rgba(20, 201, 123, 0.22);
+                    background: rgba(20, 201, 123, 0.12);
+                    color: #14c97b;
+                }
+
+                .dashboard-status-pill.pending {
+                    border-color: rgba(245, 158, 11, 0.22);
+                    background: rgba(245, 158, 11, 0.12);
+                    color: #f59e0b;
+                }
+
+                .dashboard-status-pill.past_due {
+                    border-color: rgba(239, 68, 68, 0.22);
+                    background: rgba(239, 68, 68, 0.12);
+                    color: #ef4444;
+                }
+
+                .dashboard-status-pill.exempt {
+                    border-color: rgba(139, 92, 246, 0.24);
+                    background: rgba(139, 92, 246, 0.12);
+                    color: #8b5cf6;
+                }
+
                 .dashboard-actions-mobile {
                     margin-bottom: 16px;
                 }
@@ -140,7 +191,7 @@
                 .dashboard-layout {
                     display: grid;
                     grid-template-columns: repeat(12, minmax(0, 1fr));
-                    gap: 24px;
+                    gap: 20px;
                     align-items: start;
                 }
 
@@ -166,10 +217,10 @@
                     position: relative;
                     background: var(--card-bg);
                     border: 1px solid var(--border-color);
-                    border-radius: 24px;
+                    border-radius: var(--radius-lg);
                     padding: 24px;
                     overflow: hidden;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+                    box-shadow: var(--shadow-sm);
                 }
 
                 .insight-card::before {
@@ -205,9 +256,9 @@
                     gap: 10px;
                     padding: 14px 16px;
                     border-radius: 20px;
-                    background: rgba(255, 255, 255, 0.02);
+                    background: rgba(248, 250, 252, 0.72);
                     border: 1px solid rgba(148, 163, 184, 0.08);
-                    backdrop-filter: blur(6px);
+                    backdrop-filter: blur(10px);
                 }
 
                 .insight-bar-head {

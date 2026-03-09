@@ -10,49 +10,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    .invest-shell,.invest-filters,.invest-stats,.invest-grid,.invest-list{display:grid;gap:16px}
-    .invest-shell{gap:24px}
-    .invest-filters{grid-template-columns:repeat(3,minmax(0,1fr)) auto}
-    .invest-card,.invest-panel,.empty-state{background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px}
-    .invest-card,.invest-panel{padding:20px}
-    .invest-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .invest-shell,.invest-filters,.invest-stats,.invest-grid,.invest-list{display:grid;gap:20px}
+    .invest-shell{gap:28px}
+    .invest-filters{grid-template-columns:repeat(3,minmax(0,1fr)) auto;padding:20px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--card-bg);box-shadow:var(--shadow-sm)}
+    .invest-card,.invest-panel,.empty-state{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-lg)}
+    .invest-card,.invest-panel{padding:24px}
+    .invest-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
     .stat-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
     .stat-value{margin-top:8px;font-size:28px;font-weight:700}
     .stat-sub{margin-top:6px;font-size:13px;color:var(--text-muted)}
     .positive{color:var(--success-color)}
     .negative{color:var(--error-color)}
     .neutral{color:var(--primary-color)}
-    .filter-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase}
-    .filter-field input,.filter-field select{width:100%;padding:11px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--card-bg);color:var(--text-main);font:inherit}
+    .filter-field label{display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+    .filter-field input,.filter-field select{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg-color);color:var(--text-main);font:inherit}
     .invest-grid{grid-template-columns:1.2fr .8fr}
     .month-list{display:grid;gap:12px}
-    .month-row{padding:14px 16px;border-radius:16px;background:var(--bg-color);display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .month-row{padding:16px 18px;border-radius:18px;background:var(--bg-color);display:flex;justify-content:space-between;gap:12px;align-items:center;border-left:3px solid var(--accent, var(--primary-color))}
     .month-row strong{display:block}
     .month-row span{font-size:12px;color:var(--text-muted)}
     .invest-list{margin-top:16px}
-    .invest-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 16px;border-radius:16px;background:var(--bg-color)}
+    .invest-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 18px;border-radius:18px;background:var(--bg-color);border-left:3px solid var(--accent, var(--primary-color))}
     .invest-main{display:flex;gap:12px;align-items:center;min-width:0}
-    .invest-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(13,148,136,.12);color:var(--primary-color)}
+    .invest-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:color-mix(in srgb, var(--accent, var(--primary-color)) 16%, transparent);color:var(--accent, var(--primary-color))}
     .invest-text strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .invest-text span{display:block;margin-top:4px;font-size:12px;color:var(--text-muted)}
-    .tag-chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(13,148,136,.12);color:var(--primary-color)}
+    .tag-chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;background:color-mix(in srgb, var(--accent, var(--primary-color)) 16%, transparent);color:var(--accent, var(--primary-color))}
     .empty-state{padding:32px 24px;text-align:center;color:var(--text-muted)}
     .empty-state i{display:block;font-size:28px;margin-bottom:12px;color:var(--primary-color)}
-    @media (max-width: 1024px){.invest-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.invest-grid{grid-template-columns:1fr}.invest-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width: 1024px){.invest-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.invest-grid{grid-template-columns:1fr}.invest-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media (max-width: 720px){.invest-filters,.invest-stats{grid-template-columns:1fr}.month-row,.invest-item{flex-direction:column;align-items:flex-start}.invest-shell{gap:18px}}
   </style>
 </head>
 <body class="dashboard-body">
-  <script>if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
+  <script>const siteTheme=localStorage.getItem('siteTheme');if(siteTheme&&siteTheme!=='default')document.body.dataset.theme=siteTheme;if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
   <aside class="sidebar">
     <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> InÃ­cio</a>
+      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
       <a href="/investments" class="nav-item active"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> TransaÃ§Ãµes</a>
-      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> HistÃ³rico</a>
+      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
       <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-      <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> ConfiguraÃ§Ãµes</a>
+      <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
     </nav>
     <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
   </aside>
@@ -66,9 +66,9 @@
       <div class="page-header">
         <div>
           <h1>Investimentos</h1>
-          <p class="subtitle">Esta Ã¡rea substitui a antiga carteira e concentra aportes, resgates e leitura rÃ¡pida da sua carteira investida.</p>
+          <p class="subtitle">Esta área substitui a antiga carteira e concentra aportes, resgates e leitura rápida da sua carteira investida.</p>
         </div>
-        <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo LanÃ§amento</a>
+        <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo Lançamento</a>
       </div>
 
       <section class="invest-filters">
@@ -87,7 +87,7 @@
         </div>
         <div class="filter-field">
           <label for="investmentSearch">Buscar</label>
-          <input id="investmentSearch" type="text" placeholder="DescriÃ§Ã£o">
+          <input id="investmentSearch" type="text" placeholder="Descrição">
         </div>
         <button class="btn-primary btn-action" onclick="loadInvestments()">Atualizar</button>
       </section>
@@ -104,20 +104,25 @@
           <div class="stat-sub">Entradas vindas de investimentos</div>
         </div>
         <div class="invest-card">
-          <div class="stat-label">M?s</div>
-          <div class="stat-value neutral" id="monthMovement">R$ 0,00</div>
-          <div class="stat-sub" id="monthMovementLabel">Movimenta??o do m?s atual</div>
+          <div class="stat-label">Saldo Investido</div>
+          <div class="stat-value neutral" id="investedBalance">R$ 0,00</div>
+          <div class="stat-sub">Diferença entre aportes e resgates</div>
         </div>
         <div class="invest-card">
-          <div class="stat-label">Dia</div>
+          <div class="stat-label">Resultado do Mês</div>
+          <div class="stat-value neutral" id="monthMovement">R$ 0,00</div>
+          <div class="stat-sub" id="monthMovementLabel">Movimentação do mês atual</div>
+        </div>
+        <div class="invest-card">
+          <div class="stat-label">Resultado do Dia</div>
           <div class="stat-value neutral" id="dayMovement">R$ 0,00</div>
-          <div class="stat-sub" id="dayMovementLabel">Movimenta??o de hoje</div>
+          <div class="stat-sub" id="dayMovementLabel">Movimentação de hoje</div>
         </div>
       </section>
 
       <section class="invest-grid">
         <div class="invest-panel">
-          <div class="section-header"><h3>EvoluÃ§Ã£o Mensal</h3></div>
+          <div class="section-header"><h3>Evolução Mensal</h3></div>
           <div class="month-list" id="monthList"></div>
         </div>
         <div class="invest-panel">
@@ -127,11 +132,11 @@
       </section>
 
       <section class="invest-panel">
-        <div class="section-header"><h3>MovimentaÃ§Ãµes de Investimento</h3></div>
+        <div class="section-header"><h3>Movimentações de Investimento</h3></div>
         <div class="invest-list" id="investmentList"></div>
         <div class="empty-state" id="investmentEmpty" style="display:none;">
           <i class="fa-solid fa-chart-line"></i>
-          <p>Nenhum investimento encontrado. Use a categoria <strong>investimentos</strong> ao registrar um lanÃ§amento.</p>
+          <p>Nenhum investimento encontrado. Use a categoria <strong>investimentos</strong> ao registrar um lançamento.</p>
         </div>
       </section>
     </div>
@@ -146,6 +151,7 @@
     const summaryList = document.getElementById('summaryList');
     const investmentList = document.getElementById('investmentList');
     const investmentEmpty = document.getElementById('investmentEmpty');
+    const accentPalette = ['#0ea5e9', '#8b5cf6', '#f59e0b', '#14b8a6', '#ef4444', '#6366f1'];
 
     const safe = (value, fallback = 0) => { const parsed = typeof value === 'number' ? value : parseFloat(value); return Number.isFinite(parsed) ? parsed : fallback; };
     const fmt = (value) => 'R$ ' + safe(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -154,6 +160,7 @@
     const categoryMatchesInvestment = (category) => ['investimento', 'investimentos'].includes(normalize(category));
     const formatDate = (dateString) => !dateString ? 'Sem data' : `${dateString.slice(8,10)}/${dateString.slice(5,7)}/${dateString.slice(0,4)}`;
     const monthLabel = (dateString) => new Date(`${dateString}T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    const accentForIndex = (index) => accentPalette[index % accentPalette.length];
 
     function syncSearch(source) {
       const value = source.value || '';
@@ -174,6 +181,7 @@
     function renderStats(transactions) {
       const applied = transactions.filter((item) => ['expense', 'investment'].includes(normalizeType(item.type))).reduce((sum, item) => sum + safe(item.value), 0);
       const returned = transactions.filter((item) => normalizeType(item.type) === 'income').reduce((sum, item) => sum + safe(item.value), 0);
+      const investedBalance = applied - returned;
       const referenceDate = dateInput.value || new Date().toLocaleDateString('sv-SE');
       const referenceMonth = referenceDate.slice(0, 7);
       const signedValue = (item) => ['expense', 'investment'].includes(normalizeType(item.type)) ? safe(item.value) : -safe(item.value);
@@ -182,6 +190,8 @@
 
       document.getElementById('totalApplied').textContent = fmt(applied);
       document.getElementById('totalReturned').textContent = fmt(returned);
+      document.getElementById('investedBalance').textContent = fmt(investedBalance);
+      document.getElementById('investedBalance').className = 'stat-value ' + (investedBalance > 0 ? 'negative' : investedBalance < 0 ? 'positive' : 'neutral');
       document.getElementById('monthMovement').textContent = fmt(monthNet);
       document.getElementById('monthMovement').className = 'stat-value ' + (monthNet > 0 ? 'negative' : monthNet < 0 ? 'positive' : 'neutral');
       document.getElementById('dayMovement').textContent = fmt(dayNet);
@@ -201,23 +211,31 @@
       });
 
       const entries = Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 6);
-      monthList.innerHTML = entries.length ? '' : '<div class="empty-state" style="display:block;"><i class="fa-solid fa-calendar-xmark"></i><p>Sem meses com movimentaÃ§Ã£o.</p></div>';
-      entries.forEach(([key, value]) => {
+      monthList.innerHTML = entries.length ? '' : '<div class="empty-state" style="display:block;"><i class="fa-solid fa-calendar-xmark"></i><p>Sem meses com movimentação.</p></div>';
+      entries.forEach(([key, value], index) => {
         const net = value.expenses - value.incomes;
-        monthList.innerHTML += `<div class="month-row"><div><strong>${monthLabel(`${key}-01`)}</strong><span>Aportes ${fmt(value.expenses)} â€¢ Retornos ${fmt(value.incomes)}</span></div><strong class="${net >= 0 ? 'negative' : 'positive'}">${fmt(net)}</strong></div>`;
+        monthList.innerHTML += `<div class="month-row" style="--accent:${accentForIndex(index)}"><div><strong>${monthLabel(`${key}-01`)}</strong><span>Aportes ${fmt(value.expenses)} • Retornos ${fmt(value.incomes)}</span></div><strong class="${net >= 0 ? 'negative' : 'positive'}">${fmt(net)}</strong></div>`;
       });
     }
 
     function renderSummary(transactions) {
       const last = transactions[0];
-      const highest = transactions.slice().sort((a, b) => safe(b.value) - safe(a.value))[0];
       const typeCount = transactions.reduce((acc, item) => { const type = normalizeType(item.type); acc[type] = (acc[type] || 0) + 1; return acc; }, {});
+      const applied = transactions.filter((item) => ['expense', 'investment'].includes(normalizeType(item.type))).reduce((sum, item) => sum + safe(item.value), 0);
+      const returned = transactions.filter((item) => normalizeType(item.type) === 'income').reduce((sum, item) => sum + safe(item.value), 0);
+      const fronts = transactions.reduce((acc, item) => {
+        const key = item.description || item.category || 'Sem dados';
+        acc[key] = (acc[key] || 0) + safe(item.value);
+        return acc;
+      }, {});
+      const dominant = Object.entries(fronts).sort((a, b) => b[1] - a[1])[0];
       summaryList.innerHTML = `
-        <div class="month-row"><div><strong>OperaÃ§Ãµes registradas</strong><span>Total filtrado na carteira</span></div><strong>${transactions.length}</strong></div>
-        <div class="month-row"><div><strong>Aportes</strong><span>Quantidade de saÃ­das em investimentos</span></div><strong class="negative">${(typeCount.expense || 0) + (typeCount.investment || 0)}</strong></div>
-        <div class="month-row"><div><strong>Resgates / Rendimentos</strong><span>Quantidade de entradas em investimentos</span></div><strong class="positive">${typeCount.income || 0}</strong></div>
-        <div class="month-row"><div><strong>Maior movimento</strong><span>${highest ? highest.description || 'Sem descriÃ§Ã£o' : 'Sem dados'}</span></div><strong>${highest ? fmt(highest.value) : '-'}</strong></div>
-        <div class="month-row"><div><strong>Ãšltimo lanÃ§amento</strong><span>${last ? formatDate(last.date) : 'Sem dados'}</span></div><strong>${last ? fmt(last.value) : '-'}</strong></div>
+        <div class="month-row" style="--accent:${accentForIndex(0)}"><div><strong>Operações registradas</strong><span>Total filtrado na carteira</span></div><strong>${transactions.length}</strong></div>
+        <div class="month-row" style="--accent:${accentForIndex(1)}"><div><strong>Aportes</strong><span>Quantidade de saídas em investimentos</span></div><strong class="negative">${(typeCount.expense || 0) + (typeCount.investment || 0)}</strong></div>
+        <div class="month-row" style="--accent:${accentForIndex(2)}"><div><strong>Resgates / Rendimentos</strong><span>Quantidade de entradas em investimentos</span></div><strong class="positive">${typeCount.income || 0}</strong></div>
+        <div class="month-row" style="--accent:${accentForIndex(3)}"><div><strong>Saldo investido</strong><span>Aportes menos resgates</span></div><strong class="${applied >= returned ? 'negative' : 'positive'}">${fmt(applied - returned)}</strong></div>
+        <div class="month-row" style="--accent:${accentForIndex(4)}"><div><strong>Principal frente</strong><span>${dominant ? dominant[0] : 'Sem dados'}</span></div><strong>${dominant ? fmt(dominant[1]) : '-'}</strong></div>
+        <div class="month-row" style="--accent:${accentForIndex(5)}"><div><strong>Último lançamento</strong><span>${last ? formatDate(last.date) : 'Sem dados'}</span></div><strong>${last ? fmt(last.value) : '-'}</strong></div>
       `;
     }
 
@@ -228,17 +246,17 @@
         return;
       }
       investmentEmpty.style.display = 'none';
-      transactions.forEach((item) => {
+      transactions.forEach((item, index) => {
         const normalizedType = normalizeType(item.type);
         const isIncome = normalizedType === 'income';
         const isInvestment = normalizedType === 'investment';
         investmentList.innerHTML += `
-          <article class="invest-item">
+          <article class="invest-item" style="--accent:${accentForIndex(index)}">
             <div class="invest-main">
               <div class="invest-icon"><i class="fa-solid ${isIncome ? 'fa-arrow-trend-up' : isInvestment ? 'fa-chart-line' : 'fa-arrow-trend-down'}"></i></div>
               <div class="invest-text">
-                <strong>${item.description || 'Sem descriÃ§Ã£o'}</strong>
-                <span><span class="tag-chip">${isIncome ? 'Retorno' : isInvestment ? 'Investimento' : 'Aporte'}</span> â€¢ ${formatDate(item.date)}</span>
+                <strong>${item.description || 'Sem descrição'}</strong>
+                <span><span class="tag-chip">${isIncome ? 'Retorno' : isInvestment ? 'Investimento' : 'Aporte'}</span> • ${item.category || 'Investimentos'} • ${formatDate(item.date)}</span>
               </div>
             </div>
             <strong class="${isIncome ? 'positive' : 'negative'}">${isIncome ? '+' : '-'}${fmt(item.value)}</strong>

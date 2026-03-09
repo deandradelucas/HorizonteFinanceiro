@@ -1,663 +1,322 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novo Lançamento - Horizonte Financeiro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Registrar Transação - Horizonte Financeiro</title>
+    <link rel="stylesheet" href="/style.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Horizonte">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .currency-field {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            padding: 0 14px;
-            border: 0.5px solid transparent;
-            border-radius: 16px;
-            background: var(--card-bg);
-        }
-
-        .currency-prefix {
-            color: var(--text-muted);
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            white-space: nowrap;
-            min-width: 28px;
-            text-align: center;
-            pointer-events: none;
-            text-shadow: 0 0 10px currentColor;
-        }
-
-        .currency-field input {
-            flex: 1;
-            padding-left: 0 !important;
-            border: 0 !important;
-            box-shadow: none !important;
-            background: transparent !important;
-        }
-
-        .form-card[data-transaction-type="expense"] .input-field input,
-        .form-card[data-transaction-type="expense"] .input-field select {
-            border-color: rgba(255, 95, 95, 0.52) !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(255, 95, 95, 0.08), 0 0 6px rgba(255, 95, 95, 0.06) !important;
-        }
-
-        .form-card[data-transaction-type="expense"] .currency-prefix,
-        .form-card[data-transaction-type="expense"] .input-field i:first-child {
-            color: #ff5f5f !important;
-            text-shadow: 0 0 12px rgba(255, 95, 95, 0.7);
-        }
-
-        .form-card[data-transaction-type="expense"] .input-field input:focus,
-        .form-card[data-transaction-type="expense"] .input-field select:focus {
-            border-color: #ff5f5f !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(255, 95, 95, 0.1), 0 0 8px rgba(255, 95, 95, 0.1) !important;
-        }
-
-        .form-card[data-transaction-type="income"] .input-field input,
-        .form-card[data-transaction-type="income"] .input-field select {
-            border-color: rgba(53, 255, 156, 0.52) !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(53, 255, 156, 0.08), 0 0 6px rgba(53, 255, 156, 0.06) !important;
-        }
-
-        .form-card[data-transaction-type="income"] .currency-prefix,
-        .form-card[data-transaction-type="income"] .input-field i:first-child {
-            color: #35ff9c !important;
-            text-shadow: 0 0 12px rgba(53, 255, 156, 0.72);
-        }
-
-        .form-card[data-transaction-type="income"] .input-field input:focus,
-        .form-card[data-transaction-type="income"] .input-field select:focus {
-            border-color: #35ff9c !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(53, 255, 156, 0.1), 0 0 8px rgba(53, 255, 156, 0.1) !important;
-        }
-
-        .form-card[data-transaction-type="investment"] .input-field input,
-        .form-card[data-transaction-type="investment"] .input-field select {
-            border-color: rgba(168, 85, 247, 0.52) !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(168, 85, 247, 0.08), 0 0 6px rgba(168, 85, 247, 0.06) !important;
-        }
-
-        .form-card[data-transaction-type="investment"] .currency-prefix,
-        .form-card[data-transaction-type="investment"] .input-field i:first-child {
-            color: #a855f7 !important;
-            text-shadow: 0 0 12px rgba(168, 85, 247, 0.72);
-        }
-
-        .form-card[data-transaction-type="investment"] .input-field input:focus,
-        .form-card[data-transaction-type="investment"] .input-field select:focus {
-            border-color: #a855f7 !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(168, 85, 247, 0.1), 0 0 8px rgba(168, 85, 247, 0.1) !important;
-        }
-
-        .form-card[data-transaction-type="expense"] .currency-field {
-            border-color: rgba(255, 95, 95, 0.52) !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(255, 95, 95, 0.08), 0 0 6px rgba(255, 95, 95, 0.06) !important;
-        }
-
-        .form-card[data-transaction-type="income"] .currency-field {
-            border-color: rgba(53, 255, 156, 0.52) !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(53, 255, 156, 0.08), 0 0 6px rgba(53, 255, 156, 0.06) !important;
-        }
-
-        .form-card[data-transaction-type="investment"] .currency-field {
-            border-color: rgba(168, 85, 247, 0.52) !important;
-            border-width: 0.5px !important;
-            box-shadow: 0 0 0 0.5px rgba(168, 85, 247, 0.08), 0 0 6px rgba(168, 85, 247, 0.06) !important;
-        }
-
-        .custom-input-group[hidden] {
-            display: none !important;
-        }
-
-        .type-selector {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .category-group {
-            order: 1;
-        }
-
-        .description-group {
-            order: 2;
-        }
-
-        .value-group {
-            order: 3;
-        }
-
-        .date-group {
-            order: 4;
-        }
-
-        .recurring-group {
-            order: 5;
-            grid-column: span 2;
-        }
-
-        .recurring-option {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            border: 0.5px solid var(--border-color);
-            border-radius: 16px;
-            background: var(--bg-color);
-            transition: var(--transition);
-        }
-
-        .recurring-option input {
-            accent-color: var(--primary-color);
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-        }
-
-        .recurring-text {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .recurring-text strong {
-            font-size: 14px;
-            color: var(--text-main);
-        }
-
-        .recurring-text span {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .form-card[data-transaction-type="expense"] .recurring-option {
-            border-color: rgba(255, 95, 95, 0.52);
-            box-shadow: 0 0 0 0.5px rgba(255, 95, 95, 0.08), 0 0 6px rgba(255, 95, 95, 0.05);
-        }
-
-        .form-card[data-transaction-type="income"] .recurring-option {
-            border-color: rgba(53, 255, 156, 0.52);
-            box-shadow: 0 0 0 0.5px rgba(53, 255, 156, 0.08), 0 0 6px rgba(53, 255, 156, 0.05);
-        }
-
-        .form-card[data-transaction-type="investment"] .recurring-option {
-            border-color: rgba(168, 85, 247, 0.52);
-            box-shadow: 0 0 0 0.5px rgba(168, 85, 247, 0.08), 0 0 6px rgba(168, 85, 247, 0.05);
-        }
-
-        @media (max-width: 900px) {
-            .form-grid {
-                grid-template-columns: 1fr !important;
-                gap: 16px !important;
-            }
-
-            .form-grid .input-group {
-                grid-column: span 1 !important;
-            }
-
-            .recurring-group {
-                grid-column: span 1 !important;
-            }
-        }
+        .entry-shell,.scope-selector,.type-selector,.form-grid{display:grid;gap:16px}
+        .entry-shell{gap:24px}
+        .entry-form-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:28px;padding:28px;box-shadow:0 12px 32px rgba(15,23,42,.06)}
+        .scope-selector{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .type-selector{grid-template-columns:repeat(3,minmax(0,1fr))}
+        .scope-card,.radio-card{position:relative;display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:20px;border:1px solid var(--border-color);background:var(--bg-color);cursor:pointer;transition:var(--transition)}
+        .scope-card input,.radio-card input{position:absolute;opacity:0;pointer-events:none}
+        .scope-icon,.radio-card .icon{width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0}
+        .scope-card .scope-text strong,.radio-card .label{color:var(--text-main);font-size:15px;font-weight:700}
+        .scope-card .scope-text span{display:block;margin-top:4px;color:var(--text-muted);font-size:12px}
+        .scope-card[data-scope="pf"] .scope-icon{background:linear-gradient(135deg,#0ea5e9,#2563eb)}
+        .scope-card[data-scope="pj"] .scope-icon{background:linear-gradient(135deg,#f59e0b,#ea580c)}
+        .red-icon{background:linear-gradient(135deg,#ef4444,#dc2626)} .green-icon{background:linear-gradient(135deg,#22c55e,#16a34a)} .purple-icon{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+        .scope-card.active,.radio-card.active{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.08)}
+        .scope-card[data-scope="pf"].active{border-color:rgba(37,99,235,.42);box-shadow:0 0 0 1px rgba(37,99,235,.14),0 14px 28px rgba(37,99,235,.12)}
+        .scope-card[data-scope="pj"].active{border-color:rgba(234,88,12,.42);box-shadow:0 0 0 1px rgba(234,88,12,.14),0 14px 28px rgba(234,88,12,.12)}
+        .radio-card[data-type="expense"].active{border-color:rgba(239,68,68,.42)} .radio-card[data-type="income"].active{border-color:rgba(34,197,94,.32)} .radio-card[data-type="investment"].active{border-color:rgba(139,92,246,.38)}
+        .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .input-group{display:grid;gap:8px} .input-group label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+        .input-field,.currency-field,.recurring-option,.context-banner{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:58px;border:1px solid var(--border-color);border-radius:18px;background:var(--bg-color);transition:var(--transition)}
+        .input-field input,.input-field select,.currency-field input{width:100%;border:0;outline:0;background:transparent;color:var(--text-main);font:inherit;min-height:54px}
+        .input-field i:first-child,.currency-prefix{color:var(--text-muted);flex-shrink:0} .currency-prefix{min-width:28px;text-align:center;font-weight:700;pointer-events:none}
+        .span-2{grid-column:span 2} .recurring-option{justify-content:flex-start;padding:16px 18px} .recurring-option input{accent-color:var(--primary-color);width:18px;height:18px;flex-shrink:0}
+        .recurring-text{display:flex;flex-direction:column;gap:4px} .recurring-text strong{color:var(--text-main);font-size:14px} .recurring-text span{color:var(--text-muted);font-size:13px}
+        .context-banner{justify-content:space-between;padding:18px 20px;margin-bottom:18px} .context-banner strong{color:var(--text-main);display:block;font-size:15px} .context-banner span{color:var(--text-muted);font-size:13px;display:block;margin-top:4px}
+        .context-pill{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent}
+        .entry-form-card[data-financial-scope="pf"] .context-banner{border-color:rgba(37,99,235,.24);background:rgba(37,99,235,.08)} .entry-form-card[data-financial-scope="pf"] .context-pill{background:rgba(37,99,235,.14);color:#2563eb;border-color:rgba(37,99,235,.18)}
+        .entry-form-card[data-financial-scope="pj"] .context-banner{border-color:rgba(234,88,12,.22);background:rgba(234,88,12,.08)} .entry-form-card[data-financial-scope="pj"] .context-pill{background:rgba(234,88,12,.14);color:#ea580c;border-color:rgba(234,88,12,.18)}
+        .entry-form-card[data-transaction-type="expense"] .input-field,.entry-form-card[data-transaction-type="expense"] .currency-field,.entry-form-card[data-transaction-type="expense"] .recurring-option{border-color:rgba(239,68,68,.34)} .entry-form-card[data-transaction-type="expense"] .input-field i:first-child,.entry-form-card[data-transaction-type="expense"] .currency-prefix{color:#ef4444}
+        .entry-form-card[data-transaction-type="income"] .input-field,.entry-form-card[data-transaction-type="income"] .currency-field,.entry-form-card[data-transaction-type="income"] .recurring-option{border-color:rgba(34,197,94,.22)} .entry-form-card[data-transaction-type="income"] .input-field i:first-child,.entry-form-card[data-transaction-type="income"] .currency-prefix{color:#22c55e}
+        .entry-form-card[data-transaction-type="investment"] .input-field,.entry-form-card[data-transaction-type="investment"] .currency-field,.entry-form-card[data-transaction-type="investment"] .recurring-option{border-color:rgba(139,92,246,.26)} .entry-form-card[data-transaction-type="investment"] .input-field i:first-child,.entry-form-card[data-transaction-type="investment"] .currency-prefix{color:#8b5cf6}
+        .form-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;flex-wrap:wrap} .custom-input-group[hidden]{display:none!important}
+        @media (max-width:900px){.scope-selector,.type-selector,.form-grid{grid-template-columns:1fr}.span-2{grid-column:span 1}.entry-form-card{padding:22px 18px}.context-banner{align-items:flex-start;flex-direction:column}.form-actions>*{width:100%}}
     </style>
 </head>
-
 <body class="dashboard-body">
-    <script>
-        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
-    </script>
-    <!-- Sidebar -->
+    <script>const siteTheme=localStorage.getItem('siteTheme');if(siteTheme&&siteTheme!=='default')document.body.dataset.theme=siteTheme;if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
-            <h2>Horizonte Financeiro</h2>
-        </div>
+        <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
         <nav class="sidebar-nav">
             <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
             <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
+            <a href="/cnpj" class="nav-item"><i class="fa-solid fa-building"></i> CNPJ</a>
             <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
             <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
         </nav>
-        <div class="sidebar-footer">
-            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
-        </div>
+        <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
     </aside>
-
-    <!-- Main Content -->
     <main class="main-content">
         <header class="topbar">
-            <button id="mobileMenuBtn" class="mobile-menu-btn">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar...">
-            </div>
-            <div class="user-profile" style="display: flex; align-items: center;">
-                <span id="currentDateDisplay" class="date-display"
-                    style="margin-right: 15px; font-weight: 500; color: var(--text-muted); font-size: 14px; display: flex; align-items: center;"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-            </div>
+            <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar..."></div>
+            <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button></div>
         </header>
-
-        <div class="dashboard-content">
+        <div class="dashboard-content entry-shell">
             <div class="page-header">
                 <div>
-                    <a href="/dashboard" class="back-link"><i class="fa-solid fa-arrow-left"></i>
-                        Voltar</a>
-                    <h1 style="margin-top: 10px;">Registrar Transação</h1>
-                    <p class="subtitle" style="margin-bottom: 0;">Adicione uma nova receita ou despesa ao seu histórico.
-                    </p>
+                    <a id="registerBackLink" href="/dashboard" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+                    <h1 id="registerPageTitle" style="margin-top:10px;">Registrar Transação</h1>
+                    <p id="registerPageSubtitle" class="subtitle" style="margin-bottom:0;">Escolha se o lançamento pertence à sua rotina pessoal ou ao seu CNPJ e mantenha tudo separado.</p>
                 </div>
             </div>
-
-            <div class="form-card">
+            <div class="entry-form-card" data-transaction-type="expense" data-financial-scope="pf">
+                <div class="context-banner">
+                    <div><strong id="contextBannerTitle">Lançamento pessoal</strong><span id="contextBannerSubtitle">Use este fluxo para despesas, receitas e investimentos da sua pessoa física.</span></div>
+                    <span class="context-pill" id="contextPill"><i class="fa-solid fa-user"></i> PF</span>
+                </div>
                 <form id="itemForm">
+                    <div id="scopeSelector" class="scope-selector">
+                        <label class="scope-card active" data-scope="pf"><input type="radio" name="financialScopeOption" value="pf" checked><span class="scope-icon"><i class="fa-solid fa-user"></i></span><span class="scope-text"><strong>Pessoa Física</strong><span>Movimentações pessoais.</span></span></label>
+                        <label class="scope-card" data-scope="pj"><input type="radio" name="financialScopeOption" value="pj"><span class="scope-icon"><i class="fa-solid fa-building"></i></span><span class="scope-text"><strong>CNPJ</strong><span>Receitas e custos da empresa.</span></span></label>
+                        <input type="hidden" id="financialScope" value="pf">
+                    </div>
                     <div class="type-selector">
-                        <label class="radio-card active" data-type="expense">
-                            <input type="radio" name="transactionType" value="expense" checked>
-                            <span class="icon red-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
-                            <span class="label">Despesa</span>
-                        </label>
-                        <label class="radio-card" data-type="income">
-                            <input type="radio" name="transactionType" value="income">
-                            <span class="icon green-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
-                            <span class="label">Receita</span>
-                        </label>
-                        <label class="radio-card" data-type="investment">
-                            <input type="radio" name="transactionType" value="investment">
-                            <span class="icon purple-icon"><i class="fa-solid fa-chart-line"></i></span>
-                            <span class="label">Investimento</span>
-                        </label>
+                        <label class="radio-card active" data-type="expense"><input type="radio" name="transactionType" value="expense" checked><span class="icon red-icon"><i class="fa-solid fa-arrow-trend-down"></i></span><span class="label">Despesa</span></label>
+                        <label class="radio-card" data-type="income"><input type="radio" name="transactionType" value="income"><span class="icon green-icon"><i class="fa-solid fa-arrow-trend-up"></i></span><span class="label">Receita</span></label>
+                        <label class="radio-card" data-type="investment"><input type="radio" name="transactionType" value="investment"><span class="icon purple-icon"><i class="fa-solid fa-chart-line"></i></span><span class="label">Investimento</span></label>
                     </div>
-
                     <div class="form-grid">
-                        <div class="input-group description-group">
-                            <label for="itemDescription">Subcategoria</label>
-                            <div class="input-field">
-                                <i class="fa-solid fa-pen"></i>
-                                <select id="itemDescription" required>
-                                    <option value="" disabled selected>Selecione uma subcategoria</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div id="itemDescriptionCustomGroup" class="input-group custom-input-group description-group" hidden>
-                            <label for="itemDescriptionCustom">Outra subcategoria</label>
-                            <div class="input-field">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                                <input type="text" id="itemDescriptionCustom" placeholder="Digite a subcategoria">
-                            </div>
-                        </div>
-
-                        <div class="input-group value-group">
-                            <label for="itemValue">Valor (R$)</label>
-                            <div class="input-field currency-field">
-                                <span class="currency-prefix">R$</span>
-                                <input type="text" id="itemValue" inputmode="decimal" placeholder="" required>
-                            </div>
-                        </div>
-
-                        <div class="input-group category-group">
-                            <label for="itemCategory">Categoria</label>
-                            <div class="input-field">
-                                <i class="fa-solid fa-tags"></i>
-                                <select id="itemCategory" required>
-                                    <option value="" disabled selected>Selecione uma categoria</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group date-group">
-                            <label for="itemDate">Data</label>
-                            <div class="input-field">
-                                <i class="fa-solid fa-calendar"></i>
-                                <input type="date" id="itemDate" required>
-                            </div>
-                        </div>
-
-                        <div class="input-group recurring-group">
-                            <label class="recurring-option" for="itemRecurring">
-                                <input type="checkbox" id="itemRecurring">
-                                <span class="recurring-text">
-                                    <strong>Essa é uma transação recorrente</strong>
-                                    <span>Ex.: conta de luz, aluguel ou mensalidade.</span>
-                                </span>
-                            </label>
-                        </div>
+                        <div class="input-group"><label for="itemCategory">Categoria</label><div class="input-field"><i class="fa-solid fa-tags"></i><select id="itemCategory" required><option value="" disabled selected>Selecione uma categoria</option></select></div></div>
+                        <div class="input-group"><label for="itemDescription">Subcategoria</label><div class="input-field"><i class="fa-solid fa-pen"></i><select id="itemDescription" required><option value="" disabled selected>Selecione uma subcategoria</option></select></div></div>
+                        <div id="itemDescriptionCustomGroup" class="input-group custom-input-group" hidden><label for="itemDescriptionCustom">Outra subcategoria</label><div class="input-field"><i class="fa-solid fa-pen-to-square"></i><input type="text" id="itemDescriptionCustom" placeholder="Digite a subcategoria"></div></div>
+                        <div class="input-group"><label for="itemValue">Valor</label><div class="currency-field"><span class="currency-prefix">R$</span><input type="text" id="itemValue" inputmode="decimal" required></div></div>
+                        <div class="input-group"><label for="itemDate">Data</label><div class="input-field"><i class="fa-solid fa-calendar"></i><input type="date" id="itemDate" required></div></div>
+                        <div class="input-group span-2"><label class="recurring-option" for="itemRecurring"><input type="checkbox" id="itemRecurring"><span class="recurring-text"><strong>Essa é uma transação recorrente</strong><span>Ex.: conta mensal, assinatura, contrato fixo ou despesa operacional recorrente.</span></span></label></div>
                     </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn-secondary"
-                            onclick="window.location.href='/dashboard'">Cancelar</button>
-                        <button type="submit" class="btn-primary" style="width: auto;">Salvar Transação</button>
-                    </div>
+                    <div class="form-actions"><button id="registerCancelBtn" type="button" class="btn-secondary" onclick="window.location.href='/dashboard'">Cancelar</button><button type="submit" class="btn-primary" style="width:auto;">Salvar transação</button></div>
                 </form>
             </div>
         </div>
     </main>
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            const categoryOptionsByType = {
-                expense: [
-                    { value: 'alimentacao', label: 'Alimentação' },
-                    { value: 'transporte', label: 'Transporte' },
-                    { value: 'automovel', label: 'Automóvel' },
-                    { value: 'contas', label: 'Contas e Serviços' },
-                    { value: 'moradia', label: 'Moradia' },
-                    { value: 'lazer', label: 'Lazer' },
-                    { value: 'saude', label: 'Saúde' },
-                    { value: 'educacao', label: 'Educação' },
-                    { value: 'outros', label: 'Outros' }
-                ],
-                income: [
-                    { value: 'salario', label: 'Salário' },
-                    { value: 'freelance', label: 'Freelance' },
-                    { value: 'vendas', label: 'Vendas' },
-                    { value: 'bonus', label: 'Bônus' },
-                    { value: 'outros', label: 'Outros' }
-                ],
-                investment: [
-                    { value: 'investimentos', label: 'Investimentos' },
-                    { value: 'outros', label: 'Outros' }
-                ]
+            const categoryOptionsByScope = {
+                pf: {
+                    expense: [{ value: 'alimentacao', label: 'Alimentação' }, { value: 'transporte', label: 'Transporte' }, { value: 'automovel', label: 'Automóvel' }, { value: 'contas', label: 'Contas e Serviços' }, { value: 'streaming', label: 'Streaming' }, { value: 'moradia', label: 'Moradia' }, { value: 'lazer', label: 'Lazer' }, { value: 'saude', label: 'Saúde' }, { value: 'educacao', label: 'Educação' }, { value: 'outros', label: 'Outros' }],
+                    income: [{ value: 'salario', label: 'Salário' }, { value: 'freelance', label: 'Freelance' }, { value: 'vendas', label: 'Vendas' }, { value: 'bonus', label: 'Bônus' }, { value: 'outros', label: 'Outros' }],
+                    investment: [{ value: 'investimentos', label: 'Investimentos' }, { value: 'outros', label: 'Outros' }]
+                },
+                pj: {
+                    expense: [{ value: 'operacional', label: 'Operacional' }, { value: 'fornecedores', label: 'Fornecedores' }, { value: 'impostos', label: 'Impostos e Taxas' }, { value: 'marketing', label: 'Marketing' }, { value: 'tecnologia', label: 'Tecnologia' }, { value: 'equipe', label: 'Equipe e Pró-Labore' }, { value: 'deslocamento', label: 'Deslocamento' }, { value: 'estrutura', label: 'Estrutura' }, { value: 'outros', label: 'Outros' }],
+                    income: [{ value: 'vendas', label: 'Vendas' }, { value: 'servicos', label: 'Serviços' }, { value: 'contratos', label: 'Contratos' }, { value: 'recorrencia', label: 'Receita Recorrente' }, { value: 'reembolso', label: 'Reembolsos' }, { value: 'outros', label: 'Outros' }],
+                    investment: [{ value: 'caixa', label: 'Caixa Empresarial' }, { value: 'expansao', label: 'Expansão' }, { value: 'equipamentos', label: 'Equipamentos' }, { value: 'reserva', label: 'Reserva da Empresa' }, { value: 'outros', label: 'Outros' }]
+                }
             };
-
-            const CUSTOM_OPTION_VALUE = 'outros';
-
-            const descriptionSuggestionsByCategory = {
-                alimentacao: ['Lanche', 'Almoço', 'Café', 'Janta', 'Delivery', 'Restaurante', 'Bar', 'Supermercado', 'Padaria', 'Feira'],
-                transporte: ['Uber', '99', 'Combustível', 'Passagem de ônibus', 'Metrô', 'Pedágio', 'Estacionamento', 'Táxi'],
-                automovel: ['Lavagem', 'Manutenção', 'Conserto', 'Troca de óleo', 'Seguro', 'IPVA', 'Licenciamento', 'Pneu', 'Oficina', 'Revisão'],
-                contas: ['Conta de luz', 'Conta de água', 'Internet', 'Telefone', 'Gás', 'Streaming', 'Assinatura', 'Boleto'],
-                moradia: ['Aluguel', 'Condomínio', 'Reforma', 'Móveis', 'Decoração', 'Material de construção'],
-                lazer: ['Cinema', 'Show', 'Viagem', 'Passeio', 'Presente', 'Academia', 'Jogo'],
+            const subcategories = {
+                alimentacao: ['Lanche', 'Almoço', 'Café', 'Janta', 'Delivery', 'Restaurante', 'Bar', 'Supermercado'],
+                transporte: ['Uber', '99', 'Combustível', 'Passagem', 'Metrô', 'Pedágio', 'Estacionamento'],
+                automovel: ['Lavagem', 'Manutenção', 'Conserto', 'Seguro', 'IPVA', 'Pneu', 'Revisão'],
+                contas: ['Conta de luz', 'Conta de água', 'Internet', 'Telefone', 'Gás'],
+                streaming: ['Netflix', 'Prime Video', 'Disney+', 'Max', 'Spotify', 'YouTube Premium', 'Apple Music', 'Globoplay'],
+                moradia: ['Aluguel', 'Condomínio', 'Reforma', 'Móveis', 'Decoração'],
+                lazer: ['Cinema', 'Show', 'Viagem', 'Passeio', 'Presente', 'Academia'],
                 saude: ['Consulta', 'Exame', 'Farmácia', 'Plano de saúde', 'Dentista', 'Terapia'],
-                educacao: ['Curso', 'Mensalidade', 'Livro', 'Material escolar', 'Certificação', 'Pós-graduação'],
+                educacao: ['Curso', 'Mensalidade', 'Livro', 'Material escolar', 'Certificação'],
                 salario: ['Salário mensal', 'Adiantamento', 'Comissão'],
-                bonus: ['Bônus', 'Premiação', 'Participação nos lucros'],
                 freelance: ['Projeto freelance', 'Consultoria', 'Serviço avulso', 'Pagamento de cliente'],
                 vendas: ['Venda online', 'Marketplace', 'Venda de produto', 'Revenda'],
+                bonus: ['Bônus', 'Premiação', 'Participação nos lucros'],
                 investimentos: ['Aporte', 'Cofrinho', 'Corretagem', 'Taxa', 'Compra de ativo'],
+                operacional: ['Internet empresa', 'Energia', 'Software', 'Assinatura SaaS', 'Escritório'],
+                fornecedores: ['Compra de insumo', 'Pagamento fornecedor', 'Terceirizado', 'Matéria-prima'],
+                impostos: ['DAS', 'Simples Nacional', 'ISS', 'Taxa bancária', 'Contabilidade'],
+                marketing: ['Anúncio', 'Tráfego pago', 'Designer', 'Impulsionamento', 'CRM'],
+                tecnologia: ['Hospedagem', 'Domínio', 'Ferramenta', 'Licença', 'API'],
+                equipe: ['Pró-labore', 'Comissão', 'Freela', 'Benefício', 'Folha'],
+                deslocamento: ['Uber empresa', 'Combustível', 'Pedágio', 'Viagem'],
+                estrutura: ['Aluguel comercial', 'Móveis', 'Reforma', 'Material'],
+                servicos: ['Projeto entregue', 'Consultoria', 'Mensalidade', 'Cliente recorrente'],
+                contratos: ['Contrato anual', 'Renovação', 'Parceria'],
+                recorrencia: ['Assinatura mensal', 'Plano recorrente', 'Mensalidade'],
+                reembolso: ['Reembolso de cliente', 'Reembolso bancário'],
+                caixa: ['Aplicar no caixa', 'Reserva operacional'],
+                expansao: ['Capital de giro', 'Expansão da empresa', 'Nova unidade'],
+                equipamentos: ['Notebook', 'Monitor', 'Impressora', 'Cadeira'],
+                reserva: ['Reserva de emergência PJ', 'Caixa estratégico'],
                 outros: ['Transferência', 'Ajuste', 'Pagamento recebido', 'Despesa diversa']
             };
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const transactionId = urlParams.get('id');
+            const customOptionValue = 'outros';
             const userId = sessionStorage.getItem('userId');
-            const descriptionSelect = document.getElementById('itemDescription');
+            if (!userId) { window.location.href = '/login'; return; }
+            const pageParams = new URLSearchParams(window.location.search);
+            const transactionId = pageParams.get('id');
+            const formCard = document.querySelector('.entry-form-card');
+            const scopeSelector = document.getElementById('scopeSelector');
+            const scopeCards = document.querySelectorAll('.scope-card');
+            const typeCards = document.querySelectorAll('.radio-card');
+            const financialScopeInput = document.getElementById('financialScope');
             const categorySelect = document.getElementById('itemCategory');
+            const descriptionSelect = document.getElementById('itemDescription');
             const descriptionCustomGroup = document.getElementById('itemDescriptionCustomGroup');
             const descriptionCustomInput = document.getElementById('itemDescriptionCustom');
             const valueInput = document.getElementById('itemValue');
-            const formCard = document.querySelector('.form-card');
-            const transactionTypeCards = document.querySelectorAll('.radio-card');
-
-            function getSelectedType() {
-                const checked = document.querySelector('input[name="transactionType"]:checked');
-                return checked ? checked.value : 'expense';
-            }
-
-            function applyTransactionTheme(type) {
-                if (formCard) {
-                    formCard.dataset.transactionType = type;
-                }
-            }
-
-            function parseCurrencyValue(value) {
-                const normalized = String(value || '')
-                    .replace(/\s/g, '')
-                    .replace('R$', '')
-                    .replace(/\./g, '')
-                    .replace(',', '.')
-                    .replace(/[^0-9.-]/g, '');
-                const parsed = parseFloat(normalized);
-                return Number.isFinite(parsed) ? parsed : 0;
-            }
-
-            function formatCurrencyValue(value) {
-                return parseCurrencyValue(value).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-
-            function setCustomFieldVisibility(group, input, visible, required) {
-                if (!group || !input) return;
-                group.hidden = !visible;
-                input.required = required;
-                if (!visible) input.value = '';
-            }
-
-            function getResolvedCategoryValue() {
-                return categorySelect.value;
-            }
-
-            function getResolvedDescriptionValue() {
-                return descriptionSelect.value === CUSTOM_OPTION_VALUE
-                    ? descriptionCustomInput.value.trim()
-                    : descriptionSelect.value;
-            }
-
-            function applyCurrencyMask() {
-                const digits = valueInput.value.replace(/\D/g, '');
-                if (!digits) {
-                    valueInput.value = '';
-                    return;
-                }
-
-                const numeric = Number(digits || '0') / 100;
-                valueInput.value = numeric.toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            }
-
-            function renderCategoryOptions(type, selectedValue = '') {
-                const options = [...categoryOptionsByType[type]];
-                if (selectedValue && !options.some((option) => option.value === selectedValue)) {
-                    options.push({ value: selectedValue, label: selectedValue });
-                }
-                categorySelect.innerHTML = '<option value="" disabled>Selecione uma categoria</option>';
-                options.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option.value;
-                    opt.textContent = option.label;
-                    categorySelect.appendChild(opt);
-                });
-
-                categorySelect.value = selectedValue || '';
-                if (!selectedValue) categorySelect.selectedIndex = 0;
-            }
-
-            function updateDescriptionOptions(selectedValue = '', categoryValue = categorySelect.value) {
-                const category = categoryValue;
-                if (!category) {
-                    descriptionSelect.innerHTML = '<option value="" disabled selected>Selecione uma categoria primeiro</option>';
-                    descriptionSelect.disabled = true;
-                    setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, false, false);
-                    return;
-                }
-
-                const suggestions = category === CUSTOM_OPTION_VALUE
-                    ? [CUSTOM_OPTION_VALUE]
-                    : [...(descriptionSuggestionsByCategory[category] || []), CUSTOM_OPTION_VALUE];
-                descriptionSelect.disabled = false;
-                descriptionSelect.innerHTML = '<option value="" disabled>Selecione uma subcategoria</option>';
-
-                suggestions.forEach(suggestion => {
-                    const option = document.createElement('option');
-                    option.value = suggestion;
-                    option.textContent = suggestion === CUSTOM_OPTION_VALUE ? 'Outros' : suggestion;
-                    descriptionSelect.appendChild(option);
-                });
-
-                if (selectedValue && !suggestions.includes(selectedValue)) {
-                    descriptionSelect.value = CUSTOM_OPTION_VALUE;
-                    setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, true, true);
-                    descriptionCustomInput.value = selectedValue;
-                    return;
-                }
-
-                descriptionSelect.value = selectedValue || '';
-                if (!selectedValue) descriptionSelect.selectedIndex = 0;
-                setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, selectedValue === CUSTOM_OPTION_VALUE, selectedValue === CUSTOM_OPTION_VALUE);
-            }
-
-            function syncCategoryUI(selectedValue = '', selectedDescription = '', customCategoryValue = '') {
-                const normalizedCategoryValue = customCategoryValue ? selectedValue : selectedValue;
-                renderCategoryOptions(getSelectedType(), normalizedCategoryValue);
-                updateDescriptionOptions(selectedDescription, normalizedCategoryValue);
-            }
-
-            function syncTransactionTypeUI(type, { resetSelections = true } = {}) {
-                transactionTypeCards.forEach((card) => {
-                    const radio = card.querySelector('input[type="radio"]');
-                    const isActive = card.dataset.type === type;
-                    card.classList.toggle('active', isActive);
-                    if (radio) radio.checked = isActive;
-                });
-
-                applyTransactionTheme(type);
-
-                if (resetSelections) {
-                    categorySelect.value = '';
-                    descriptionSelect.value = '';
-                    setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, false, false);
-                    syncCategoryUI();
-                }
-            }
-
-            if (!userId) {
-                window.location.href = '/login';
-                return;
-            }
-
+            const contextBannerTitle = document.getElementById('contextBannerTitle');
+            const contextBannerSubtitle = document.getElementById('contextBannerSubtitle');
+            const contextPill = document.getElementById('contextPill');
+            const registerPageTitle = document.getElementById('registerPageTitle');
+            const registerPageSubtitle = document.getElementById('registerPageSubtitle');
+            const registerBackLink = document.getElementById('registerBackLink');
+            const registerCancelBtn = document.getElementById('registerCancelBtn');
             const headerTitle = document.querySelector('.page-header h1');
-            const submitBtn = document.querySelector('button[type="submit"]');
-
-            applyTransactionTheme(getSelectedType());
-            syncCategoryUI();
-            valueInput.addEventListener('input', applyCurrencyMask);
-            valueInput.addEventListener('blur', () => {
-                if (!valueInput.value.trim()) {
-                    valueInput.value = '';
+            const submitBtn = document.querySelector('button[type=\"submit\"]');
+            const normalizeScope = (value) => value === 'pj' ? 'pj' : 'pf';
+            const isPjRoute = window.location.pathname === '/register-item-pj' || window.location.pathname === '/register-item-pj.html';
+            const initialScopeParam = isPjRoute ? 'pj' : normalizeScope(pageParams.get('scope'));
+            const lockedScope = !transactionId && (pageParams.get('locked') === '1' || isPjRoute || !pageParams.get('scope'));
+            const normalizeType = (value) => ['expense', 'income', 'investment'].includes(value) ? value : 'expense';
+            const parseCurrencyValue = (value) => { const normalized = String(value || '').replace(/\s/g, '').replace('R$', '').replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, ''); const parsed = parseFloat(normalized); return Number.isFinite(parsed) ? parsed : 0; };
+            const formatCurrencyValue = (value) => parseCurrencyValue(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const setCustomFieldVisibility = (visible) => { descriptionCustomGroup.hidden = !visible; descriptionCustomInput.required = visible; if (!visible) descriptionCustomInput.value = ''; };
+            const getSelectedScope = () => normalizeScope(financialScopeInput.value);
+            const getSelectedType = () => normalizeType((document.querySelector('input[name=\"transactionType\"]:checked') || {}).value);
+            const applyCatalogFromApi = (catalog) => {
+                ['pf', 'pj'].forEach((scope) => {
+                    ['expense', 'income', 'investment'].forEach((type) => {
+                        const rows = catalog?.[scope]?.[type];
+                        if (!Array.isArray(rows) || !rows.length) return;
+                        categoryOptionsByScope[scope][type] = rows.map((item) => ({
+                            value: item.category,
+                            label: item.category.charAt(0).toUpperCase() + item.category.slice(1).replace(/_/g, ' ')
+                        }));
+                        rows.forEach((item) => {
+                            subcategories[item.category] = [...(item.subcategories || [])];
+                        });
+                    });
+                });
+            };
+            const setNavigationTargets = (scope) => {
+                const target = scope === 'pj' ? '/cnpj' : '/dashboard';
+                registerBackLink.href = target;
+                registerCancelBtn.setAttribute('onclick', `window.location.href='${target}'`);
+            };
+            const setPageCopy = (scope, isEdit = false) => {
+                if (isEdit) {
+                    registerPageTitle.textContent = scope === 'pj' ? 'Editar transação PJ' : 'Editar transação PF';
+                    registerPageSubtitle.textContent = scope === 'pj'
+                        ? 'Atualize um lançamento da operação jurídica sem misturar com o financeiro pessoal.'
+                        : 'Atualize um lançamento da sua pessoa física com o fluxo separado do CNPJ.';
                     return;
                 }
-                valueInput.value = formatCurrencyValue(valueInput.value);
-            });
 
-            transactionTypeCards.forEach((card) => {
-                card.addEventListener('click', () => {
-                    syncTransactionTypeUI(card.dataset.type);
-                });
-            });
-
-            categorySelect.addEventListener('change', () => {
-                descriptionSelect.value = '';
-                setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, false, false);
-                updateDescriptionOptions('', categorySelect.value);
-            });
-
-            descriptionSelect.addEventListener('change', () => {
-                const isCustomDescription = descriptionSelect.value === CUSTOM_OPTION_VALUE;
-                setCustomFieldVisibility(descriptionCustomGroup, descriptionCustomInput, isCustomDescription, isCustomDescription);
-            });
-
+                registerPageTitle.textContent = scope === 'pj' ? 'Novo lançamento PJ' : 'Novo lançamento PF';
+                registerPageSubtitle.textContent = scope === 'pj'
+                    ? 'Registre receitas, despesas e investimentos do CNPJ em uma área exclusiva da empresa.'
+                    : 'Registre receitas, despesas e investimentos da pessoa física em um fluxo separado do CNPJ.';
+            };
+            const updateContextBanner = (scope) => {
+                if (scope === 'pj') {
+                    contextBannerTitle.textContent = 'Lançamento do CNPJ';
+                    contextBannerSubtitle.textContent = 'Use este fluxo para separar faturamento, custos e investimentos da empresa.';
+                    contextPill.innerHTML = '<i class=\"fa-solid fa-building\"></i> CNPJ';
+                } else {
+                    contextBannerTitle.textContent = 'Lançamento pessoal';
+                    contextBannerSubtitle.textContent = 'Use este fluxo para despesas, receitas e investimentos da sua pessoa física.';
+                    contextPill.innerHTML = '<i class=\"fa-solid fa-user\"></i> PF';
+                }
+            };
+            const applyScope = (scope) => {
+                financialScopeInput.value = scope;
+                formCard.dataset.financialScope = scope;
+                updateContextBanner(scope);
+                setNavigationTargets(scope);
+                scopeCards.forEach((card) => { const active = card.dataset.scope === scope; card.classList.toggle('active', active); const radio = card.querySelector('input[type=\"radio\"]'); if (radio) radio.checked = active; });
+            };
+            const applyType = (type) => {
+                formCard.dataset.transactionType = type;
+                typeCards.forEach((card) => { const active = card.dataset.type === type; card.classList.toggle('active', active); const radio = card.querySelector('input[type=\"radio\"]'); if (radio) radio.checked = active; });
+            };
+            const renderCategoryOptions = (selectedValue = '') => {
+                const options = [...(categoryOptionsByScope[getSelectedScope()]?.[getSelectedType()] || [])];
+                if (selectedValue && !options.some((option) => option.value === selectedValue)) options.push({ value: selectedValue, label: selectedValue });
+                categorySelect.innerHTML = '<option value=\"\" disabled>Selecione uma categoria</option>';
+                options.forEach((option) => { const opt = document.createElement('option'); opt.value = option.value; opt.textContent = option.label; categorySelect.appendChild(opt); });
+                categorySelect.value = selectedValue || ''; if (!selectedValue) categorySelect.selectedIndex = 0;
+            };
+            const renderDescriptionOptions = (selectedValue = '', categoryValue = categorySelect.value) => {
+                if (!categoryValue) { descriptionSelect.innerHTML = '<option value=\"\" disabled selected>Selecione uma categoria primeiro</option>'; descriptionSelect.disabled = true; setCustomFieldVisibility(false); return; }
+                const suggestions = [...(subcategories[categoryValue] || []), customOptionValue];
+                descriptionSelect.disabled = false;
+                descriptionSelect.innerHTML = '<option value=\"\" disabled>Selecione uma subcategoria</option>';
+                suggestions.forEach((value) => { const option = document.createElement('option'); option.value = value; option.textContent = value === customOptionValue ? 'Outros' : value; descriptionSelect.appendChild(option); });
+                if (selectedValue && !suggestions.includes(selectedValue)) { descriptionSelect.value = customOptionValue; setCustomFieldVisibility(true); descriptionCustomInput.value = selectedValue; return; }
+                descriptionSelect.value = selectedValue || ''; if (!selectedValue) descriptionSelect.selectedIndex = 0; setCustomFieldVisibility(selectedValue === customOptionValue);
+            };
+            const syncOptions = (categoryValue = '', descriptionValue = '') => { renderCategoryOptions(categoryValue); renderDescriptionOptions(descriptionValue, categoryValue); };
+            const resetCategoryState = () => { categorySelect.value = ''; descriptionSelect.value = ''; setCustomFieldVisibility(false); syncOptions(); };
+            const applyCurrencyMask = () => { const digits = valueInput.value.replace(/\D/g, ''); if (!digits) { valueInput.value = ''; return; } valueInput.value = (Number(digits) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+            const getResolvedDescription = () => descriptionSelect.value === customOptionValue ? descriptionCustomInput.value.trim() : descriptionSelect.value;
+            try {
+                const catalogResponse = await fetch('/api/transaction-catalog', { headers: { 'user-id': userId } });
+                if (catalogResponse.ok) {
+                    applyCatalogFromApi(await catalogResponse.json());
+                }
+            } catch (error) {
+                console.error('Erro ao carregar cat?logo de transa?es:', error);
+            }
+            applyScope(initialScopeParam); applyType('expense'); syncOptions(); setPageCopy(initialScopeParam, false);
+            if (lockedScope) scopeSelector.hidden = true;
+            scopeCards.forEach((card) => card.addEventListener('click', () => {
+                if (lockedScope) return;
+                applyScope(card.dataset.scope); resetCategoryState(); setPageCopy(card.dataset.scope, false);
+            }));
+            typeCards.forEach((card) => card.addEventListener('click', () => { applyType(card.dataset.type); resetCategoryState(); }));
+            categorySelect.addEventListener('change', () => renderDescriptionOptions('', categorySelect.value));
+            descriptionSelect.addEventListener('change', () => setCustomFieldVisibility(descriptionSelect.value === customOptionValue));
+            valueInput.addEventListener('input', applyCurrencyMask);
+            valueInput.addEventListener('blur', () => { if (valueInput.value.trim()) valueInput.value = formatCurrencyValue(valueInput.value); });
             if (transactionId) {
-                // Modo Edição
-                headerTitle.textContent = 'Editar Transação';
-                submitBtn.textContent = 'Atualizar Transação';
-
+                headerTitle.textContent = 'Editar transação'; submitBtn.textContent = 'Atualizar transação';
                 try {
-                    const response = await fetch(`/api/transactions/${transactionId}`, {
-                        headers: { 'user-id': userId }
-                    });
+                    const response = await fetch(`/api/transactions/${transactionId}`, { headers: { 'user-id': userId } });
                     if (response.ok) {
-                        const t = await response.json();
-
-                        // Preencher forma
-                        descriptionSelect.value = '';
-                        valueInput.value = formatCurrencyValue(t.value);
-                        document.getElementById('itemDate').value = t.date;
-                        document.getElementById('itemRecurring').checked = t.isRecurring === 1;
-
-                        // Tipo de transação
-                        if (['income', 'expense', 'investment'].includes(t.type)) {
-                            syncTransactionTypeUI(t.type, { resetSelections: false });
-                        } else {
-                            syncTransactionTypeUI('expense', { resetSelections: false });
-                        }
-
-                        const knownCategories = categoryOptionsByType[t.type] || [];
-                        const isKnownCategory = knownCategories.some((option) => option.value === t.category);
-                        const customCategoryValue = isKnownCategory ? '' : t.category;
-                        syncCategoryUI(isKnownCategory ? t.category : CUSTOM_OPTION_VALUE, t.description, customCategoryValue);
+                        const transaction = await response.json();
+                        applyScope(normalizeScope(transaction.financial_scope || transaction.financialScope));
+                        setPageCopy(normalizeScope(transaction.financial_scope || transaction.financialScope), true);
+                        applyType(normalizeType(transaction.type));
+                        syncOptions(transaction.category, transaction.description);
+                        valueInput.value = formatCurrencyValue(transaction.value);
+                        document.getElementById('itemDate').value = transaction.date || '';
+                        document.getElementById('itemRecurring').checked = Boolean(transaction.isRecurring);
+                    }
+                } catch (error) { console.error('Erro ao carregar transação:', error); }
+            }
+            document.getElementById('itemForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const payload = { type: getSelectedType(), description: getResolvedDescription(), value: parseCurrencyValue(valueInput.value), category: categorySelect.value, date: document.getElementById('itemDate').value, isRecurring: document.getElementById('itemRecurring').checked, financialScope: getSelectedScope() };
+                if (!payload.category || !payload.description || !payload.date || !payload.value) {
+                    alert('Preencha categoria, subcategoria, valor e data antes de salvar.');
+                    return;
+                }
+                try {
+                    const endpoint = transactionId ? `/api/transactions/${transactionId}` : '/api/transactions';
+                    const method = transactionId ? 'PUT' : 'POST';
+                    const response = await fetch(endpoint, { method, headers: { 'Content-Type': 'application/json', 'user-id': userId }, body: JSON.stringify(payload) });
+                    if (response.ok) window.location.href = payload.financialScope === 'pj' ? '/cnpj' : '/transactions';
+                    else {
+                        const data = await response.json().catch(() => ({}));
+                        alert(data.error || `Erro ao ${transactionId ? 'atualizar' : 'salvar'} transa??o.`);
                     }
                 } catch (error) {
-                    console.error('Erro ao buscar transação:', error);
-                }
-            }
-
-            // Sobrescrever o submit do form se for edição
-            const form = document.getElementById('itemForm');
-            form.addEventListener('submit', async (e) => {
-                if (transactionId) {
-                    e.preventDefault();
-
-                    const transactionData = {
-                        type: document.querySelector('input[name="transactionType"]:checked').value,
-                        description: getResolvedDescriptionValue(),
-                        value: parseCurrencyValue(document.getElementById('itemValue').value),
-                        category: getResolvedCategoryValue(),
-                        date: document.getElementById('itemDate').value,
-                        isRecurring: document.getElementById('itemRecurring').checked
-                    };
-
-                    try {
-                        const response = await fetch(`/api/transactions/${transactionId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'user-id': userId
-                            },
-                            body: JSON.stringify(transactionData)
-                        });
-
-                        if (response.ok) {
-                            window.location.href = '/transactions';
-                        } else {
-                            alert('Erro ao atualizar transação.');
-                        }
-                    } catch (error) {
-                        console.error('Erro:', error);
-                    }
+                    console.error(`Erro ao ${transactionId ? 'atualizar' : 'salvar'} transa??o:`, error);
+                    alert(`Erro ao ${transactionId ? 'atualizar' : 'salvar'} transa??o.`);
                 }
             });
         });
     </script>
 </body>
-
 </html>
+

@@ -15,6 +15,8 @@
 
 <body>
     <script>
+        const siteTheme = localStorage.getItem('siteTheme');
+        if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
     <div class="container centered-auth">

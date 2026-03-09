@@ -62,7 +62,10 @@ const extractDescription = (text) => {
 
 const queryIntent = (text) => {
     const target = normalize(text);
-    if (!/(quanto|qual|listar|liste|mostre|saldo|gastei|gasto|recebi|despesa|despesas|receita|receitas)/.test(target)) {
+    const hasQueryLead = /(quanto|qual|listar|liste|mostre|saldo|\?)/.test(target);
+    const hasFinancialTarget = /(gasto|gastei|recebi|entrou|despesa|despesas|receita|receitas|saldo)/.test(target);
+
+    if (!hasQueryLead || !hasFinancialTarget) {
         return null;
     }
 

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNPJ - Horizonte Financeiro</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .business-shell,.business-grid,.business-stats,.business-list{display:grid;gap:20px}
+    .business-shell{gap:24px}
+    .business-grid{grid-template-columns:1.05fr .95fr}
+    .business-card,.business-table{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:24px}
+    .business-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .stat-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+    .stat-value{margin-top:8px;font-size:28px;font-weight:700;color:var(--text-main)}
+    .stat-sub{margin-top:6px;font-size:13px;color:var(--text-muted)}
+    .business-form{display:grid;gap:16px}
+    .business-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .business-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+    .business-field input,.business-field select,.business-field textarea{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:16px;background:var(--bg-color);color:var(--text-main);font:inherit}
+    .business-field textarea{min-height:110px;resize:vertical}
+    .business-field.span-2{grid-column:span 2}
+    .business-accent{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(234,88,12,.12),rgba(251,146,60,.08));border:1px solid rgba(234,88,12,.18)}
+    .business-accent strong{display:block;color:var(--text-main)} .business-accent span{display:block;margin-top:4px;color:var(--text-muted);font-size:13px}
+    .business-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(234,88,12,.14);color:#ea580c;border:1px solid rgba(234,88,12,.18);font-size:12px;font-weight:700}
+    .business-filter{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+    .business-filter input,.business-filter select{padding:11px 13px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg-color);color:var(--text-main);font:inherit}
+    .business-list{max-height:520px;overflow:auto}
+    .business-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border:1px solid var(--border-color);border-radius:18px;background:var(--bg-color)}
+    .business-row-main{display:flex;align-items:center;gap:14px;min-width:0}
+    .business-row-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    .business-row-text strong{display:block;color:var(--text-main);font-size:14px}
+    .business-row-text span{display:block;margin-top:4px;color:var(--text-muted);font-size:12px}
+    .business-row-meta{text-align:right}
+    .business-row-meta strong{display:block;font-size:15px}
+    .business-row-meta span{display:block;margin-top:4px;color:var(--text-muted);font-size:12px}
+    .positive{color:#22c55e}.negative{color:#ef4444}.neutral{color:#ea580c}
+    .empty-card{padding:34px 24px;text-align:center;color:var(--text-muted)}
+    .empty-card i{display:block;font-size:28px;color:#ea580c;margin-bottom:12px}
+    @media (max-width:1100px){.business-grid,.business-stats,.business-form-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:780px){.business-grid,.business-stats,.business-form-grid{grid-template-columns:1fr}.business-field.span-2{grid-column:span 1}.business-row{flex-direction:column;align-items:flex-start}.business-row-meta{text-align:left;width:100%}}
+  </style>
+</head>
+<body class="dashboard-body">
+  <script>const siteTheme=localStorage.getItem('siteTheme');if(siteTheme&&siteTheme!=='default')document.body.dataset.theme=siteTheme;if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
+  <aside class="sidebar">
+    <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
+      <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
+      <a href="/cnpj" class="nav-item active"><i class="fa-solid fa-building"></i> CNPJ</a>
+      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
+      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+      <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
+      <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+    </nav>
+    <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar">
+      <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+      <div class="search-bar"><i class="fa-solid fa-building"></i><input id="businessSearchTop" type="text" placeholder="Buscar lançamento do CNPJ..."></div>
+      <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button></div>
+    </header>
+    <div class="dashboard-content business-shell">
+      <div class="page-header">
+        <div>
+          <h1>Central do CNPJ</h1>
+          <p class="subtitle" style="margin-bottom:0;">Separe o fluxo jurídico do pessoal, acompanhe faturamento, custos e mantenha os dados da empresa organizados.</p>
+        </div>
+        <a href="/register-item-pj" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo lançamento PJ</a>
+      </div>
+
+      <div class="business-accent">
+        <div><strong id="businessHeadline">Sua operação PJ ainda não foi configurada</strong><span id="businessSubline">Cadastre a razão social e o CNPJ para identificar melhor os lançamentos da empresa.</span></div>
+        <span class="business-pill"><i class="fa-solid fa-building"></i> Escopo PJ</span>
+      </div>
+
+      <section class="business-stats">
+        <div class="business-card"><div class="stat-label">Faturamento do mês</div><div class="stat-value positive" id="pjIncome">R$ 0,00</div><div class="stat-sub">Receitas do CNPJ no mês atual</div></div>
+        <div class="business-card"><div class="stat-label">Custos do mês</div><div class="stat-value negative" id="pjExpense">R$ 0,00</div><div class="stat-sub">Saídas operacionais e despesas</div></div>
+        <div class="business-card"><div class="stat-label">Resultado</div><div class="stat-value neutral" id="pjBalance">R$ 0,00</div><div class="stat-sub">Faturamento menos custos do período</div></div>
+        <div class="business-card"><div class="stat-label">Hoje</div><div class="stat-value" id="pjToday">R$ 0,00</div><div class="stat-sub">Movimento financeiro do dia</div></div>
+      </section>
+
+      <section class="business-grid">
+        <div class="business-card">
+          <h3>Perfil jurídico</h3>
+          <p class="settings-subtitle">Esses dados ajudam a identificar a operação da empresa e a separar os lançamentos com consistência.</p>
+          <form id="businessProfileForm" class="business-form">
+            <div class="business-form-grid">
+              <div class="business-field"><label for="companyName">Razão social</label><input id="companyName" type="text" placeholder="Nome da empresa"></div>
+              <div class="business-field"><label for="tradeName">Nome fantasia</label><input id="tradeName" type="text" placeholder="Como você chama a operação"></div>
+              <div class="business-field"><label for="companyCnpj">CNPJ</label><input id="companyCnpj" type="text" placeholder="00.000.000/0000-00"></div>
+              <div class="business-field"><label for="taxRegime">Regime tributário</label><select id="taxRegime"><option value="">Selecione</option><option>MEI</option><option>Simples Nacional</option><option>Lucro Presumido</option><option>Lucro Real</option></select></div>
+              <div class="business-field"><label for="businessEmail">E-mail empresarial</label><input id="businessEmail" type="email" placeholder="financeiro@empresa.com"></div>
+              <div class="business-field"><label for="businessPhone">Telefone empresarial</label><input id="businessPhone" type="text" placeholder="5511999999999"></div>
+              <div class="business-field span-2"><label for="businessNotes">Observações</label><textarea id="businessNotes" placeholder="Ex.: centro de custo principal, observação do contador, nota de caixa..."></textarea></div>
+            </div>
+            <div><button type="submit" class="btn-primary" style="width:auto;"><i class="fa-solid fa-floppy-disk"></i> Salvar perfil jurídico</button></div>
+          </form>
+        </div>
+        <div class="business-table">
+          <h3>Últimos lançamentos PJ</h3>
+          <p class="settings-subtitle">Tudo que for salvo com escopo CNPJ aparece aqui automaticamente.</p>
+          <div class="business-filter">
+            <input id="businessSearch" type="text" placeholder="Buscar categoria ou subcategoria">
+            <select id="businessType"><option value="all">Todos</option><option value="income">Receitas</option><option value="expense">Despesas</option><option value="investment">Investimentos</option></select>
+          </div>
+          <div id="businessList" class="business-list"></div>
+          <div id="businessEmpty" class="empty-card" style="display:none;"><i class="fa-solid fa-briefcase"></i><p>Nenhum lançamento do CNPJ encontrado. Use o botão acima para registrar o primeiro.</p></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="/script.js"></script>
+  <script>
+    const fmtMoney=(value)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number.isFinite(Number(value))?Number(value):0);
+    const normalizeType=(type)=>type==='receita'?'income':type==='despesa'?'expense':type;
+    const iconByType={income:'fa-arrow-trend-up',expense:'fa-arrow-trend-down',investment:'fa-chart-line'};
+    const colorByType={income:'#16a34a',expense:'#dc2626',investment:'#8b5cf6'};
+    const titleByType={income:'Receita',expense:'Despesa',investment:'Investimento'};
+    const userId=sessionStorage.getItem('userId');
+    if(!userId)window.location.href='/login';
+    let businessTransactions=[];
+    const searchTop=document.getElementById('businessSearchTop');
+    const searchInput=document.getElementById('businessSearch');
+    const typeSelect=document.getElementById('businessType');
+    const businessList=document.getElementById('businessList');
+    const businessEmpty=document.getElementById('businessEmpty');
+    const currentMonthKey=new Date().toISOString().slice(0,7);
+    const todayKey=new Date().toISOString().slice(0,10);
+    const normalize=(value)=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    function syncSearch(source){searchTop.value=source.value;searchInput.value=source.value;renderBusinessList();}
+    function updateStats(items){
+      const monthItems=items.filter((item)=>String(item.date||'').startsWith(currentMonthKey));
+      const todayItems=items.filter((item)=>String(item.date||'')===todayKey);
+      const income=monthItems.filter((item)=>normalizeType(item.type)==='income').reduce((sum,item)=>sum+Number(item.value||0),0);
+      const expense=monthItems.filter((item)=>normalizeType(item.type)!=='income').reduce((sum,item)=>sum+Number(item.value||0),0);
+      const today=todayItems.reduce((sum,item)=>sum+(normalizeType(item.type)==='income'?1:-1)*Number(item.value||0),0);
+      document.getElementById('pjIncome').textContent=fmtMoney(income);
+      document.getElementById('pjExpense').textContent=fmtMoney(expense);
+      document.getElementById('pjBalance').textContent=fmtMoney(income-expense);
+      document.getElementById('pjToday').textContent=fmtMoney(today);
+    }
+    function renderBusinessList(){
+      const query=normalize(searchInput.value);
+      const type=typeSelect.value;
+      const filtered=businessTransactions.filter((item)=>{
+        const normalizedType=normalizeType(item.type);
+        const haystack=normalize(`${item.category||''} ${item.description||''}`);
+        if(type!=='all'&&normalizedType!==type)return false;
+        if(query&&!haystack.includes(query))return false;
+        return true;
+      });
+      businessList.innerHTML='';
+      businessEmpty.style.display=filtered.length?'none':'block';
+      filtered.slice(0,18).forEach((item)=>{
+        const row=document.createElement('div');
+        const normalizedType=normalizeType(item.type);
+        row.className='business-row';
+        row.innerHTML=`<div class="business-row-main"><span class="business-row-icon" style="background:${colorByType[normalizedType]||'#64748b'}"><i class="fa-solid ${iconByType[normalizedType]||'fa-receipt'}"></i></span><div class="business-row-text"><strong>${item.description||'Sem descrição'}</strong><span>${titleByType[normalizedType]||'Movimento'} em ${item.category||'Sem categoria'} · ${new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR')}</span></div></div><div class="business-row-meta"><strong class="${normalizedType==='income'?'positive':normalizedType==='expense'?'negative':'neutral'}">${normalizedType==='income'?'+':'-'} ${fmtMoney(item.value)}</strong><span>${item.isRecurring?'Recorrente':'Pontual'}</span></div>`;
+        businessList.appendChild(row);
+      });
+    }
+    async function loadBusinessProfile(){
+      try{
+        const response=await fetch('/api/business-profile',{headers:{'user-id':userId}});
+        if(!response.ok)return;
+        const profile=await response.json();
+        if(!profile)return;
+        document.getElementById('companyName').value=profile.company_name||'';
+        document.getElementById('tradeName').value=profile.trade_name||'';
+        document.getElementById('companyCnpj').value=profile.cnpj||'';
+        document.getElementById('taxRegime').value=profile.tax_regime||'';
+        document.getElementById('businessEmail').value=profile.business_email||'';
+        document.getElementById('businessPhone').value=profile.business_phone||'';
+        document.getElementById('businessNotes').value=profile.notes||'';
+        document.getElementById('businessHeadline').textContent=profile.trade_name||profile.company_name||'Operação jurídica configurada';
+        document.getElementById('businessSubline').textContent=profile.cnpj?`CNPJ ${profile.cnpj} pronto para separar o financeiro da empresa.`:'Perfil jurídico salvo com sucesso.';
+      }catch(error){console.error('Erro ao carregar perfil jurídico:',error);}
+    }
+    async function loadBusinessTransactions(){
+      try{
+        const response=await fetch('/api/transactions?scope=pj',{headers:{'user-id':userId}});
+        const data=response.ok?await response.json():[];
+        businessTransactions=Array.isArray(data)?data:[];
+        updateStats(businessTransactions);
+        renderBusinessList();
+      }catch(error){console.error('Erro ao carregar transações PJ:',error);businessTransactions=[];updateStats([]);renderBusinessList();}
+    }
+    document.getElementById('businessProfileForm').addEventListener('submit',async(event)=>{
+      event.preventDefault();
+      const payload={companyName:document.getElementById('companyName').value,tradeName:document.getElementById('tradeName').value,cnpj:document.getElementById('companyCnpj').value,taxRegime:document.getElementById('taxRegime').value,businessEmail:document.getElementById('businessEmail').value,businessPhone:document.getElementById('businessPhone').value,notes:document.getElementById('businessNotes').value};
+      try{
+        const response=await fetch('/api/business-profile',{method:'PUT',headers:{'Content-Type':'application/json','user-id':userId},body:JSON.stringify(payload)});
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok){alert(data.error||'Erro ao salvar perfil jurídico.');return;}
+        alert('Perfil jurídico salvo com sucesso.');
+        loadBusinessProfile();
+      }catch(error){console.error('Erro ao salvar perfil jurídico:',error);alert('Erro ao salvar perfil jurídico.');}
+    });
+    searchTop.addEventListener('input',()=>syncSearch(searchTop));
+    searchInput.addEventListener('input',()=>syncSearch(searchInput));
+    typeSelect.addEventListener('change',renderBusinessList);
+    loadBusinessProfile();
+    loadBusinessTransactions();
+  </script>
+</body>
+</html>
