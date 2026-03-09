@@ -303,6 +303,12 @@ export default {
       };
       return map[status] || status || 'Status desconhecido';
     },
+    deliveryStatusText(item) {
+      if (item?.raw_payload?.note === 'empty_response_body' && item?.raw_payload?.provider === 'wascript') {
+        return 'Aceito pela Wascript';
+      }
+      return this.deliveryStatusLabel(item?.delivery_status);
+    },
     outboundBadgeClass(status) {
       if (status === 'sent') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       if (status === 'failed') return 'bg-rose-50 text-rose-700 border-rose-200';
@@ -428,6 +434,11 @@ export default {
     },
     async sendTestMessage() {
       if (!this.outbound.phone || !this.outbound.messageText) return;
+      const normalizedPhone = String(this.outbound.phone || '').replace(/\D+/g, '');
+      if (normalizedPhone.length < 10 || normalizedPhone.length > 15) {
+        Swal.fire('Telefone inválido', 'Use DDI + DDD + número antes de enviar.', 'warning');
+        return;
+      }
       this.sendingOutbound = true;
       try {
         const userId = sessionStorage.getItem('userId');

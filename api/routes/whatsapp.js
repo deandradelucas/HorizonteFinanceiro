@@ -8,6 +8,11 @@ const parseNumber = (value) => {
     return Number.isFinite(parsed) ? parsed : null;
 };
 
+const isValidWhatsAppPhone = (value) => {
+    const normalized = repository.normalizePhone(value);
+    return normalized.length >= 10 && normalized.length <= 15;
+};
+
 module.exports = ({ authenticate, requireSuperAdmin }) => {
     const router = express.Router();
 
