@@ -507,7 +507,7 @@ body.dark-mode .centered-auth .form-wrapper:hover {
 
 .auth-horizon-register {
     background:
-        linear-gradient(180deg, rgba(3, 7, 18, 0.22), rgba(3, 7, 18, 0.6)),
+        linear-gradient(180deg, rgba(3, 7, 18, 0.1), rgba(3, 7, 18, 0.42)),
         url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
 }
 
@@ -515,9 +515,9 @@ body.dark-mode .centered-auth .form-wrapper:hover {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 22% 18%, rgba(110, 231, 183, 0.22), transparent 26%),
-        radial-gradient(circle at 82% 74%, rgba(125, 211, 252, 0.18), transparent 28%),
-        linear-gradient(180deg, rgba(15, 23, 42, 0.06), rgba(15, 23, 42, 0.44));
+        radial-gradient(circle at 22% 18%, rgba(110, 231, 183, 0.18), transparent 26%),
+        radial-gradient(circle at 82% 74%, rgba(125, 211, 252, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.28));
     z-index: -1;
 }
 
@@ -632,6 +632,17 @@ body.dark-mode .centered-auth .form-wrapper:hover {
     width: 100%;
     margin: 0;
     padding: 40px 36px 34px;
+    background: rgba(2, 6, 23, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 32px 80px rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+}
+
+.auth-register-page .auth-horizon-register .auth-stat-strip {
+    display: none;
 }
 
 .auth-inline-action {
@@ -666,6 +677,189 @@ body.dark-mode .centered-auth .form-wrapper:hover {
 .auth-shell-v2 .checkbox-container input:checked~.checkmark {
     background: #34d399;
     border-color: #34d399;
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-shell-v2 {
+    width: min(520px, calc(100vw - 32px));
+    min-height: auto;
+    margin: 24px auto;
+    display: block;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow: visible;
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-visual-panel {
+    display: none;
+}
+
+body.auth-register-page .auth-shell-register-only {
+    width: min(520px, calc(100vw - 32px)) !important;
+    min-height: auto !important;
+    margin: 24px auto !important;
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+body.auth-register-page .auth-shell-register-only .auth-visual-panel {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    overflow: hidden !important;
+}
+
+body.auth-register-page .auth-shell-register-only .auth-form-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+body.auth-register-page .auth-shell-register-only .auth-form-panel-inner {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-form-panel {
+    background: transparent;
+    padding: 0;
+    min-height: calc(100vh - 48px);
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-form-panel-inner {
+    max-width: 100%;
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-register-card {
+    margin: 0 auto;
+    padding: 40px 36px 34px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 28px 70px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
+body.auth-register-page .auth-shell-register-only .auth-register-card {
+    margin: 0 auto !important;
+    padding: 40px 36px 34px !important;
+    border-radius: 30px !important;
+    background: rgba(0, 0, 0, 0.68) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 28px 70px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+}
+
+.auth-register-center {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+}
+
+.auth-register-card--solo {
+    width: min(520px, 100%);
+    margin: 0 auto;
+    padding: 40px 36px 34px;
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 28px 70px rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
+.auth-register-card--solo .auth-register-brand,
+.auth-register-card--solo .auth-register-heading,
+.auth-register-card--solo .login-link {
+    text-align: left;
+}
+
+.auth-register-card--solo .auth-register-brand h2,
+.auth-register-card--solo .auth-register-heading h1,
+.auth-register-card--solo .auth-register-field label {
+    color: #ffffff;
+}
+
+.auth-register-card--solo .subtitle,
+.auth-register-card--solo .login-link {
+    color: rgba(228, 232, 240, 0.78);
+}
+
+.auth-register-card--solo .input-field input {
+    background: rgba(0, 0, 0, 0.34);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.auth-register-card--solo .input-field input:focus {
+    background: rgba(0, 0, 0, 0.42);
+}
+
+.auth-register-card--solo .login-link a {
+    color: #6ee7b7;
+}
+
+@media (max-width: 640px) {
+    .auth-register-center {
+        padding: 10px;
+    }
+
+    .auth-register-card--solo {
+        width: 100%;
+        padding: 28px 22px 24px;
+        border-radius: 24px;
+    }
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-register-heading,
+body.auth-register-page:not(.auth-login-page) .auth-register-brand,
+body.auth-register-page:not(.auth-login-page) .login-link {
+    text-align: left;
+}
+
+body.auth-register-page:not(.auth-login-page) .auth-register-heading h1,
+body.auth-register-page:not(.auth-login-page) .auth-register-brand h2,
+body.auth-register-page:not(.auth-login-page) .auth-register-field label,
+body.auth-register-page:not(.auth-login-page) .login-link {
+    color: #ffffff;
+}
+
+body.auth-register-page:not(.auth-login-page) .subtitle,
+body.auth-register-page:not(.auth-login-page) .login-link {
+    color: rgba(228, 232, 240, 0.78);
+}
+
+body.auth-register-page:not(.auth-login-page) .input-field input {
+    background: rgba(0, 0, 0, 0.34);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.auth-register-page:not(.auth-login-page) .input-field input:focus {
+    background: rgba(0, 0, 0, 0.42);
+}
+
+body.auth-register-page:not(.auth-login-page) .login-link a {
+    color: #6ee7b7;
 }
 
 @media (max-width: 1080px) {
@@ -716,6 +910,16 @@ body.dark-mode .centered-auth .form-wrapper:hover {
     }
 
     .auth-shell-v2 .auth-register-card {
+        padding: 28px 22px 24px;
+        border-radius: 24px;
+    }
+
+    body.auth-register-page:not(.auth-login-page) .auth-shell-v2 {
+        width: calc(100vw - 20px);
+        margin: 10px auto;
+    }
+
+    body.auth-register-page:not(.auth-login-page) .auth-register-card {
         padding: 28px 22px 24px;
         border-radius: 24px;
     }
