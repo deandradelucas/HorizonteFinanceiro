@@ -5,7 +5,8 @@
   "main": "api/index.js",
   "scripts": {
     "dev": "node startup.js && nodemon api/index.js",
-    "start": "node startup.js && node api/index.js"
+    "start": "node startup.js && node api/index.js",
+    "vercel-build": "node -e \"console.log('No build step required for Horizonte Financeiro')\""
   },
   "engines": {
     "node": "22.x"

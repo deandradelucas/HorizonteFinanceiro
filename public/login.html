@@ -13,61 +13,93 @@
     <link rel="manifest" href="/manifest.json" />
 </head>
 
-<body>
+<body class="auth-register-page auth-login-page">
     <script>
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
-    <div class="container centered-auth">
-        <div class="form-section">
-            <div class="form-wrapper">
-                <div class="auth-logo">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <h2>Horizonte Financeiro</h2>
+    <main class="auth-shell-v2">
+        <section class="auth-visual-panel auth-horizon-login">
+            <div class="auth-visual-overlay"></div>
+            <div class="auth-visual-content">
+                <div class="auth-badge">
+                    <span class="auth-badge-mark"></span>
+                    Horizonte Financeiro
                 </div>
-                <h2>Acesse sua conta</h2>
-                <p class="subtitle">Insira suas credenciais para continuar</p>
-
-                <form id="loginForm">
-                    <div class="input-group">
-                        <label for="loginEmail">E-mail</label>
-                        <div class="input-field">
-                            <i class="fa-regular fa-envelope"></i>
-                            <input type="email" id="loginEmail" placeholder="seu@email.com" required>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="loginPassword">Senha</label>
-                        <div class="input-field">
-                            <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="loginPassword" placeholder="Sua senha secreta" required>
-                            <i class="fa-regular fa-eye toggle-password" id="toggleLoginPassword"></i>
-                        </div>
-                        <div style="text-align: right; margin-top: 8px;">
-                            <a href="#"
-                                style="color: var(--primary-color); font-size: 13px; text-decoration: none; font-weight: 500;">Esqueceu
-                                a senha?</a>
-                        </div>
-                    </div>
-
-                    <div class="checkbox-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="rememberMe">
-                            <span class="checkmark"></span>
-                            Lembrar de mim
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn-primary">Entrar</button>
-
-                </form>
-
-                <p class="login-link">Novo por aqui? <a href="/register">Crie uma conta</a></p>
+                <div class="auth-copy">
+                    <p class="auth-eyebrow">Gestão financeira com clareza</p>
+                    <h1>Seu horizonte financeiro começa com uma visão melhor.</h1>
+                    <p class="auth-description">Organize sua vida financeira pessoal e empresarial em um ambiente limpo, seguro e preparado para crescer com você.</p>
+                </div>
+                <div class="auth-stat-strip">
+                    <article class="auth-stat-card">
+                        <strong>Controle total</strong>
+                        <span>PF e CNPJ no mesmo ecossistema</span>
+                    </article>
+                    <article class="auth-stat-card">
+                        <strong>Leitura clara</strong>
+                        <span>Metas, histórico e investimentos em um só lugar</span>
+                    </article>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <section class="auth-form-panel">
+            <div class="auth-form-panel-inner">
+                <div class="auth-register-card auth-login-card">
+                    <div class="auth-register-brand">
+                        <div class="auth-register-brand-mark" aria-hidden="true">
+                            <span></span>
+                        </div>
+                        <h2>Horizonte Financeiro</h2>
+                    </div>
+
+                    <div class="auth-register-heading">
+                        <h1>Acesse sua conta</h1>
+                        <p class="subtitle">Insira suas credenciais para continuar</p>
+                    </div>
+
+                    <form id="loginForm" class="auth-register-form">
+                        <div class="input-group auth-register-field">
+                            <label for="loginEmail">E-mail</label>
+                            <div class="input-field">
+                                <i class="fa-regular fa-envelope"></i>
+                                <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group auth-register-field">
+                            <label for="loginPassword">Senha</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="loginPassword" placeholder="Sua senha secreta" required>
+                                <button type="button" class="toggle-password toggle-password-button" id="toggleLoginPassword"
+                                    aria-label="Mostrar senha">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="auth-inline-action">
+                                <a href="#">Esqueceu a senha?</a>
+                            </div>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Lembrar de mim
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Entrar</button>
+                    </form>
+
+                    <p class="login-link">Novo por aqui? <a href="/register">Crie uma conta</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
     <script src="script.js"></script>
 </body>
 

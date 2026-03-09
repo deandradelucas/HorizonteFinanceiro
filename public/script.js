@@ -110,24 +110,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA DE CADASTRO ---
     // Gerencia o formulário de criação de nova conta e validação de força de senha
     const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
     const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
     const form = document.getElementById('registerForm');
     const strengthBar = document.getElementById('strengthBar');
 
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+    const bindPasswordToggle = (toggle, input) => {
+        if (!toggle || !input) return;
 
+        const icon = toggle.matches('i') ? toggle : toggle.querySelector('i');
+        toggle.addEventListener('click', () => {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+
+            if (!icon) return;
             if (type === 'text') {
-                togglePassword.classList.remove('fa-eye');
-                togglePassword.classList.add('fa-eye-slash');
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                togglePassword.classList.remove('fa-eye-slash');
-                togglePassword.classList.add('fa-eye');
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         });
-    }
+    };
+
+    bindPasswordToggle(togglePassword, passwordInput);
+    bindPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
 
     if (passwordInput && strengthBar) {
         passwordInput.addEventListener('input', () => {
@@ -215,12 +224,19 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleLoginPassword.addEventListener('click', () => {
             const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             loginPasswordInput.setAttribute('type', type);
+            const loginIcon = toggleLoginPassword.matches('i')
+                ? toggleLoginPassword
+                : toggleLoginPassword.querySelector('i');
             if (type === 'text') {
-                toggleLoginPassword.classList.remove('fa-eye');
-                toggleLoginPassword.classList.add('fa-eye-slash');
+                if (loginIcon) {
+                    loginIcon.classList.remove('fa-eye');
+                    loginIcon.classList.add('fa-eye-slash');
+                }
             } else {
-                toggleLoginPassword.classList.remove('fa-eye-slash');
-                toggleLoginPassword.classList.add('fa-eye');
+                if (loginIcon) {
+                    loginIcon.classList.remove('fa-eye-slash');
+                    loginIcon.classList.add('fa-eye');
+                }
             }
         });
     }

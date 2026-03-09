@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Novo Lançamento - Horizonte Financeiro</title>
+    <title>Cadastro - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
@@ -17,68 +17,105 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="auth-register-page">
     <script>
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
-    <div class="container centered-auth">
-        <div class="form-section">
-            <div class="form-wrapper">
-                <div class="auth-logo">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <h2>Horizonte Financeiro</h2>
+    <main class="auth-shell-v2">
+        <section class="auth-visual-panel auth-horizon-register">
+            <div class="auth-visual-overlay"></div>
+            <div class="auth-visual-content">
+                <div class="auth-badge">
+                    <span class="auth-badge-mark"></span>
+                    Horizonte Financeiro
                 </div>
-                <h2>Comece agora</h2>
-                <p class="subtitle">Crie sua conta gratuitamente</p>
-
-                <form id="registerForm">
-                    <div class="input-group">
-                        <label for="fullName">Nome Completo</label>
-                        <div class="input-field">
-                            <i class="fa-regular fa-user"></i>
-                            <input type="text" id="fullName" placeholder="Digite seu nome completo" required>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="email">E-mail</label>
-                        <div class="input-field">
-                            <i class="fa-regular fa-envelope"></i>
-                            <input type="email" id="email" placeholder="seu@email.com" required>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="password">Senha</label>
-                        <div class="input-field">
-                            <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="password" placeholder="Crie uma senha forte" required>
-                            <i class="fa-regular fa-eye toggle-password" id="togglePassword"></i>
-                        </div>
-                        <div class="password-strength">
-                            <div class="strength-bar" id="strengthBar"></div>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="confirmPassword">Confirmar Senha</label>
-                        <div class="input-field">
-                            <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="confirmPassword" placeholder="Repita a senha" required>
-                        </div>
-                    </div>
-
-
-                    <button type="submit" class="btn-primary">Criar Conta</button>
-
-                </form>
-
-                <p class="login-link">Já tem uma conta? <a href="/login">Faça login</a></p>
+                <div class="auth-copy">
+                    <p class="auth-eyebrow">Comece com visão e liberdade</p>
+                    <h1>Construa uma vida financeira com mais calma, direção e horizonte.</h1>
+                    <p class="auth-description">Cadastre sua conta e acompanhe receitas, despesas, metas, histórico e investimentos com uma experiência mais profissional e organizada.</p>
+                </div>
+                <div class="auth-stat-strip">
+                    <article class="auth-stat-card">
+                        <strong>Planejamento real</strong>
+                        <span>Metas, lançamentos e indicadores em um único fluxo</span>
+                    </article>
+                    <article class="auth-stat-card">
+                        <strong>Estrutura pronta</strong>
+                        <span>Base preparada para crescimento pessoal e empresarial</span>
+                    </article>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <section class="auth-form-panel">
+            <div class="auth-form-panel-inner">
+                <div class="auth-register-card">
+                    <div class="auth-register-brand">
+                        <div class="auth-register-brand-mark" aria-hidden="true">
+                            <span></span>
+                        </div>
+                        <h2>Horizonte Financeiro</h2>
+                    </div>
+
+                    <div class="auth-register-heading">
+                        <h1>Comece agora</h1>
+                        <p class="subtitle">Crie sua conta gratuitamente</p>
+                    </div>
+
+                    <form id="registerForm" class="auth-register-form">
+                        <div class="input-group auth-register-field">
+                            <label for="fullName">Nome Completo</label>
+                            <div class="input-field">
+                                <i class="fa-regular fa-user"></i>
+                                <input type="text" id="fullName" placeholder="Digite seu nome completo" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group auth-register-field">
+                            <label for="email">E-mail</label>
+                            <div class="input-field">
+                                <i class="fa-regular fa-envelope"></i>
+                                <input type="email" id="email" placeholder="seu@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group auth-register-field">
+                            <label for="password">Senha</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="password" placeholder="Crie uma senha forte" required>
+                                <button type="button" class="toggle-password toggle-password-button" id="togglePassword"
+                                    aria-label="Mostrar senha">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-bar" id="strengthBar"></div>
+                            </div>
+                        </div>
+
+                        <div class="input-group auth-register-field">
+                            <label for="confirmPassword">Confirmar Senha</label>
+                            <div class="input-field">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="confirmPassword" placeholder="Repita a senha" required>
+                                <button type="button" class="toggle-password toggle-password-button"
+                                    id="toggleConfirmPassword" aria-label="Mostrar confirmação de senha">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Criar Conta</button>
+                    </form>
+
+                    <p class="login-link">Já tem uma conta? <a href="/login">Faça login</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
     <script src="script.js"></script>
 </body>
 

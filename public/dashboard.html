@@ -64,17 +64,24 @@
         </header>
 
         <div class="dashboard-content">
-            <div class="page-header">
+            <div class="page-header dashboard-hero">
                 <div>
-                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div class="dashboard-hero-head">
                         <h1 style="margin:0;">Visão Geral</h1>
                         <span id="billingStatusPill" class="dashboard-status-pill" hidden>Carregando vencimento</span>
                     </div>
                     <p id="userWelcome" class="subtitle" style="margin-bottom: 0;">Bem-vindo(a) de volta! Aqui está o
                         resumo das suas finanças.</p>
+                    <div class="dashboard-hero-links">
+                        <a href="/transactions" class="hero-link"><i class="fa-solid fa-user"></i> Pessoa Física</a>
+                        <a href="/cnpj" class="hero-link"><i class="fa-solid fa-building"></i> CNPJ</a>
+                        <a href="/history" class="hero-link"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                    </div>
                 </div>
-                <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo
-                    lançamento PF</a>
+                <div class="dashboard-hero-actions">
+                    <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo lançamento PF</a>
+                    <a href="/register-item-pj" class="btn-secondary btn-action"><i class="fa-solid fa-building"></i> Novo lançamento PJ</a>
+                </div>
             </div>
 
             <div id="dashboardLayoutEditor" class="dashboard-layout-editor" hidden>
@@ -146,6 +153,75 @@
                     flex-wrap: wrap;
                 }
 
+                .dashboard-hero {
+                    position: relative;
+                    padding: 28px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 28px;
+                    background:
+                        linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.88)),
+                        radial-gradient(circle at top right, rgba(16, 185, 129, 0.08), transparent 24%);
+                    box-shadow: var(--shadow-md);
+                    overflow: hidden;
+                }
+
+                .dashboard-hero::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.04), transparent 34%);
+                    pointer-events: none;
+                }
+
+                .dashboard-hero > * {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .dashboard-hero-head {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                    margin-bottom: 8px;
+                }
+
+                .dashboard-hero-links,
+                .dashboard-hero-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    margin-top: 18px;
+                }
+
+                .dashboard-hero-actions {
+                    margin-top: 0;
+                    justify-content: flex-end;
+                }
+
+                .hero-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    min-height: 40px;
+                    padding: 0 14px;
+                    border-radius: 999px;
+                    border: 1px solid rgba(148, 163, 184, 0.18);
+                    background: rgba(255, 255, 255, 0.76);
+                    color: var(--text-soft);
+                    text-decoration: none;
+                    font-size: 13px;
+                    font-weight: 700;
+                    transition: var(--transition);
+                }
+
+                .hero-link:hover {
+                    color: var(--primary-color);
+                    border-color: rgba(16, 185, 129, 0.18);
+                    background: rgba(236, 253, 245, 0.88);
+                }
+
                 .dashboard-status-pill {
                     display: inline-flex;
                     align-items: center;
@@ -202,6 +278,7 @@
                 .summary-cards {
                     grid-column: 1 / -1;
                     margin-bottom: 0;
+                    grid-template-columns: repeat(4, minmax(0, 1fr));
                 }
 
                 .dashboard-chart-card {
@@ -218,7 +295,7 @@
                     background: var(--card-bg);
                     border: 1px solid var(--border-color);
                     border-radius: var(--radius-lg);
-                    padding: 24px;
+                    padding: 26px;
                     overflow: hidden;
                     box-shadow: var(--shadow-sm);
                 }
@@ -386,8 +463,8 @@
                     grid-column: 1 / -1;
                     background: var(--card-bg);
                     border: 1px solid var(--border-color);
-                    border-radius: 20px;
-                    padding: 24px;
+                    border-radius: 28px;
+                    padding: 28px;
                     margin-bottom: 0;
                     transition: var(--transition);
                 }
@@ -409,9 +486,11 @@
                 }
 
                 .goal-main-title {
-                    font-size: 20px;
-                    font-weight: 700;
-                    margin-top: 4px;
+                    font-size: clamp(28px, 4vw, 36px);
+                    font-weight: 800;
+                    margin-top: 8px;
+                    line-height: 1.05;
+                    letter-spacing: -0.04em;
                 }
 
                 .motivation-area {
@@ -452,18 +531,97 @@
                     display: flex;
                     justify-content: space-between;
                     font-size: 14px;
-                    font-weight: 600;
+                    font-weight: 700;
                 }
 
                 .progress-stats .percentage {
                     color: var(--primary-color);
                 }
 
+                .summary-card {
+                    position: relative;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    padding: 24px;
+                    gap: 16px;
+                    min-height: 184px;
+                    overflow: hidden;
+                }
+
+                .summary-card::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: var(--card-accent, var(--primary-color));
+                    opacity: .9;
+                }
+
+                .summary-card.tone-balance { --card-accent: #0ea5e9; }
+                .summary-card.tone-income { --card-accent: #22c55e; }
+                .summary-card.tone-expense { --card-accent: #ef4444; }
+                .summary-card.tone-investment { --card-accent: #8b5cf6; }
+
+                .card-kicker {
+                    display: inline-flex;
+                    align-items: center;
+                    min-height: 24px;
+                    padding: 0 10px;
+                    border-radius: 999px;
+                    background: rgba(15, 23, 42, 0.05);
+                    color: var(--text-muted);
+                    font-size: 11px;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: .08em;
+                }
+
+                .card-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                .card-info h3 {
+                    margin: 0;
+                }
+
+                .card-info .amount {
+                    font-size: clamp(26px, 3vw, 34px);
+                    letter-spacing: -0.04em;
+                }
+
+                .card-meta {
+                    color: var(--text-muted);
+                    font-size: 13px;
+                    line-height: 1.5;
+                }
+
+                .recent-transactions {
+                    padding: 26px;
+                }
+
+                .recent-transactions .section-header h3,
+                .insight-card .section-header h3 {
+                    font-size: 20px;
+                    letter-spacing: -0.03em;
+                }
+
                 @media (max-width: 1100px) {
+                    .dashboard-hero {
+                        padding: 24px;
+                    }
+
                     .dashboard-chart-card,
                     .summary-cards,
                     .recent-transactions {
                         grid-column: 1 / -1;
+                    }
+
+                    .summary-cards {
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
                     }
                 }
 
@@ -489,9 +647,24 @@
                         gap: 8px;
                     }
 
+                    .dashboard-hero-actions,
+                    .dashboard-hero-links {
+                        width: 100%;
+                    }
+
+                    .dashboard-hero-actions > *,
+                    .dashboard-hero-links > * {
+                        flex: 1 1 100%;
+                        justify-content: center;
+                    }
+
                     .motivation-area {
                         text-align: left;
                         max-width: 100%;
+                    }
+
+                    .summary-cards {
+                        grid-template-columns: 1fr;
                     }
                 }
 
@@ -584,32 +757,40 @@
 
             <!-- Resumo Cards -->
             <div class="summary-cards dashboard-widget" data-widget-key="summary">
-                <div class="summary-card">
+                <div class="summary-card tone-balance">
                     <div class="card-icon blue"><i class="fa-solid fa-building-columns"></i></div>
                     <div class="card-info">
+                        <span class="card-kicker">Panorama</span>
                         <h3>Saldo Atual</h3>
                         <p class="amount">R$ 0,00</p>
+                        <span class="card-meta">Posição consolidada do seu fluxo</span>
                     </div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card tone-income">
                     <div class="card-icon green"><i class="fa-solid fa-arrow-trend-up"></i></div>
                     <div class="card-info">
+                        <span class="card-kicker">Entrada</span>
                         <h3>Receitas</h3>
                         <p class="amount">R$ 0,00</p>
+                        <span class="card-meta">Tudo que entrou no período atual</span>
                     </div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card tone-expense">
                     <div class="card-icon red"><i class="fa-solid fa-arrow-trend-down"></i></div>
                     <div class="card-info">
+                        <span class="card-kicker">Saída</span>
                         <h3>Despesas</h3>
                         <p class="amount">R$ 0,00</p>
+                        <span class="card-meta">Gastos e compromissos do período</span>
                     </div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card tone-investment">
                     <div class="card-icon purple"><i class="fa-solid fa-piggy-bank"></i></div>
                     <div class="card-info">
+                        <span class="card-kicker">Construção</span>
                         <h3>Investimentos</h3>
                         <p class="amount">R$ 0,00</p>
+                        <span class="card-meta">Capital direcionado para o futuro</span>
                     </div>
                 </div>
             </div>
