@@ -2,9 +2,10 @@ body.auth-register-v2 {
     min-height: 100vh;
     margin: 0;
     overflow: hidden;
+    --auth-horizon-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80');
     background:
         linear-gradient(180deg, rgba(2, 6, 23, 0.22), rgba(2, 6, 23, 0.4)),
-        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80') center center / cover no-repeat fixed;
+        var(--auth-horizon-image) center center / cover no-repeat fixed;
 }
 
 body.auth-register-v2::before {
@@ -207,6 +208,11 @@ body.auth-register-v2 .register-login-v2 a:hover {
 }
 
 @media (max-width: 640px) {
+    body.auth-register-v2 {
+        background-attachment: scroll;
+        background-position: center center;
+    }
+
     body.auth-register-v2 .register-shell-v2 {
         padding: 10px;
     }

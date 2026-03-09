@@ -22,6 +22,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyStoredTheme();
 
+    const applyAuthHorizonImage = () => {
+        if (!document.body.classList.contains('auth-login-v2') && !document.body.classList.contains('auth-register-v2')) {
+            return;
+        }
+
+        const horizonImages = [
+            "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80",
+            "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=1800&q=80"
+        ];
+
+        const storageKey = 'authHorizonImageIndex';
+        const lastIndex = Number.parseInt(sessionStorage.getItem(storageKey) || '-1', 10);
+        let nextIndex = Math.floor(Math.random() * horizonImages.length);
+
+        if (horizonImages.length > 1) {
+            while (nextIndex === lastIndex) {
+                nextIndex = Math.floor(Math.random() * horizonImages.length);
+            }
+        }
+
+        sessionStorage.setItem(storageKey, String(nextIndex));
+        const randomImage = horizonImages[nextIndex];
+        document.body.style.setProperty('--auth-horizon-image', `url('${randomImage}')`);
+    };
+
+    applyAuthHorizonImage();
+
     // --- DISPLAY CURRENT DATE ---
     const dateDisplay = document.getElementById('currentDateDisplay');
     if (dateDisplay) {

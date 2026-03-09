@@ -2,9 +2,10 @@ body.auth-login-v2 {
     min-height: 100vh;
     margin: 0;
     overflow: hidden;
+    --auth-horizon-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=80');
     background:
         linear-gradient(180deg, rgba(2, 6, 23, 0.22), rgba(2, 6, 23, 0.46)),
-        url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=80') center center / cover no-repeat fixed;
+        var(--auth-horizon-image) center center / cover no-repeat fixed;
 }
 
 body.auth-login-v2::before {
@@ -41,7 +42,7 @@ body.auth-login-v2 .login-visual-v2 {
     border-radius: 30px;
     background:
         linear-gradient(180deg, rgba(2, 6, 23, 0.1), rgba(2, 6, 23, 0.34)),
-        url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=80') center center / cover no-repeat;
+        var(--auth-horizon-image) center center / cover no-repeat;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 24px 50px rgba(0, 0, 0, 0.24);
 }
@@ -363,6 +364,11 @@ body.auth-login-v2 .login-switch-v2 a:hover {
 }
 
 @media (max-width: 900px) {
+    body.auth-login-v2 {
+        background-attachment: scroll;
+        background-position: center center;
+    }
+
     body.auth-login-v2 .login-shell-v2 {
         grid-template-columns: 1fr;
         padding: 10px;
