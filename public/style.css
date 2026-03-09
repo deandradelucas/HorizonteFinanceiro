@@ -772,21 +772,21 @@ body.auth-register-page .auth-shell-register-only .auth-register-card {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 16px;
+    padding: 40px 20px;
 }
 
 .auth-register-card--solo {
-    width: min(520px, 100%);
+    width: min(580px, 100%);
     margin: 0 auto;
-    padding: 40px 36px 34px;
-    border-radius: 30px;
-    background: rgba(0, 0, 0, 0.68);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 42px 40px;
+    border-radius: 32px;
+    background: rgba(0, 0, 0, 0.54);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
         0 0 0 1px rgba(255, 255, 255, 0.03),
-        0 28px 70px rgba(0, 0, 0, 0.52);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+        0 26px 60px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .auth-register-card--solo .auth-register-brand,
@@ -801,33 +801,128 @@ body.auth-register-page .auth-shell-register-only .auth-register-card {
     color: #ffffff;
 }
 
+.auth-register-card--solo .auth-register-brand {
+    margin-bottom: 34px;
+}
+
+.auth-register-card--solo .auth-register-brand h2 {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.auth-register-card--solo .auth-register-heading {
+    margin-bottom: 34px;
+}
+
+.auth-register-card--solo .auth-register-heading h1 {
+    font-family: "Segoe UI", Inter, sans-serif;
+    font-size: clamp(44px, 6vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.055em;
+}
+
 .auth-register-card--solo .subtitle,
 .auth-register-card--solo .login-link {
     color: rgba(228, 232, 240, 0.78);
 }
 
+.auth-register-card--solo .subtitle {
+    margin-top: 14px;
+    font-size: 17px;
+}
+
+.auth-register-card--solo .auth-register-form {
+    gap: 24px;
+}
+
+.auth-register-card--solo .auth-register-field {
+    margin-bottom: 0;
+}
+
+.auth-register-card--solo .auth-register-field label {
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
 .auth-register-card--solo .input-field input {
-    background: rgba(0, 0, 0, 0.34);
+    height: 60px;
+    padding: 16px 54px 16px 50px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.28);
     border-color: rgba(255, 255, 255, 0.12);
+    font-size: 17px;
 }
 
 .auth-register-card--solo .input-field input:focus {
-    background: rgba(0, 0, 0, 0.42);
+    background: rgba(0, 0, 0, 0.34);
+}
+
+.auth-register-card--solo .input-field i:first-child {
+    left: 18px;
+    font-size: 18px;
+}
+
+.auth-register-card--solo .toggle-password {
+    right: 12px;
+}
+
+.auth-register-card--solo .password-strength {
+    margin-top: 12px;
 }
 
 .auth-register-card--solo .login-link a {
     color: #6ee7b7;
 }
 
+.auth-register-card--solo .btn-primary {
+    margin-top: 6px;
+    min-height: 60px;
+    border-radius: 18px;
+    font-size: 22px;
+}
+
+.auth-register-card--solo .login-link {
+    margin-top: 30px;
+    font-size: 16px;
+}
+
 @media (max-width: 640px) {
     .auth-register-center {
-        padding: 10px;
+        padding: 14px;
     }
 
     .auth-register-card--solo {
         width: 100%;
-        padding: 28px 22px 24px;
+        padding: 32px 24px 26px;
         border-radius: 24px;
+    }
+
+    .auth-register-card--solo .auth-register-brand {
+        margin-bottom: 26px;
+    }
+
+    .auth-register-card--solo .auth-register-heading {
+        margin-bottom: 26px;
+    }
+
+    .auth-register-card--solo .auth-register-heading h1 {
+        font-size: 38px;
+    }
+
+    .auth-register-card--solo .subtitle {
+        font-size: 15px;
+    }
+
+    .auth-register-card--solo .input-field input {
+        height: 56px;
+        font-size: 16px;
+    }
+
+    .auth-register-card--solo .btn-primary {
+        min-height: 56px;
+        font-size: 19px;
     }
 }
 
