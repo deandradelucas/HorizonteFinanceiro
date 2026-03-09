@@ -420,6 +420,22 @@ const listUserTransactions = async (userId) => {
     return (data || []).map(normalizeTransactionRow);
 };
 
+const listOutboundMessages = async (filters = {}) => {
+    const client = requireSupabase();
+    let query = client
+        .from('outbound_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(Math.min(parseInt(filters.limit, 10) || 20, 100));
+
+    if (filters.userId) query = query.eq('user_id', filters.userId);
+    if (filters.phone) query = query.eq('phone', normalizePhone(filters.phone));
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+};
+
 module.exports = {
     normalizePhone,
     normalizeTransactionType,
@@ -437,5 +453,6 @@ module.exports = {
     logIntegrationEvent,
     listMessages,
     getMessageDetails,
-    listUserTransactions
+    listUserTransactions,
+    listOutboundMessages
 };

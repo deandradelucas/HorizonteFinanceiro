@@ -124,29 +124,43 @@ const extractMessagesFromPayload = (payload = {}) => {
 };
 
 const sendViaWascript = async ({ phone, messageText }) => {
+    const normalizedPhone = normalizePhone(phone);
     const response = await fetch(`${WASCRIPT_API_URL}/api/enviar-texto/${encodeURIComponent(getWascriptToken())}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            phone: normalizePhone(phone),
+            phone: normalizedPhone,
             message: messageText
         })
     });
 
-    const rawPayload = await response.json().catch(() => ({}));
+    const rawPayload = await response.json().catch(() => null);
     if (!response.ok || rawPayload?.success === false) {
         const error = new Error(rawPayload?.message || 'Wascript send failed.');
         error.status = response.status;
-        error.payload = rawPayload;
+        error.payload = rawPayload || {
+            provider: 'wascript',
+            http_status: response.status,
+            note: 'empty_response_body',
+            phone: normalizedPhone
+        };
         throw error;
     }
 
+    const normalizedPayload = rawPayload || {
+        provider: 'wascript',
+        http_status: response.status,
+        note: 'empty_response_body',
+        phone: normalizedPhone,
+        accepted: true
+    };
+
     return {
         delivery_status: 'sent',
-        provider_message_id: rawPayload?.messageId || rawPayload?.id || rawPayload?.data?.id || null,
-        raw_payload: rawPayload
+        provider_message_id: normalizedPayload?.messageId || normalizedPayload?.id || normalizedPayload?.data?.id || null,
+        raw_payload: normalizedPayload
     };
 };
 
@@ -165,18 +179,29 @@ const sendViaMeta = async ({ phone, messageText }) => {
         })
     });
 
-    const rawPayload = await response.json().catch(() => ({}));
+    const rawPayload = await response.json().catch(() => null);
     if (!response.ok) {
         const error = new Error(rawPayload?.error?.message || 'WhatsApp provider send failed.');
         error.status = response.status;
-        error.payload = rawPayload;
+        error.payload = rawPayload || {
+            provider: 'meta',
+            http_status: response.status,
+            note: 'empty_response_body'
+        };
         throw error;
     }
 
+    const normalizedPayload = rawPayload || {
+        provider: 'meta',
+        http_status: response.status,
+        note: 'empty_response_body',
+        accepted: true
+    };
+
     return {
         delivery_status: 'sent',
-        provider_message_id: rawPayload?.messages?.[0]?.id || null,
-        raw_payload: rawPayload
+        provider_message_id: normalizedPayload?.messages?.[0]?.id || null,
+        raw_payload: normalizedPayload
     };
 };
 

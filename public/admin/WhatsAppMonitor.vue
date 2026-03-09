@@ -52,6 +52,43 @@
           </button>
           <p class="text-xs text-slate-500">Se a configuração do provedor ainda não estiver pronta, o envio fica registrado como skipped.</p>
         </div>
+
+        <div class="mt-5 border-t border-slate-200 pt-4">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide">Últimos envios</h4>
+            <button @click="fetchOutboundHistory" class="text-xs font-medium text-primary hover:underline">Atualizar</button>
+          </div>
+
+          <div v-if="outboundHistory.length === 0" class="rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-500">
+            Nenhum envio registrado ainda.
+          </div>
+
+          <div v-else class="space-y-2">
+            <div v-for="item in outboundHistory" :key="item.id" class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold text-slate-800 truncate">{{ item.phone }}</p>
+                  <p class="text-xs text-slate-500">{{ formatDate(item.created_at) }}</p>
+                </div>
+                <span class="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold border" :class="outboundBadgeClass(item.delivery_status)">
+                  {{ deliveryStatusText(item) }}
+                </span>
+              </div>
+              <p class="mt-2 text-sm text-slate-700 line-clamp-2">{{ item.message_text }}</p>
+              <p v-if="item.raw_payload?.message || item.raw_payload?.reason || item.raw_payload?.error?.message" class="mt-2 text-xs text-slate-500">
+                {{ item.raw_payload?.message || item.raw_payload?.reason || item.raw_payload?.error?.message }}
+              </p>
+              <div class="mt-2 flex items-center justify-between gap-3">
+                <p class="text-[11px] text-slate-500 truncate">
+                  {{ outboundTechnicalSummary(item) }}
+                </p>
+                <button @click="showOutboundDetails(item)" class="shrink-0 text-xs font-medium text-primary hover:underline">
+                  Ver detalhes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -183,6 +220,7 @@ export default {
         phone: '',
         messageText: ''
       },
+      outboundHistory: [],
       correction: {
         type: 'expense',
         amount: '',
@@ -227,11 +265,23 @@ export default {
             (this.filters.confidenceBand === 'low' && confidence < 0.6);
           return matchesType && matchesConfidence;
         });
+        await this.fetchOutboundHistory();
       } catch (error) {
         Swal.fire('Erro', error.message, 'error');
       } finally {
         this.loading = false;
       }
+    },
+    async fetchOutboundHistory() {
+      const userId = sessionStorage.getItem('userId');
+      const params = new URLSearchParams({ limit: '8' });
+      if (this.outbound.phone) params.set('phone', this.outbound.phone);
+      const res = await fetch(`/api/whatsapp/outbound?${params.toString()}`, {
+        headers: { 'user-id': userId }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Falha ao carregar histórico de envios.');
+      this.outboundHistory = data;
     },
     formatDate(value) {
       if (!value) return 'Sem data';
@@ -253,13 +303,42 @@ export default {
       };
       return map[status] || status || 'Status desconhecido';
     },
+    outboundBadgeClass(status) {
+      if (status === 'sent') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      if (status === 'failed') return 'bg-rose-50 text-rose-700 border-rose-200';
+      if (status === 'skipped') return 'bg-amber-50 text-amber-700 border-amber-200';
+      return 'bg-slate-50 text-slate-700 border-slate-200';
+    },
+    outboundTechnicalSummary(item) {
+      const provider = item?.raw_payload?.provider || 'provedor não informado';
+      const httpStatus = item?.raw_payload?.http_status || 'sem status HTTP';
+      const providerMessageId = item?.provider_message_id || item?.raw_payload?.messageId || item?.raw_payload?.id || 'sem id';
+      return `${provider} | HTTP ${httpStatus} | id ${providerMessageId}`;
+    },
+    showOutboundDetails(item) {
+      const rawPayload = item?.raw_payload || {};
+      Swal.fire({
+        title: 'Detalhes do envio',
+        html: `<pre style="text-align:left;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow:auto;background:#0f172a;color:#e2e8f0;padding:16px;border-radius:12px;">${this.escapeHtml(JSON.stringify(rawPayload, null, 2))}</pre>`,
+        width: 720,
+        confirmButtonText: 'Fechar'
+      });
+    },
+    escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    },
     statusLabel(status) {
       const map = {
         processed: 'Processada',
         pending_confirmation: 'Pendente confirmação',
         needs_reformulation: 'Pedir reformulação',
         rejected: 'Rejeitada',
-        unmatched_user: 'Sem usuÃ¡rio',
+        unmatched_user: 'Sem usuário',
         unsupported_message: 'Não suportada'
       };
       return map[status] || status || 'Recebida';
@@ -375,6 +454,7 @@ export default {
           confirmButtonText: 'OK'
         });
         this.outbound.messageText = '';
+        await this.fetchOutboundHistory();
       } catch (error) {
         Swal.fire('Erro', error.message, 'error');
       } finally {
@@ -387,5 +467,6 @@ export default {
   }
 }
 </script>
+
 
 

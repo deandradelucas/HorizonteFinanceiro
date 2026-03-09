@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const repository = require('../services/whatsapp/repository');
 const provider = require('../services/whatsapp/provider');
 const whatsappService = require('../services/whatsapp/service');
@@ -34,7 +34,7 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
             const phone = repository.normalizePhone(req.body?.phone);
             const messageText = String(req.body?.messageText || '').trim();
 
-            if (!phone) return res.status(400).json({ error: 'Telefone inválido.' });
+            if (!isValidWhatsAppPhone(phone)) return res.status(400).json({ error: 'Telefone inválido. Use DDI + DDD + número.' });
             if (!messageText) return res.status(400).json({ error: 'Mensagem é obrigatória.' });
 
             const outbound = await whatsappService.sendAndLogOutboundMessage({
@@ -67,10 +67,23 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
         }
     });
 
+    router.get('/whatsapp/outbound', authenticate, requireSuperAdmin, async (req, res, next) => {
+        try {
+            const messages = await repository.listOutboundMessages({
+                userId: req.query.userId ? parseInt(req.query.userId, 10) : null,
+                phone: req.query.phone || null,
+                limit: req.query.limit || 20
+            });
+            res.json(messages);
+        } catch (error) {
+            next(error);
+        }
+    });
+
     router.get('/users/:id/messages', authenticate, requireSuperAdmin, async (req, res, next) => {
         try {
             const userId = parseInt(req.params.id, 10);
-            if (!Number.isFinite(userId)) return res.status(400).json({ error: 'Usuário inválido.' });
+            if (!Number.isFinite(userId)) return res.status(400).json({ error: 'UsuÃ¡rio invÃ¡lido.' });
             const messages = await repository.listMessages({ userId, limit: 100 });
             res.json(messages);
         } catch (error) {
@@ -81,7 +94,7 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
     router.get('/users/:id/transactions', authenticate, requireSuperAdmin, async (req, res, next) => {
         try {
             const userId = parseInt(req.params.id, 10);
-            if (!Number.isFinite(userId)) return res.status(400).json({ error: 'Usuário inválido.' });
+            if (!Number.isFinite(userId)) return res.status(400).json({ error: 'UsuÃ¡rio invÃ¡lido.' });
             const transactions = await repository.listUserTransactions(userId);
             res.json(transactions);
         } catch (error) {
@@ -95,7 +108,7 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
                 ? parseInt(req.body.userId, 10)
                 : parseInt(req.userId, 10);
 
-            if (!Number.isFinite(targetUserId)) return res.status(400).json({ error: 'Usuário inválido.' });
+            if (!Number.isFinite(targetUserId)) return res.status(400).json({ error: 'UsuÃ¡rio invÃ¡lido.' });
 
             const payload = {
                 type: req.body?.type,
@@ -107,13 +120,13 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
             };
 
             if (!['income', 'expense', 'investment'].includes(payload.type)) {
-                return res.status(400).json({ error: 'Tipo inválido.' });
+                return res.status(400).json({ error: 'Tipo invÃ¡lido.' });
             }
             if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
-                return res.status(400).json({ error: 'Valor inválido.' });
+                return res.status(400).json({ error: 'Valor invÃ¡lido.' });
             }
             if (!payload.category || !payload.description || !/^\d{4}-\d{2}-\d{2}$/.test(payload.transaction_date)) {
-                return res.status(400).json({ error: 'Payload inválido.' });
+                return res.status(400).json({ error: 'Payload invÃ¡lido.' });
             }
 
             const transaction = await repository.saveTransactionFromInterpretation({
@@ -158,13 +171,13 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
             };
 
             if (!['income', 'expense', 'investment'].includes(payload.type)) {
-                return res.status(400).json({ error: 'Tipo inválido.' });
+                return res.status(400).json({ error: 'Tipo invÃ¡lido.' });
             }
             if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
-                return res.status(400).json({ error: 'Valor inválido.' });
+                return res.status(400).json({ error: 'Valor invÃ¡lido.' });
             }
             if (!payload.category || !payload.description || !/^\d{4}-\d{2}-\d{2}$/.test(payload.transaction_date)) {
-                return res.status(400).json({ error: 'Payload de correção inválido.' });
+                return res.status(400).json({ error: 'Payload de correÃ§Ã£o invÃ¡lido.' });
             }
 
             const result = await whatsappService.correctMessage(req.params.id, payload);
@@ -176,3 +189,4 @@ module.exports = ({ authenticate, requireSuperAdmin }) => {
 
     return router;
 };
+
