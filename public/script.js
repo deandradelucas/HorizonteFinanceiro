@@ -739,6 +739,80 @@ document.addEventListener('DOMContentLoaded', () => {
                         container.appendChild(row);
                     });
                 };
+
+                const renderSpendingMap = (containerId, emptyId, items) => {
+                    const container = document.getElementById(containerId);
+                    const empty = document.getElementById(emptyId);
+                    if (!container || !empty) return;
+
+                    container.innerHTML = '';
+                    empty.hidden = items.length > 0;
+                    if (!items.length) return;
+
+                    const maxValue = items[0]?.total || 0;
+                    items.forEach((item) => {
+                        const row = document.createElement('div');
+                        row.className = 'spending-map-row';
+                        const pct = maxValue > 0 ? (item.total / maxValue) * 100 : 0;
+                        row.innerHTML = `
+                            <div class="spending-map-main">
+                                <div class="spending-map-copy">
+                                    <strong>${normalizeLabel(item.category)}</strong>
+                                    <span>${normalizeLabel(item.subcategory)}</span>
+                                </div>
+                                <div class="mini-track">
+                                    <div class="mini-track-fill" style="width:${pct}%"></div>
+                                </div>
+                            </div>
+                            <span class="spending-map-value">${formatMoney(item.total)}</span>
+                        `;
+                        container.appendChild(row);
+                    });
+                };
+
+                const renderMonthRadar = (items, categoryData, subcategoryData) => {
+                    const caption = document.getElementById('subcategoryChartPeriod');
+                    const subcategoryContainer = document.getElementById('subcategoryChartBars');
+                    const subcategoryEmpty = document.getElementById('subcategoryChartEmpty');
+                    const subcategoryCard = subcategoryContainer ? subcategoryContainer.closest('.dashboard-chart-card') : null;
+                    const subcategoryTitle = subcategoryContainer ? subcategoryContainer.parentElement.querySelector('.section-header h3') : null;
+
+                    if (subcategoryTitle) subcategoryTitle.textContent = 'Radar do Mês';
+                    if (caption) caption.textContent = currentMonthLabel;
+                    if (!subcategoryContainer || !subcategoryEmpty) return;
+
+                    if (subcategoryCard) {
+                        subcategoryCard.classList.remove('dashboard-chart-card');
+                        subcategoryCard.classList.add('dashboard-side-card');
+                    }
+
+                    subcategoryEmpty.hidden = true;
+                    const count = items.length;
+                    const avg = count ? items.reduce((sum, item) => sum + toSafeNumber(item.value), 0) / count : 0;
+                    const topCategory = categoryData[0]?.label || 'Sem categoria';
+                    const topSubcategory = subcategoryData[0]?.label || 'Sem subcategoria';
+
+                    subcategoryContainer.innerHTML = `
+                        <div class="radar-grid">
+                            <div class="radar-metric">
+                                <span>Lançamentos</span>
+                                <strong>${count} movimentações</strong>
+                            </div>
+                            <div class="radar-metric">
+                                <span>Ticket médio</span>
+                                <strong>${formatMoney(avg)}</strong>
+                            </div>
+                            <div class="radar-metric">
+                                <span>Categoria líder</span>
+                                <strong>${normalizeLabel(topCategory)}</strong>
+                            </div>
+                            <div class="radar-metric">
+                                <span>Subcategoria líder</span>
+                                <strong>${normalizeLabel(topSubcategory)}</strong>
+                            </div>
+                        </div>
+                    `;
+                };
                 // 1. Calcular Totais
                 let totalIncomes = 0;
                 let totalExpenses = 0;
@@ -773,6 +847,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const categoryChartData = aggregateByField(currentMonthExpenses, 'category');
                 const subcategoryChartData = aggregateByField(currentMonthExpenses, 'description');
+                const combinedSpendingData = [...currentMonthExpenses.reduce((groups, item) => {
+                    const category = String(item.category || 'Sem categoria').trim() || 'Sem categoria';
+                    const subcategory = String(item.description || 'Sem subcategoria').trim() || 'Sem subcategoria';
+                    const key = `${category}__${subcategory}`;
+                    const current = groups.get(key) || { category, subcategory, total: 0 };
+                    current.total += toSafeNumber(item.value);
+                    groups.set(key, current);
+                    return groups;
+                }, new Map()).values()]
+                    .sort((a, b) => b.total - a.total)
+                    .slice(0, 6);
 
                 const currentBalance = toSafeNumber(totalIncomes - totalExpenses);
                 const investedTotal = transactions
@@ -793,8 +878,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (categoryPeriod) categoryPeriod.textContent = currentMonthLabel;
                 if (subcategoryPeriod) subcategoryPeriod.textContent = currentMonthLabel;
 
-                renderBarChart('categoryChartBars', 'categoryChartEmpty', categoryChartData, 'linear-gradient(90deg, #7dd3fc 0%, #3b82f6 45%, #312e81 100%)');
-                renderBarChart('subcategoryChartBars', 'subcategoryChartEmpty', subcategoryChartData, 'linear-gradient(90deg, #fde68a 0%, #f59e0b 48%, #c2410c 100%)');
+                const categoryTitle = document.getElementById('categoryChartBars')?.parentElement?.querySelector('.section-header h3');
+                if (categoryTitle) categoryTitle.textContent = 'Mapa de Gastos do Mês';
+
+                renderSpendingMap('categoryChartBars', 'categoryChartEmpty', combinedSpendingData);
+                renderMonthRadar(currentMonthExpenses, categoryChartData, subcategoryChartData);
 
                 // 2. Meta em Destaque no Dashboard
                 const goalContainer = document.getElementById('mainGoalContainer');
