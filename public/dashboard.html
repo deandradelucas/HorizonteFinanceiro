@@ -282,7 +282,11 @@
                 }
 
                 .dashboard-chart-card {
-                    grid-column: span 6;
+                    grid-column: span 8;
+                }
+
+                .dashboard-side-card {
+                    grid-column: span 4;
                 }
 
                 .recent-transactions {
@@ -369,6 +373,101 @@
                     height: 100%;
                     border-radius: 999px;
                     box-shadow: 0 0 22px rgba(96, 165, 250, 0.28);
+                }
+
+                .spending-map-row {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr) auto;
+                    gap: 14px;
+                    align-items: center;
+                    padding: 16px 18px;
+                    border-radius: 20px;
+                    background: rgba(248, 250, 252, 0.78);
+                    border: 1px solid rgba(148, 163, 184, 0.08);
+                    backdrop-filter: blur(10px);
+                }
+
+                .spending-map-main {
+                    min-width: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .spending-map-copy {
+                    min-width: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                }
+
+                .spending-map-copy strong {
+                    font-size: 14px;
+                    color: var(--text-main);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .spending-map-copy span {
+                    font-size: 12px;
+                    color: var(--text-muted);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .spending-map-value {
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: var(--text-main);
+                    white-space: nowrap;
+                }
+
+                .mini-track {
+                    width: 100%;
+                    height: 10px;
+                    border-radius: 999px;
+                    overflow: hidden;
+                    background: rgba(148, 163, 184, 0.1);
+                }
+
+                .mini-track-fill {
+                    height: 100%;
+                    border-radius: inherit;
+                    background: linear-gradient(90deg, #14b8a6 0%, #0ea5e9 55%, #2563eb 100%);
+                }
+
+                .radar-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 14px;
+                    margin-top: 12px;
+                }
+
+                .radar-metric {
+                    padding: 16px;
+                    border-radius: 20px;
+                    background: rgba(248, 250, 252, 0.78);
+                    border: 1px solid rgba(148, 163, 184, 0.08);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+
+                .radar-metric span {
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: .04em;
+                    text-transform: uppercase;
+                    color: var(--text-muted);
+                }
+
+                .radar-metric strong {
+                    font-size: 18px;
+                    line-height: 1.2;
+                    letter-spacing: -0.03em;
+                    color: var(--text-main);
                 }
 
                 .dashboard-widget.layout-hidden {
@@ -615,6 +714,7 @@
                     }
 
                     .dashboard-chart-card,
+                    .dashboard-side-card,
                     .summary-cards,
                     .recent-transactions {
                         grid-column: 1 / -1;
@@ -664,6 +764,10 @@
                     }
 
                     .summary-cards {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .radar-grid {
                         grid-template-columns: 1fr;
                     }
                 }
