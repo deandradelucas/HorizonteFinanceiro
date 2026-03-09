@@ -1050,10 +1050,19 @@
                 }
 
                 body.dashboard-body .topbar {
-                    min-height: 84px;
+                    position: sticky !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: space-between !important;
+                    height: 84px !important;
+                    min-height: 84px !important;
+                    max-height: 84px !important;
+                    overflow: hidden !important;
                     margin: 0 !important;
                     top: 0 !important;
-                    padding-inline: 28px;
+                    left: 0 !important;
+                    right: 0 !important;
+                    padding: 0 28px !important;
                 }
 
                 body.dashboard-body .search-bar {
@@ -1070,6 +1079,10 @@
 
                 body.dashboard-body .dashboard-content {
                     padding: 14px 28px 28px !important;
+                }
+
+                body.dashboard-body .topbar > * {
+                    flex-shrink: 0;
                 }
 
                 body.dashboard-body .dashboard-hero,
