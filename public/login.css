@@ -3,6 +3,7 @@ body.auth-login-v2 {
     margin: 0;
     overflow: hidden;
     --auth-horizon-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=80');
+    --auth-investment-image: url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1800&q=80');
     background:
         linear-gradient(180deg, rgba(2, 6, 23, 0.22), rgba(2, 6, 23, 0.46)),
         var(--auth-horizon-image) center center / cover no-repeat fixed;
@@ -41,8 +42,8 @@ body.auth-login-v2 .login-visual-v2 {
     overflow: hidden;
     border-radius: 30px;
     background:
-        linear-gradient(180deg, rgba(2, 6, 23, 0.1), rgba(2, 6, 23, 0.34)),
-        var(--auth-horizon-image) center center / cover no-repeat;
+        linear-gradient(180deg, rgba(5, 12, 20, 0.18), rgba(5, 12, 20, 0.52)),
+        var(--auth-investment-image) center center / cover no-repeat;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 24px 50px rgba(0, 0, 0, 0.24);
 }
@@ -51,9 +52,72 @@ body.auth-login-v2 .login-visual-overlay-v2 {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 20% 24%, rgba(110, 231, 183, 0.14), transparent 26%),
-        radial-gradient(circle at 82% 18%, rgba(125, 211, 252, 0.12), transparent 28%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(15, 23, 42, 0.18));
+        linear-gradient(180deg, rgba(8, 15, 26, 0.08), rgba(8, 15, 26, 0.42)),
+        radial-gradient(circle at 18% 20%, rgba(110, 231, 183, 0.2), transparent 24%),
+        radial-gradient(circle at 84% 14%, rgba(147, 197, 253, 0.16), transparent 26%),
+        linear-gradient(130deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.28) 55%, rgba(2, 6, 23, 0.54) 100%);
+}
+
+body.auth-login-v2 .login-visual-overlay-v2::before,
+body.auth-login-v2 .login-visual-overlay-v2::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}
+
+body.auth-login-v2 .login-visual-overlay-v2::before {
+    left: 38px;
+    right: 38px;
+    bottom: 132px;
+    height: 120px;
+    border-radius: 26px;
+    background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.04), rgba(15, 23, 42, 0.3)),
+        linear-gradient(90deg,
+            transparent 0%,
+            transparent 8%,
+            rgba(255, 255, 255, 0.08) 8%,
+            rgba(255, 255, 255, 0.08) 8.6%,
+            transparent 8.6%,
+            transparent 19%,
+            rgba(52, 211, 153, 0.22) 19%,
+            rgba(52, 211, 153, 0.22) 27%,
+            transparent 27%,
+            transparent 38%,
+            rgba(96, 165, 250, 0.26) 38%,
+            rgba(96, 165, 250, 0.26) 48%,
+            transparent 48%,
+            transparent 59%,
+            rgba(251, 191, 36, 0.24) 59%,
+            rgba(251, 191, 36, 0.24) 68%,
+            transparent 68%,
+            transparent 79%,
+            rgba(45, 212, 191, 0.28) 79%,
+            rgba(45, 212, 191, 0.28) 92%,
+            transparent 92%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 20px 40px rgba(2, 6, 23, 0.2);
+    opacity: 0.9;
+}
+
+body.auth-login-v2 .login-visual-overlay-v2::after {
+    left: 48px;
+    top: 88px;
+    width: 170px;
+    height: 170px;
+    border-radius: 28px;
+    background:
+        radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.22), transparent 24%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0.36));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 20px 36px rgba(2, 6, 23, 0.22);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    opacity: 0.88;
 }
 
 body.auth-login-v2 .login-visual-content-v2 {
@@ -92,6 +156,8 @@ body.auth-login-v2 .login-badge-mark-v2 {
 
 body.auth-login-v2 .login-copy-v2 {
     max-width: 560px;
+    position: relative;
+    z-index: 1;
 }
 
 body.auth-login-v2 .login-eyebrow-v2 {
@@ -127,6 +193,8 @@ body.auth-login-v2 .login-insights-v2 {
     gap: 14px;
     margin-top: 28px;
     max-width: 620px;
+    position: relative;
+    z-index: 1;
 }
 
 body.auth-login-v2 .login-insight-card-v2 {

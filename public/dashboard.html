@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Horizonte">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -962,6 +962,254 @@
                     }
 
                     /* Esconde etiquetas intermediárias no mobile extremo se houver muitas */
+                }
+            </style>
+
+            <style>
+                body.dashboard-body {
+                    --dashboard-shell-image: url('https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1800&q=80');
+                    background:
+                        linear-gradient(180deg, rgba(3, 7, 18, 0.74), rgba(3, 7, 18, 0.9)),
+                        var(--dashboard-shell-image) center center / cover no-repeat fixed;
+                    position: relative;
+                }
+
+                body.dashboard-body::before {
+                    content: '';
+                    position: fixed;
+                    inset: 0;
+                    background:
+                        radial-gradient(circle at 18% 18%, rgba(110, 231, 183, 0.1), transparent 22%),
+                        radial-gradient(circle at 84% 20%, rgba(125, 211, 252, 0.08), transparent 24%),
+                        linear-gradient(180deg, rgba(2, 6, 23, 0.16), rgba(2, 6, 23, 0.34));
+                    pointer-events: none;
+                    z-index: 0;
+                }
+
+                body.dashboard-body .sidebar,
+                body.dashboard-body .main-content {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                body.dashboard-body .sidebar {
+                    background: rgba(3, 7, 18, 0.78);
+                    backdrop-filter: blur(18px);
+                    -webkit-backdrop-filter: blur(18px);
+                    border-right: 1px solid rgba(255, 255, 255, 0.08);
+                    box-shadow: none;
+                }
+
+                body.dashboard-body .sidebar-header,
+                body.dashboard-body .sidebar-footer,
+                body.dashboard-body .topbar {
+                    background: rgba(3, 7, 18, 0.62);
+                    backdrop-filter: blur(18px);
+                    -webkit-backdrop-filter: blur(18px);
+                    border-color: rgba(255, 255, 255, 0.08);
+                }
+
+                body.dashboard-body .sidebar-header h2,
+                body.dashboard-body .sidebar .nav-item,
+                body.dashboard-body .section-header h3,
+                body.dashboard-body .summary-card h3,
+                body.dashboard-body .goal-main-title,
+                body.dashboard-body .page-header h1 {
+                    font-family: "Manrope", Inter, sans-serif;
+                    letter-spacing: -0.03em;
+                }
+
+                body.dashboard-body .nav-item {
+                    border-radius: 16px;
+                    margin-bottom: 6px;
+                    color: rgba(226, 232, 240, 0.78);
+                }
+
+                body.dashboard-body .nav-item:hover,
+                body.dashboard-body .nav-item.active {
+                    background: rgba(255, 255, 255, 0.06);
+                    border-left-color: rgba(52, 211, 153, 0.5);
+                    color: #ffffff;
+                    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+                }
+
+                body.dashboard-body .topbar {
+                    padding-inline: 28px;
+                }
+
+                body.dashboard-body .search-bar {
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    box-shadow: none;
+                }
+
+                body.dashboard-body .search-bar input,
+                body.dashboard-body .search-bar i,
+                body.dashboard-body .date-display {
+                    color: rgba(226, 232, 240, 0.78) !important;
+                }
+
+                body.dashboard-body .dashboard-content {
+                    padding: 28px;
+                }
+
+                body.dashboard-body .dashboard-hero,
+                body.dashboard-body .summary-card,
+                body.dashboard-body .insight-card,
+                body.dashboard-body .recent-transactions,
+                body.dashboard-body .main-goal-container {
+                    background: rgba(3, 7, 18, 0.54);
+                    backdrop-filter: blur(16px);
+                    -webkit-backdrop-filter: blur(16px);
+                    border: 1px solid rgba(255, 255, 255, 0.09);
+                    box-shadow:
+                        0 0 0 1px rgba(255, 255, 255, 0.02),
+                        0 24px 44px rgba(0, 0, 0, 0.18);
+                }
+
+                body.dashboard-body .dashboard-hero {
+                    border-radius: 30px;
+                    padding: 30px;
+                    gap: 18px;
+                    background:
+                        linear-gradient(180deg, rgba(3, 7, 18, 0.62), rgba(3, 7, 18, 0.78)),
+                        radial-gradient(circle at top right, rgba(52, 211, 153, 0.08), transparent 26%);
+                }
+
+                body.dashboard-body .dashboard-hero::after,
+                body.dashboard-body .insight-card::before,
+                body.dashboard-body .summary-card::after {
+                    opacity: 0.55;
+                }
+
+                body.dashboard-body .dashboard-hero-head h1 {
+                    font-size: clamp(34px, 4vw, 44px);
+                    color: #ffffff;
+                }
+
+                body.dashboard-body .subtitle {
+                    color: rgba(226, 232, 240, 0.76) !important;
+                    max-width: 760px;
+                }
+
+                body.dashboard-body .hero-link,
+                body.dashboard-body .dashboard-status-pill {
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    color: rgba(226, 232, 240, 0.74);
+                }
+
+                body.dashboard-body .hero-link:hover {
+                    background: rgba(52, 211, 153, 0.08);
+                    border-color: rgba(52, 211, 153, 0.22);
+                }
+
+                body.dashboard-body .btn-primary,
+                body.dashboard-body .btn-secondary {
+                    border-radius: 14px;
+                    min-height: 48px;
+                }
+
+                body.dashboard-body .btn-secondary {
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.09);
+                    color: #ffffff;
+                }
+
+                body.dashboard-body .summary-cards {
+                    gap: 18px;
+                }
+
+                body.dashboard-body .summary-card {
+                    border-radius: 24px;
+                    min-height: 172px;
+                    padding: 22px;
+                }
+
+                body.dashboard-body .summary-card .card-kicker {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: rgba(226, 232, 240, 0.66);
+                }
+
+                body.dashboard-body .summary-card .amount,
+                body.dashboard-body .summary-card h3,
+                body.dashboard-body .section-header h3,
+                body.dashboard-body .goal-main-title,
+                body.dashboard-body .progress-stats .values,
+                body.dashboard-body .progress-stats .percentage {
+                    color: #ffffff;
+                }
+
+                body.dashboard-body .card-meta,
+                body.dashboard-body .insight-caption,
+                body.dashboard-body .motivation-phrase,
+                body.dashboard-body .view-all,
+                body.dashboard-body .insight-empty,
+                body.dashboard-body .insight-bar-head span,
+                body.dashboard-body .spending-map-copy span {
+                    color: rgba(226, 232, 240, 0.68);
+                }
+
+                body.dashboard-body .insight-card,
+                body.dashboard-body .recent-transactions,
+                body.dashboard-body .main-goal-container {
+                    border-radius: 28px;
+                }
+
+                body.dashboard-body .mario-hero-art {
+                    display: none;
+                }
+
+                body.dashboard-body .goal-label {
+                    color: rgba(110, 231, 183, 0.9);
+                    letter-spacing: 0.08em;
+                }
+
+                body.dashboard-body .progress-bar-container,
+                body.dashboard-body .insight-bar-track,
+                body.dashboard-body .mini-track {
+                    background: rgba(255, 255, 255, 0.08);
+                    border: none;
+                    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+                }
+
+                body.dashboard-body .progress-bar-fill {
+                    background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+                    box-shadow: 0 8px 18px rgba(52, 211, 153, 0.22);
+                }
+
+                body.dashboard-body .insight-bar-item,
+                body.dashboard-body .spending-map-row,
+                body.dashboard-body .recent-transactions .table-container {
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.06);
+                    box-shadow: none;
+                }
+
+                body.dashboard-body .recent-transactions .data-table thead th {
+                    color: rgba(226, 232, 240, 0.62);
+                }
+
+                body.dashboard-body .recent-transactions .data-table tbody tr:hover {
+                    background: rgba(255, 255, 255, 0.03);
+                }
+
+                @media (max-width: 900px) {
+                    body.dashboard-body .dashboard-content {
+                        padding: 18px;
+                    }
+
+                    body.dashboard-body .topbar {
+                        padding-inline: 16px;
+                    }
+
+                    body.dashboard-body .dashboard-hero,
+                    body.dashboard-body .summary-card,
+                    body.dashboard-body .insight-card,
+                    body.dashboard-body .recent-transactions,
+                    body.dashboard-body .main-goal-container {
+                        border-radius: 22px;
+                    }
                 }
             </style>
 
