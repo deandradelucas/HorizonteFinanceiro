@@ -1,0 +1,90 @@
+html body.dashboard-body .history-filters,
+html body.dashboard-body .history-card,
+html body.dashboard-body .history-detail,
+html body.dashboard-body .month-card,
+html body.dashboard-body .timeline-day,
+html body.dashboard-body .empty-state,
+html body.dashboard-body .category-card {
+    background: rgba(255, 255, 255, 0.09) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 18px 32px rgba(0, 0, 0, 0.12) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+}
+
+html body.dashboard-body .history-filters,
+html body.dashboard-body .history-card,
+html body.dashboard-body .history-detail,
+html body.dashboard-body .month-card,
+html body.dashboard-body .timeline-day,
+html body.dashboard-body .empty-state {
+    border-radius: 24px !important;
+}
+
+html body.dashboard-body .history-card,
+html body.dashboard-body .history-detail {
+    padding: 24px !important;
+}
+
+html body.dashboard-body .history-filters {
+    padding: 18px !important;
+}
+
+html body.dashboard-body .history-filters .filter-field input,
+html body.dashboard-body .history-filters .filter-field select,
+html body.dashboard-body .detail-controls input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+
+html body.dashboard-body .history-filters .filter-field label,
+html body.dashboard-body .stat-label,
+html body.dashboard-body .month-line,
+html body.dashboard-body .timeline-day-total,
+html body.dashboard-body .category-meta,
+html body.dashboard-body .timeline-text span,
+html body.dashboard-body .month-row span {
+    color: rgba(226, 232, 240, 0.62) !important;
+}
+
+html body.dashboard-body .stat-value,
+html body.dashboard-body .month-name,
+html body.dashboard-body .timeline-day-title,
+html body.dashboard-body .detail-title h2,
+html body.dashboard-body .category-name,
+html body.dashboard-body .category-total,
+html body.dashboard-body .timeline-text strong {
+    color: #ffffff !important;
+    font-family: "Manrope", Inter, sans-serif !important;
+}
+
+html body.dashboard-body .month-card:hover,
+html body.dashboard-body .month-card.active {
+    transform: translateY(-2px) !important;
+    border-color: rgba(52, 211, 153, 0.24) !important;
+}
+
+html body.dashboard-body .timeline-item,
+html body.dashboard-body .category-card {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+@media (max-width: 720px) {
+    html body.dashboard-body .history-filters,
+    html body.dashboard-body .history-card,
+    html body.dashboard-body .history-detail,
+    html body.dashboard-body .month-card,
+    html body.dashboard-body .timeline-day,
+    html body.dashboard-body .empty-state {
+        border-radius: 18px !important;
+    }
+
+    html body.dashboard-body .history-filters,
+    html body.dashboard-body .history-card,
+    html body.dashboard-body .history-detail {
+        padding: 18px !important;
+    }
+}

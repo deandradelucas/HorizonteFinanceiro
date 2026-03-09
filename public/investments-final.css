@@ -1,0 +1,79 @@
+html body.dashboard-body .invest-filters,
+html body.dashboard-body .invest-card,
+html body.dashboard-body .invest-panel,
+html body.dashboard-body .empty-state,
+html body.dashboard-body .month-row,
+html body.dashboard-body .invest-item {
+    background: rgba(255, 255, 255, 0.09) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 18px 32px rgba(0, 0, 0, 0.12) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+}
+
+html body.dashboard-body .invest-filters,
+html body.dashboard-body .invest-card,
+html body.dashboard-body .invest-panel,
+html body.dashboard-body .empty-state {
+    border-radius: 24px !important;
+}
+
+html body.dashboard-body .invest-card,
+html body.dashboard-body .invest-panel {
+    padding: 24px !important;
+}
+
+html body.dashboard-body .invest-filters {
+    padding: 18px !important;
+}
+
+html body.dashboard-body .invest-filters .filter-field input,
+html body.dashboard-body .invest-filters .filter-field select {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+
+html body.dashboard-body .filter-field label,
+html body.dashboard-body .stat-label,
+html body.dashboard-body .stat-sub,
+html body.dashboard-body .month-row span,
+html body.dashboard-body .invest-text span {
+    color: rgba(226, 232, 240, 0.62) !important;
+}
+
+html body.dashboard-body .stat-value,
+html body.dashboard-body .section-header h3,
+html body.dashboard-body .month-row strong,
+html body.dashboard-body .invest-text strong {
+    color: #ffffff !important;
+    font-family: "Manrope", Inter, sans-serif !important;
+}
+
+html body.dashboard-body .month-row,
+html body.dashboard-body .invest-item {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-radius: 18px !important;
+}
+
+html body.dashboard-body .tag-chip,
+html body.dashboard-body .invest-icon {
+    box-shadow: none !important;
+}
+
+@media (max-width: 720px) {
+    html body.dashboard-body .invest-filters,
+    html body.dashboard-body .invest-card,
+    html body.dashboard-body .invest-panel,
+    html body.dashboard-body .empty-state {
+        border-radius: 18px !important;
+    }
+
+    html body.dashboard-body .invest-card,
+    html body.dashboard-body .invest-panel,
+    html body.dashboard-body .invest-filters {
+        padding: 18px !important;
+    }
+}

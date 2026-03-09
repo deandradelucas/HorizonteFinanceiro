@@ -274,10 +274,34 @@ html body.dashboard-body .recent-transactions .item-meta small {
         padding: 12px !important;
     }
 
+    html body.dashboard-body .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease !important;
+    }
+
+    html body.dashboard-body .sidebar.active {
+        transform: translateX(0);
+    }
+
     html body.dashboard-body .topbar {
         padding: 14px 16px !important;
         margin-bottom: 14px !important;
         border-radius: 22px !important;
+        gap: 12px !important;
+    }
+
+    html body.dashboard-body .search-bar {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    html body.dashboard-body .user-profile {
+        margin-left: auto !important;
+        gap: 10px !important;
+    }
+
+    html body.dashboard-body .dashboard-content {
+        max-width: 100% !important;
     }
 
     html body.dashboard-body .dashboard-hero,
@@ -286,5 +310,103 @@ html body.dashboard-body .recent-transactions .item-meta small {
     html body.dashboard-body .recent-transactions,
     html body.dashboard-body .main-goal-container {
         border-radius: 22px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero {
+        padding: 22px !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-actions,
+    html body.dashboard-body .dashboard-hero-links {
+        width: 100% !important;
+        justify-content: flex-start !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-actions > *,
+    html body.dashboard-body .dashboard-hero-links > * {
+        flex: 1 1 calc(50% - 8px) !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+    }
+
+    html body.dashboard-body .summary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+    }
+
+    html body.dashboard-body .summary-card {
+        min-height: 154px !important;
+        padding: 18px !important;
+    }
+
+    html body.dashboard-body .dashboard-chart-card,
+    html body.dashboard-body .dashboard-side-card,
+    html body.dashboard-body .recent-transactions,
+    html body.dashboard-body .main-goal-container,
+    html body.dashboard-body .summary-cards {
+        grid-column: 1 / -1 !important;
+    }
+
+    html body.dashboard-body .recent-transactions .table-container {
+        overflow-x: auto !important;
+    }
+
+    html body.dashboard-body .recent-transactions .data-table {
+        min-width: 560px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    html body.dashboard-body .main-content {
+        padding: 10px !important;
+    }
+
+    html body.dashboard-body .topbar {
+        min-height: 68px !important;
+        padding: 12px 14px !important;
+        border-radius: 18px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-head h1 {
+        font-size: 30px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero {
+        padding: 18px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-actions > *,
+    html body.dashboard-body .dashboard-hero-links > * {
+        flex: 1 1 100% !important;
+    }
+
+    html body.dashboard-body .summary-cards {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.dashboard-body .summary-card {
+        min-height: 142px !important;
+        border-radius: 18px !important;
+    }
+
+    html body.dashboard-body .insight-card,
+    html body.dashboard-body .recent-transactions,
+    html body.dashboard-body .main-goal-container,
+    html body.dashboard-body .dashboard-hero {
+        border-radius: 18px !important;
+    }
+
+    html body.dashboard-body .recent-transactions .data-table {
+        min-width: 520px !important;
+    }
+
+    html body.dashboard-body .recent-transactions .desc-text {
+        font-size: 14px !important;
+    }
+
+    html body.dashboard-body .recent-transactions .item-meta small {
+        font-size: 11px !important;
     }
 }
