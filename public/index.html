@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cadastro - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="register.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -13,85 +14,85 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Horizonte">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="auth-register-page">
+<body class="auth-register-page auth-register-v2">
     <script>
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
 
-    <main class="auth-register-center">
-        <section class="auth-register-card auth-register-card--solo">
-            <div class="auth-register-brand">
-                <div class="auth-register-brand-mark" aria-hidden="true">
+    <main class="register-shell-v2">
+        <section class="register-card-v2">
+            <div class="register-brand-v2">
+                <div class="register-brand-mark-v2" aria-hidden="true">
                     <span></span>
                 </div>
                 <h2>Horizonte Financeiro</h2>
             </div>
 
-            <div class="auth-register-heading">
+            <header class="register-heading-v2">
                 <h1>Comece agora</h1>
-                <p class="subtitle">Crie sua conta gratuitamente</p>
-            </div>
+                <p>Crie sua conta gratuitamente</p>
+            </header>
 
-            <form id="registerForm" class="auth-register-form">
-                <div class="input-group auth-register-field">
+            <form id="registerForm" class="register-form-v2">
+                <div class="input-group register-field-v2">
                     <label for="fullName">Nome Completo</label>
-                    <div class="input-field">
+                    <div class="input-field register-input-v2">
                         <i class="fa-regular fa-user"></i>
                         <input type="text" id="fullName" placeholder="Digite seu nome completo" required>
                     </div>
                 </div>
 
-                <div class="input-group auth-register-field">
+                <div class="input-group register-field-v2">
                     <label for="phone">Celular</label>
-                    <div class="input-field">
+                    <div class="input-field register-input-v2">
                         <i class="fa-solid fa-phone"></i>
                         <input type="tel" id="phone" placeholder="(11) 99999-9999" inputmode="tel">
                     </div>
                 </div>
 
-                <div class="input-group auth-register-field">
+                <div class="input-group register-field-v2">
                     <label for="email">E-mail</label>
-                    <div class="input-field">
+                    <div class="input-field register-input-v2">
                         <i class="fa-regular fa-envelope"></i>
                         <input type="email" id="email" placeholder="seu@email.com" required>
                     </div>
                 </div>
 
-                <div class="input-group auth-register-field">
+                <div class="input-group register-field-v2">
                     <label for="password">Senha</label>
-                    <div class="input-field">
+                    <div class="input-field register-input-v2">
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" id="password" placeholder="Crie uma senha forte" required>
-                        <button type="button" class="toggle-password toggle-password-button" id="togglePassword" aria-label="Mostrar senha">
+                        <button type="button" class="toggle-password toggle-password-button register-toggle-v2" id="togglePassword" aria-label="Mostrar senha">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
-                    <div class="password-strength">
+                    <div class="password-strength register-strength-v2">
                         <div class="strength-bar" id="strengthBar"></div>
                     </div>
                 </div>
 
-                <div class="input-group auth-register-field">
+                <div class="input-group register-field-v2">
                     <label for="confirmPassword">Confirmar Senha</label>
-                    <div class="input-field">
+                    <div class="input-field register-input-v2">
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" id="confirmPassword" placeholder="Repita a senha" required>
-                        <button type="button" class="toggle-password toggle-password-button" id="toggleConfirmPassword" aria-label="Mostrar confirmação de senha">
+                        <button type="button" class="toggle-password toggle-password-button register-toggle-v2" id="toggleConfirmPassword" aria-label="Mostrar confirmaÃ§Ã£o de senha">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary">Criar Conta</button>
+                <button type="submit" class="btn-primary register-submit-v2">Criar Conta</button>
             </form>
 
-            <p class="login-link">Já tem uma conta? <a href="/login">Faça login</a></p>
+            <p class="register-login-v2">JÃ¡ tem uma conta? <a href="/login">FaÃ§a login</a></p>
         </section>
     </main>
 

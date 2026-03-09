@@ -3525,3 +3525,108 @@ body.dark-mode[data-theme="mario"] .sidebar-footer { background: rgba(8, 15, 29,
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
 }
+
+/* Final auth register overrides */
+body.auth-register-page {
+    overflow: hidden;
+}
+
+body.auth-register-page .auth-register-center {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+body.auth-register-page .auth-register-card--solo {
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100dvh - 40px);
+    overflow: auto;
+    padding: 34px 30px 28px;
+    border-radius: 28px;
+    background: rgba(3, 7, 18, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 22px 44px rgba(0, 0, 0, 0.28) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body.auth-register-page .auth-register-card--solo .auth-register-brand {
+    margin-bottom: 20px;
+}
+
+body.auth-register-page .auth-register-card--solo .auth-register-heading {
+    margin-bottom: 20px;
+}
+
+body.auth-register-page .auth-register-card--solo .auth-register-heading h1 {
+    font-size: clamp(36px, 5vw, 44px);
+    line-height: 1.04;
+    letter-spacing: -0.05em;
+}
+
+body.auth-register-page .auth-register-card--solo .subtitle {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+body.auth-register-page .auth-register-card--solo .auth-register-form {
+    gap: 14px;
+}
+
+body.auth-register-page .auth-register-card--solo .auth-register-field label {
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+body.auth-register-page .auth-register-card--solo .input-field input {
+    height: 50px;
+    padding: 13px 46px 13px 44px;
+    border-radius: 14px;
+    font-size: 15px;
+    background: rgba(2, 6, 23, 0.26) !important;
+}
+
+body.auth-register-page .auth-register-card--solo .input-field i:first-child {
+    left: 15px;
+    font-size: 15px;
+}
+
+body.auth-register-page .auth-register-card--solo .toggle-password {
+    right: 8px;
+    width: 34px;
+    height: 34px;
+}
+
+body.auth-register-page .auth-register-card--solo .btn-primary {
+    min-height: 50px;
+    border-radius: 14px;
+    font-size: 17px;
+}
+
+body.auth-register-page .auth-register-card--solo .login-link {
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    body.auth-register-page .auth-register-center {
+        padding: 10px;
+    }
+
+    body.auth-register-page .auth-register-card--solo {
+        width: calc(100vw - 20px);
+        max-height: calc(100dvh - 20px);
+        padding: 24px 18px 20px;
+        border-radius: 20px;
+    }
+
+    body.auth-register-page .auth-register-card--solo .auth-register-heading h1 {
+        font-size: 30px;
+    }
+}
