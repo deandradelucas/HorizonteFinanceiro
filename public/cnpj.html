@@ -49,24 +49,62 @@
 </head>
 <body class="dashboard-body">
   <script>const siteTheme=localStorage.getItem('siteTheme');if(siteTheme&&siteTheme!=='default')document.body.dataset.theme=siteTheme;if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
+  <div class="scenic-wall" aria-hidden="true"></div>
+  <div class="dashboard-shell">
   <aside class="sidebar">
-    <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
+    <div class="sidebar-profile">
+      <div class="profile-avatar">GM</div>
+      <div class="profile-info">
+        <strong>Gadiel Machado</strong>
+        <span>Designer</span>
+      </div>
+    </div>
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
-      <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-      <a href="/cnpj" class="nav-item active"><i class="fa-solid fa-building"></i> CNPJ</a>
-      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
-      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
-      <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-      <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+      <a href="/dashboard" class="nav-item" title="Dashboard"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+      <a href="/transactions" class="nav-item" title="Transações"><i class="fa-solid fa-receipt"></i><span>Transações</span></a>
+      <a href="/investments" class="nav-item" title="Investimentos"><i class="fa-solid fa-wallet"></i><span>Investimentos</span></a>
+      <a href="/history" class="nav-item" title="Histórico"><i class="fa-solid fa-chart-line"></i><span>Histórico</span></a>
+      <a href="/goals" class="nav-item" title="Metas"><i class="fa-solid fa-bullseye"></i><span>Metas</span></a>
+      <a href="/cnpj" class="nav-item active" title="CNPJ"><i class="fa-solid fa-building"></i><span>CNPJ</span></a>
+      <a href="/billing" class="nav-item" title="Assinatura"><i class="fa-solid fa-credit-card"></i><span>Assinatura</span></a>
+      <a href="/settings" class="nav-item" title="Configurações"><i class="fa-solid fa-gear"></i><span>Configurações</span></a>
     </nav>
-    <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
+    <div class="sidebar-footer">
+      <a href="/settings" class="nav-item" title="Ajuda"><i class="fa-regular fa-circle-question"></i><span>Ajuda</span></a>
+      <a href="/login" class="nav-item logout" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></a>
+    </div>
   </aside>
   <main class="main-content">
     <header class="topbar">
       <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-      <div class="search-bar"><i class="fa-solid fa-building"></i><input id="businessSearchTop" type="text" placeholder="Buscar lançamento do CNPJ..."></div>
-      <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button></div>
+      <div class="horizon-agent" aria-live="polite">
+        <div class="horizon-avatar">H</div>
+        <div class="horizon-content">
+          <div class="horizon-title">
+            <strong>Horizon</strong>
+            <span>Agente de inteligência financeira</span>
+          </div>
+          <p id="horizonTip" class="horizon-tip">Separe o caixa do CNPJ para enxergar seu resultado real.</p>
+          <div class="horizon-meta">
+            <span id="horizonBalance" class="horizon-pill">Saldo: R$ 0,00</span>
+            <span id="horizonCashflow" class="horizon-pill">Fluxo: R$ 0,00</span>
+          </div>
+        </div>
+        <div class="horizon-actions">
+          <button id="horizonVoiceBtn" class="horizon-cta horizon-cta--ghost" type="button" aria-label="Falar com Horizon">
+            <i class="fa-solid fa-microphone"></i> Falar
+          </button>
+          <button id="horizonOpenBtn" class="horizon-cta" type="button" data-horizon-open="true">Perguntar</button>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" type="button" aria-label="Messages">
+          <i class="fa-regular fa-comment-dots"></i>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notifications">
+          <i class="fa-regular fa-bell"></i>
+        </button>
+      </div>
     </header>
     <div class="dashboard-content business-shell">
       <div class="page-header">
