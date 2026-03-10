@@ -3,11 +3,10 @@
     display: block !important;
     min-height: 100vh !important;
     margin: 0 !important;
+    --dashboard-bg: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=80');
     background:
-        radial-gradient(circle at 18% 20%, rgba(168, 85, 247, 0.22), transparent 32%),
-        radial-gradient(circle at 68% 16%, rgba(56, 189, 248, 0.18), transparent 36%),
-        radial-gradient(circle at 50% 68%, rgba(30, 64, 175, 0.16), transparent 46%),
-        linear-gradient(180deg, #05040a 0%, #0a0d1c 52%, #05050b 100%) !important;
+        linear-gradient(180deg, rgba(5, 4, 10, 0.82) 0%, rgba(10, 13, 28, 0.88) 52%, rgba(5, 5, 11, 0.92) 100%),
+        var(--dashboard-bg) center/cover no-repeat fixed !important;
     background-attachment: fixed !important;
 }
 
@@ -873,6 +872,30 @@ html body.dashboard-body .hyper-copy-foot {
 }
 
 @media (max-width: 640px) {
+    html body.dashboard-body .sidebar {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        border-radius: 0 !important;
+    }
+
+    html body.dashboard-body .sidebar.active {
+        transform: translateX(0) !important;
+    }
+
+    html body.dashboard-body .main-content {
+        padding: 0 !important;
+    }
+
+    html body.dashboard-body .topbar {
+        margin: 0 !important;
+        border-radius: 0 !important;
+        padding: 10px 12px !important;
+    }
+
+    html body.dashboard-body .dashboard-content {
+        max-width: 100% !important;
+        padding: 12px !important;
+    }
     html body.dashboard-body .topbar {
         grid-template-columns: auto 1fr auto !important;
         gap: 8px !important;
@@ -1739,10 +1762,10 @@ html body.dashboard-body .dashboard-actions {
     }
 }
 
-/* === Premium desktop layout overrides === */
+/* === Scenic background === */
 html body.dashboard-body {
-    background: #0b0b0c !important;
-    padding: 40px !important;
+    background: #050506 !important;
+    padding: 32px !important;
 }
 
 html body.dashboard-body::before,
@@ -1750,84 +1773,30 @@ html body.dashboard-body::after {
     display: none !important;
 }
 
-html body.dashboard-body .premium-layout {
-    max-width: 1440px !important;
-    margin: 0 auto !important;
+html body.dashboard-body .scenic-wall {
+    position: fixed !important;
+    inset: 0 !important;
     display: grid !important;
-    grid-template-columns: 240px minmax(0, 1fr) 240px !important;
-    gap: 28px !important;
-    align-items: start !important;
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 24px !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+html body.dashboard-body .scenic-tile {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 14px !important;
+    background-size: cover !important;
+    background-position: center !important;
+    filter: saturate(1.05) contrast(0.95) !important;
+    opacity: 0.7 !important;
 }
 
 html body.dashboard-body .dashboard-shell {
-    background: #f7f7f7 !important;
-    border-radius: 36px !important;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4) !important;
-}
-
-html body.dashboard-body .premium-side {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 18px !important;
-}
-
-html body.dashboard-body .premium-card {
-    background: #ffffff !important;
-    border-radius: 24px !important;
-    padding: 18px !important;
-    border: 1px solid rgba(0, 0, 0, 0.04) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24) !important;
-}
-
-html body.dashboard-body .premium-card h4 {
-    margin: 0 0 8px !important;
-    font-size: 15px !important;
-    color: #111827 !important;
-}
-
-html body.dashboard-body .premium-card p {
-    margin: 0 !important;
-    color: #6b7280 !important;
-    font-size: 13px !important;
-    line-height: 1.45 !important;
-}
-
-html body.dashboard-body .summary-card {
-    background: #ffffff !important;
-    background-image: none !important;
-    border: 1px solid rgba(15, 23, 42, 0.08) !important;
-    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08) !important;
-}
-
-html body.dashboard-body .summary-card::before {
-    display: none !important;
-}
-
-html body.dashboard-body .insight-card,
-html body.dashboard-body .recent-transactions,
-html body.dashboard-body .main-goal-container {
-    background: #ffffff !important;
-    border: 1px solid rgba(15, 23, 42, 0.08) !important;
-    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08) !important;
-}
-
-html body.dashboard-body .sidebar {
-    background: #f3f4f6 !important;
-    border-right: 1px solid rgba(15, 23, 42, 0.08) !important;
-}
-
-html body.dashboard-body .topbar {
-    background: transparent !important;
-}
-
-html body.dashboard-body .horizon-agent {
-    background: #ffffff !important;
-    border: 1px solid rgba(15, 23, 42, 0.08) !important;
-    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-}
-
-html body.dashboard-body .horizon-pill {
-    background: #f3f4f6 !important;
+    position: relative !important;
+    z-index: 2 !important;
 }

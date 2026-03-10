@@ -4,68 +4,75 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Investimentos - Horizonte Financeiro</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="dashboard-final.css">
-  <link rel="stylesheet" href="investments-final.css">
+  <link rel="stylesheet" href="dashboard-final.css?v=20260310-04">
+  <link rel="stylesheet" href="investments-final.css?v=20260310-03">
+  <link rel="stylesheet" href="app-final.css?v=20260310-01">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <style>
-    .invest-shell,.invest-filters,.invest-stats,.invest-grid,.invest-list{display:grid;gap:20px}
-    .invest-shell{gap:28px}
-    .invest-filters{grid-template-columns:repeat(3,minmax(0,1fr)) auto;padding:20px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--card-bg);box-shadow:var(--shadow-sm)}
-    .invest-card,.invest-panel,.empty-state{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-lg)}
-    .invest-card,.invest-panel{padding:24px}
-    .invest-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
-    .stat-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
-    .stat-value{margin-top:8px;font-size:28px;font-weight:700}
-    .stat-sub{margin-top:6px;font-size:13px;color:var(--text-muted)}
-    .positive{color:var(--success-color)}
-    .negative{color:var(--error-color)}
-    .neutral{color:var(--primary-color)}
-    .filter-field label{display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
-    .filter-field input,.filter-field select{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:14px;background:var(--bg-color);color:var(--text-main);font:inherit}
-    .invest-grid{grid-template-columns:1.2fr .8fr}
-    .month-list{display:grid;gap:12px}
-    .month-row{padding:16px 18px;border-radius:18px;background:var(--bg-color);display:flex;justify-content:space-between;gap:12px;align-items:center;border-left:3px solid var(--accent, var(--primary-color))}
-    .month-row strong{display:block}
-    .month-row span{font-size:12px;color:var(--text-muted)}
-    .invest-list{margin-top:16px}
-    .invest-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 18px;border-radius:18px;background:var(--bg-color);border-left:3px solid var(--accent, var(--primary-color))}
-    .invest-main{display:flex;gap:12px;align-items:center;min-width:0}
-    .invest-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:color-mix(in srgb, var(--accent, var(--primary-color)) 16%, transparent);color:var(--accent, var(--primary-color))}
-    .invest-text strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .invest-text span{display:block;margin-top:4px;font-size:12px;color:var(--text-muted)}
-    .tag-chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;background:color-mix(in srgb, var(--accent, var(--primary-color)) 16%, transparent);color:var(--accent, var(--primary-color))}
-    .empty-state{padding:32px 24px;text-align:center;color:var(--text-muted)}
-    .empty-state i{display:block;font-size:28px;margin-bottom:12px;color:var(--primary-color)}
-    @media (max-width: 1024px){.invest-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.invest-grid{grid-template-columns:1fr}.invest-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media (max-width: 720px){.invest-filters,.invest-stats{grid-template-columns:1fr}.month-row,.invest-item{flex-direction:column;align-items:flex-start}.invest-shell{gap:18px}}
-  </style>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body investments-body investments-v2">
   <script>const siteTheme=localStorage.getItem('siteTheme');if(siteTheme&&siteTheme!=='default')document.body.dataset.theme=siteTheme;if(localStorage.getItem('darkMode')==='enabled')document.body.classList.add('dark-mode');</script>
-  <aside class="sidebar">
-    <div class="sidebar-header"><i class="fa-solid fa-chart-pie dashboard-logo-icon"></i><h2>Horizonte Financeiro</h2></div>
-    <nav class="sidebar-nav">
-      <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
-      <a href="/investments" class="nav-item active"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-      <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
-      <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
-      <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-      <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
-    </nav>
-    <div class="sidebar-footer"><a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a></div>
-  </aside>
-  <main class="main-content">
-    <header class="topbar">
-      <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-      <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input id="investmentSearchTop" type="text" placeholder="Buscar investimentos..."></div>
-      <div class="user-profile" style="display:flex;align-items:center;"><span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span><button id="darkModeToggle" class="notification-btn" title="Alternar Tema"><i class="fa-solid fa-moon"></i></button></div>
-    </header>
-    <div class="dashboard-content invest-shell">
-      <div class="page-header">
+  <div class="scenic-wall" aria-hidden="true"></div>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div class="sidebar-profile">
+        <div class="profile-avatar">GM</div>
+        <div class="profile-info">
+          <strong>Gadiel Machado</strong>
+          <span>Designer</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="nav-item" title="Dashboard"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="/transactions" class="nav-item" title="Transações"><i class="fa-solid fa-receipt"></i><span>Transações</span></a>
+        <a href="/investments" class="nav-item active" title="Investimentos"><i class="fa-solid fa-wallet"></i><span>Investimentos</span></a>
+        <a href="/history" class="nav-item" title="Histórico"><i class="fa-solid fa-chart-line"></i><span>Histórico</span></a>
+        <a href="/goals" class="nav-item" title="Metas"><i class="fa-solid fa-bullseye"></i><span>Metas</span></a>
+        <a href="/cnpj" class="nav-item" title="CNPJ"><i class="fa-solid fa-building"></i><span>CNPJ</span></a>
+        <a href="/billing" class="nav-item" title="Assinatura"><i class="fa-solid fa-credit-card"></i><span>Assinatura</span></a>
+        <a href="/settings" class="nav-item" title="Configurações"><i class="fa-solid fa-gear"></i><span>Configurações</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/settings" class="nav-item" title="Ajuda"><i class="fa-regular fa-circle-question"></i><span>Ajuda</span></a>
+        <a href="/login" class="nav-item logout" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></a>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        <div class="horizon-agent" aria-live="polite">
+          <div class="horizon-avatar">H</div>
+          <div class="horizon-content">
+            <div class="horizon-title">
+              <strong>Horizon</strong>
+              <span>Agente de inteligência financeira</span>
+            </div>
+            <p id="horizonTip" class="horizon-tip">Organize seus aportes com metas mensais de disciplina.</p>
+            <div class="horizon-meta">
+              <span id="horizonBalance" class="horizon-pill">Saldo: R$ 0,00</span>
+              <span id="horizonCashflow" class="horizon-pill">Fluxo: R$ 0,00</span>
+            </div>
+          </div>
+          <div class="horizon-actions">
+            <button id="horizonVoiceBtn" class="horizon-cta horizon-cta--ghost" type="button" aria-label="Falar com Horizon">
+              <i class="fa-solid fa-microphone"></i> Falar
+            </button>
+            <button id="horizonOpenBtn" class="horizon-cta" type="button" data-horizon-open="true">Perguntar</button>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" aria-label="Messages">
+            <i class="fa-regular fa-comment-dots"></i>
+          </button>
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+          </button>
+        </div>
+      </header>
+    <div class="dashboard-content invest-v2-shell">
+      <div class="page-header dashboard-hero simple-hero">
         <div>
           <h1>Investimentos</h1>
           <p class="subtitle">Esta área substitui a antiga carteira e concentra aportes, resgates e leitura rápida da sua carteira investida.</p>
@@ -73,13 +80,13 @@
         <a href="/register-item-pf" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo Lançamento</a>
       </div>
 
-      <section class="invest-filters">
-        <div class="filter-field">
-          <label for="investmentDate">Data</label>
+      <section class="invest-v2-filters">
+        <div class="invest-v2-field">
+          <label class="invest-v2-label" for="investmentDate">Data</label>
           <input id="investmentDate" type="date">
         </div>
-        <div class="filter-field">
-          <label for="investmentType">Tipo</label>
+        <div class="invest-v2-field">
+          <label class="invest-v2-label" for="investmentType">Tipo</label>
           <select id="investmentType">
             <option value="all">Todos</option>
             <option value="expense">Aportes</option>
@@ -87,62 +94,87 @@
             <option value="income">Resgates / Rendimentos</option>
           </select>
         </div>
-        <div class="filter-field">
-          <label for="investmentSearch">Buscar</label>
+        <div class="invest-v2-field">
+          <label class="invest-v2-label" for="investmentSearch">Buscar</label>
           <input id="investmentSearch" type="text" placeholder="Descrição">
         </div>
         <button class="btn-primary btn-action" onclick="loadInvestments()">Atualizar</button>
       </section>
 
-      <section class="invest-stats">
-        <div class="invest-card">
-          <div class="stat-label">Investimento Total</div>
-          <div class="stat-value negative" id="totalApplied">R$ 0,00</div>
-          <div class="stat-sub">Total aplicado em investimentos</div>
+      <section class="invest-v2-stats">
+        <div class="invest-v2-card">
+          <div class="invest-v2-label">Investimento Total</div>
+          <div class="invest-v2-value negative" id="totalApplied">R$ 0,00</div>
+          <div class="invest-v2-sub">Total aplicado em investimentos</div>
         </div>
-        <div class="invest-card">
-          <div class="stat-label">Resgates</div>
-          <div class="stat-value positive" id="totalReturned">R$ 0,00</div>
-          <div class="stat-sub">Entradas vindas de investimentos</div>
+        <div class="invest-v2-card">
+          <div class="invest-v2-label">Resgates</div>
+          <div class="invest-v2-value positive" id="totalReturned">R$ 0,00</div>
+          <div class="invest-v2-sub">Entradas vindas de investimentos</div>
         </div>
-        <div class="invest-card">
-          <div class="stat-label">Saldo Investido</div>
-          <div class="stat-value neutral" id="investedBalance">R$ 0,00</div>
-          <div class="stat-sub">Diferença entre aportes e resgates</div>
+        <div class="invest-v2-card">
+          <div class="invest-v2-label">Saldo Investido</div>
+          <div class="invest-v2-value neutral" id="investedBalance">R$ 0,00</div>
+          <div class="invest-v2-sub">Diferença entre aportes e resgates</div>
         </div>
-        <div class="invest-card">
-          <div class="stat-label">Resultado do Mês</div>
-          <div class="stat-value neutral" id="monthMovement">R$ 0,00</div>
-          <div class="stat-sub" id="monthMovementLabel">Movimentação do mês atual</div>
+        <div class="invest-v2-card">
+          <div class="invest-v2-label">Resultado do Mês</div>
+          <div class="invest-v2-value neutral" id="monthMovement">R$ 0,00</div>
+          <div class="invest-v2-sub" id="monthMovementLabel">Movimentação do mês atual</div>
         </div>
-        <div class="invest-card">
-          <div class="stat-label">Resultado do Dia</div>
-          <div class="stat-value neutral" id="dayMovement">R$ 0,00</div>
-          <div class="stat-sub" id="dayMovementLabel">Movimentação de hoje</div>
+        <div class="invest-v2-card">
+          <div class="invest-v2-label">Resultado do Dia</div>
+          <div class="invest-v2-value neutral" id="dayMovement">R$ 0,00</div>
+          <div class="invest-v2-sub" id="dayMovementLabel">Movimentação de hoje</div>
         </div>
       </section>
 
-      <section class="invest-grid">
-        <div class="invest-panel">
+      <section class="invest-v2-grid">
+        <div class="invest-v2-panel">
           <div class="section-header"><h3>Evolução Mensal</h3></div>
-          <div class="month-list" id="monthList"></div>
+          <div class="invest-v2-months" id="monthList"></div>
         </div>
-        <div class="invest-panel">
+        <div class="invest-v2-panel">
           <div class="section-header"><h3>Resumo da Carteira</h3></div>
-          <div class="invest-list" id="summaryList"></div>
+          <div class="invest-v2-list" id="summaryList"></div>
         </div>
       </section>
 
-      <section class="invest-panel">
+      <section class="invest-v2-panel">
         <div class="section-header"><h3>Movimentações de Investimento</h3></div>
-        <div class="invest-list" id="investmentList"></div>
-        <div class="empty-state" id="investmentEmpty" style="display:none;">
+        <div class="invest-v2-list" id="investmentList"></div>
+        <div class="invest-v2-empty" id="investmentEmpty" style="display:none;">
           <i class="fa-solid fa-chart-line"></i>
           <p>Nenhum investimento encontrado. Use a categoria <strong>investimentos</strong> ao registrar um lançamento.</p>
         </div>
       </section>
     </div>
   </main>
+  </div>
+  <div class="horizon-modal" id="horizonModal" aria-hidden="true">
+    <div class="horizon-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="horizonModalTitle">
+      <div class="horizon-modal-header">
+        <div>
+          <h2 id="horizonModalTitle">Horizon</h2>
+          <p>Seu agente de inteligência financeira para conta, metas e mercado, incluindo bolsa.</p>
+        </div>
+        <button class="horizon-close" id="horizonCloseBtn" aria-label="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="horizon-chat" id="horizonChat">
+        <div class="horizon-message horizon-message--agent">
+          <strong>Horizon</strong>
+          <p>Olá! Posso analisar sua conta atual, sugerir ajustes e explicar movimentos do mercado.</p>
+        </div>
+      </div>
+      <form class="horizon-input" id="horizonForm">
+        <input id="horizonInput" type="text" placeholder="Pergunte sobre sua conta, renda fixa, bolsa ou estratégia..." autocomplete="off">
+        <button type="submit">Enviar</button>
+      </form>
+      <p class="horizon-disclaimer">Conteúdo educativo. Para decisões reais, consulte um profissional certificado.</p>
+    </div>
+  </div>
   <script src="script.js"></script>
   <script>
     const searchTop = document.getElementById('investmentSearchTop');
@@ -165,13 +197,13 @@
     const accentForIndex = (index) => accentPalette[index % accentPalette.length];
 
     function syncSearch(source) {
-      const value = source.value || '';
-      searchTop.value = value;
-      searchInput.value = value;
+      const value = source?.value || '';
+      if (searchTop) searchTop.value = value;
+      if (searchInput) searchInput.value = value;
     }
 
     function filterTransactions(transactions) {
-      const term = normalize(searchInput.value || searchTop.value);
+      const term = normalize((searchInput && searchInput.value) || (searchTop && searchTop.value) || '');
       const type = typeInput.value;
       return transactions
         .filter((item) => categoryMatchesInvestment(item.category))
@@ -193,11 +225,11 @@
       document.getElementById('totalApplied').textContent = fmt(applied);
       document.getElementById('totalReturned').textContent = fmt(returned);
       document.getElementById('investedBalance').textContent = fmt(investedBalance);
-      document.getElementById('investedBalance').className = 'stat-value ' + (investedBalance > 0 ? 'negative' : investedBalance < 0 ? 'positive' : 'neutral');
+      document.getElementById('investedBalance').className = 'invest-v2-value ' + (investedBalance > 0 ? 'negative' : investedBalance < 0 ? 'positive' : 'neutral');
       document.getElementById('monthMovement').textContent = fmt(monthNet);
-      document.getElementById('monthMovement').className = 'stat-value ' + (monthNet > 0 ? 'negative' : monthNet < 0 ? 'positive' : 'neutral');
+      document.getElementById('monthMovement').className = 'invest-v2-value ' + (monthNet > 0 ? 'negative' : monthNet < 0 ? 'positive' : 'neutral');
       document.getElementById('dayMovement').textContent = fmt(dayNet);
-      document.getElementById('dayMovement').className = 'stat-value ' + (dayNet > 0 ? 'negative' : dayNet < 0 ? 'positive' : 'neutral');
+      document.getElementById('dayMovement').className = 'invest-v2-value ' + (dayNet > 0 ? 'negative' : dayNet < 0 ? 'positive' : 'neutral');
       document.getElementById('monthMovementLabel').textContent = dateInput.value ? `Movimentação em ${referenceMonth}` : 'Movimentação do mês atual';
       document.getElementById('dayMovementLabel').textContent = dateInput.value ? `Movimentação em ${formatDate(referenceDate)}` : 'Movimentação de hoje';
     }
@@ -213,10 +245,10 @@
       });
 
       const entries = Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 6);
-      monthList.innerHTML = entries.length ? '' : '<div class="empty-state" style="display:block;"><i class="fa-solid fa-calendar-xmark"></i><p>Sem meses com movimentação.</p></div>';
+      monthList.innerHTML = entries.length ? '' : '<div class="invest-v2-empty" style="display:block;"><i class="fa-solid fa-calendar-xmark"></i><p>Sem meses com movimentação.</p></div>';
       entries.forEach(([key, value], index) => {
         const net = value.expenses - value.incomes;
-        monthList.innerHTML += `<div class="month-row" style="--accent:${accentForIndex(index)}"><div><strong>${monthLabel(`${key}-01`)}</strong><span>Aportes ${fmt(value.expenses)} • Retornos ${fmt(value.incomes)}</span></div><strong class="${net >= 0 ? 'negative' : 'positive'}">${fmt(net)}</strong></div>`;
+        monthList.innerHTML += `<div class="invest-v2-row" style="--accent:${accentForIndex(index)}"><div><strong>${monthLabel(`${key}-01`)}</strong><span>Aportes ${fmt(value.expenses)} • Retornos ${fmt(value.incomes)}</span></div><strong class="${net >= 0 ? 'negative' : 'positive'}">${fmt(net)}</strong></div>`;
       });
     }
 
@@ -232,12 +264,12 @@
       }, {});
       const dominant = Object.entries(fronts).sort((a, b) => b[1] - a[1])[0];
       summaryList.innerHTML = `
-        <div class="month-row" style="--accent:${accentForIndex(0)}"><div><strong>Operações registradas</strong><span>Total filtrado na carteira</span></div><strong>${transactions.length}</strong></div>
-        <div class="month-row" style="--accent:${accentForIndex(1)}"><div><strong>Aportes</strong><span>Quantidade de saídas em investimentos</span></div><strong class="negative">${(typeCount.expense || 0) + (typeCount.investment || 0)}</strong></div>
-        <div class="month-row" style="--accent:${accentForIndex(2)}"><div><strong>Resgates / Rendimentos</strong><span>Quantidade de entradas em investimentos</span></div><strong class="positive">${typeCount.income || 0}</strong></div>
-        <div class="month-row" style="--accent:${accentForIndex(3)}"><div><strong>Saldo investido</strong><span>Aportes menos resgates</span></div><strong class="${applied >= returned ? 'negative' : 'positive'}">${fmt(applied - returned)}</strong></div>
-        <div class="month-row" style="--accent:${accentForIndex(4)}"><div><strong>Principal frente</strong><span>${dominant ? dominant[0] : 'Sem dados'}</span></div><strong>${dominant ? fmt(dominant[1]) : '-'}</strong></div>
-        <div class="month-row" style="--accent:${accentForIndex(5)}"><div><strong>Último lançamento</strong><span>${last ? formatDate(last.date) : 'Sem dados'}</span></div><strong>${last ? fmt(last.value) : '-'}</strong></div>
+        <div class="invest-v2-row" style="--accent:${accentForIndex(0)}"><div><strong>Operações registradas</strong><span>Total filtrado na carteira</span></div><strong>${transactions.length}</strong></div>
+        <div class="invest-v2-row" style="--accent:${accentForIndex(1)}"><div><strong>Aportes</strong><span>Quantidade de saídas em investimentos</span></div><strong class="negative">${(typeCount.expense || 0) + (typeCount.investment || 0)}</strong></div>
+        <div class="invest-v2-row" style="--accent:${accentForIndex(2)}"><div><strong>Resgates / Rendimentos</strong><span>Quantidade de entradas em investimentos</span></div><strong class="positive">${typeCount.income || 0}</strong></div>
+        <div class="invest-v2-row" style="--accent:${accentForIndex(3)}"><div><strong>Saldo investido</strong><span>Aportes menos resgates</span></div><strong class="${applied >= returned ? 'negative' : 'positive'}">${fmt(applied - returned)}</strong></div>
+        <div class="invest-v2-row" style="--accent:${accentForIndex(4)}"><div><strong>Principal frente</strong><span>${dominant ? dominant[0] : 'Sem dados'}</span></div><strong>${dominant ? fmt(dominant[1]) : '-'}</strong></div>
+        <div class="invest-v2-row" style="--accent:${accentForIndex(5)}"><div><strong>Último lançamento</strong><span>${last ? formatDate(last.date) : 'Sem dados'}</span></div><strong>${last ? fmt(last.value) : '-'}</strong></div>
       `;
     }
 
@@ -253,12 +285,12 @@
         const isIncome = normalizedType === 'income';
         const isInvestment = normalizedType === 'investment';
         investmentList.innerHTML += `
-          <article class="invest-item" style="--accent:${accentForIndex(index)}">
-            <div class="invest-main">
-              <div class="invest-icon"><i class="fa-solid ${isIncome ? 'fa-arrow-trend-up' : isInvestment ? 'fa-chart-line' : 'fa-arrow-trend-down'}"></i></div>
-              <div class="invest-text">
+          <article class="invest-v2-item" style="--accent:${accentForIndex(index)}">
+            <div class="invest-v2-main">
+              <div class="invest-v2-icon"><i class="fa-solid ${isIncome ? 'fa-arrow-trend-up' : isInvestment ? 'fa-chart-line' : 'fa-arrow-trend-down'}"></i></div>
+              <div class="invest-v2-text">
                 <strong>${item.description || 'Sem descrição'}</strong>
-                <span><span class="tag-chip">${isIncome ? 'Retorno' : isInvestment ? 'Investimento' : 'Aporte'}</span> • ${item.category || 'Investimentos'} • ${formatDate(item.date)}</span>
+                <span><span class="invest-v2-chip">${isIncome ? 'Retorno' : isInvestment ? 'Investimento' : 'Aporte'}</span> • ${item.category || 'Investimentos'} • ${formatDate(item.date)}</span>
               </div>
             </div>
             <strong class="${isIncome ? 'positive' : 'negative'}">${isIncome ? '+' : '-'}${fmt(item.value)}</strong>
@@ -280,8 +312,8 @@
       renderList(filtered);
     }
 
-    searchTop.addEventListener('input', () => { syncSearch(searchTop); loadInvestments(); });
-    searchInput.addEventListener('input', () => { syncSearch(searchInput); loadInvestments(); });
+    if (searchTop) searchTop.addEventListener('input', () => { syncSearch(searchTop); loadInvestments(); });
+    if (searchInput) searchInput.addEventListener('input', () => { syncSearch(searchInput); loadInvestments(); });
     dateInput.addEventListener('change', loadInvestments);
     typeInput.addEventListener('change', loadInvestments);
     document.addEventListener('DOMContentLoaded', loadInvestments);

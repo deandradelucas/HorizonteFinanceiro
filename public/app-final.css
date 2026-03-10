@@ -1,0 +1,262 @@
+html body.dashboard-body {
+    --app-surface: rgba(255, 255, 255, 0.72);
+    --app-surface-strong: rgba(255, 255, 255, 0.9);
+    --app-border: rgba(15, 23, 42, 0.1);
+    --app-border-soft: rgba(255, 255, 255, 0.7);
+    --app-shadow: 0 18px 34px rgba(15, 23, 42, 0.12);
+    --app-text: #1f2937;
+    --app-muted: #94a3b8;
+    color: var(--app-text);
+}
+
+html body.dashboard-body .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+html body.dashboard-body .page-header h1 {
+    margin: 0;
+    font-size: clamp(26px, 3vw, 34px);
+    color: var(--app-text);
+    letter-spacing: -0.02em;
+}
+
+html body.dashboard-body .page-header .subtitle {
+    margin: 6px 0 0;
+    color: #64748b;
+}
+
+html body.dashboard-body .page-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+html body.dashboard-body .app-surface,
+html body.dashboard-body .history-filters,
+html body.dashboard-body .history-card,
+html body.dashboard-body .history-detail,
+html body.dashboard-body .month-card,
+html body.dashboard-body .timeline-day,
+html body.dashboard-body .empty-state,
+html body.dashboard-body .category-card,
+html body.dashboard-body .billing-card,
+html body.dashboard-body .billing-panel,
+html body.dashboard-body .billing-payment-item,
+html body.dashboard-body .billing-history-empty,
+html body.dashboard-body .settings-card,
+html body.dashboard-body .settings-highlight,
+html body.dashboard-body .theme-option,
+html body.dashboard-body .goal-card,
+html body.dashboard-body .template-card,
+html body.dashboard-body .business-card,
+html body.dashboard-body .business-table,
+html body.dashboard-body .business-row,
+html body.dashboard-body .business-accent,
+html body.dashboard-body .pf-stat,
+html body.dashboard-body .recent-transactions,
+html body.dashboard-body .entry-form-card,
+html body.dashboard-body .context-banner,
+html body.dashboard-body .scope-card,
+html body.dashboard-body .radio-card,
+html body.dashboard-body .recurring-option,
+html body.dashboard-body .input-field,
+html body.dashboard-body .currency-field {
+    background: var(--app-surface) !important;
+    border: 1px solid var(--app-border-soft) !important;
+    box-shadow: var(--app-shadow) !important;
+    backdrop-filter: blur(18px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+}
+
+html body.dashboard-body .entry-form-card,
+html body.dashboard-body .history-detail,
+html body.dashboard-body .billing-panel,
+html body.dashboard-body .settings-card,
+html body.dashboard-body .business-card {
+    background: var(--app-surface-strong) !important;
+}
+
+html body.dashboard-body .history-card,
+html body.dashboard-body .billing-card,
+html body.dashboard-body .settings-card,
+html body.dashboard-body .goal-card,
+html body.dashboard-body .business-card,
+html body.dashboard-body .pf-stat {
+    position: relative;
+    overflow: hidden;
+}
+
+html body.dashboard-body .history-card::before,
+html body.dashboard-body .billing-card::before,
+html body.dashboard-body .settings-card::before,
+html body.dashboard-body .goal-card::before,
+html body.dashboard-body .business-card::before,
+html body.dashboard-body .pf-stat::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(0, 0, 0, 0.08));
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+html body.dashboard-body .history-card > *,
+html body.dashboard-body .billing-card > *,
+html body.dashboard-body .settings-card > *,
+html body.dashboard-body .goal-card > *,
+html body.dashboard-body .business-card > *,
+html body.dashboard-body .pf-stat > * {
+    position: relative;
+    z-index: 1;
+}
+
+html body.dashboard-body .history-card,
+html body.dashboard-body .billing-card,
+html body.dashboard-body .settings-card,
+html body.dashboard-body .goal-card,
+html body.dashboard-body .business-card,
+html body.dashboard-body .pf-stat,
+html body.dashboard-body .billing-panel,
+html body.dashboard-body .history-detail,
+html body.dashboard-body .entry-form-card {
+    border-radius: 24px !important;
+}
+
+html body.dashboard-body .history-filters,
+html body.dashboard-body .month-card,
+html body.dashboard-body .timeline-day,
+html body.dashboard-body .category-card,
+html body.dashboard-body .business-row,
+html body.dashboard-body .billing-payment-item,
+html body.dashboard-body .template-card,
+html body.dashboard-body .theme-option {
+    border-radius: 20px !important;
+}
+
+html body.dashboard-body .history-filters .filter-field input,
+html body.dashboard-body .history-filters .filter-field select,
+html body.dashboard-body .detail-controls input,
+html body.dashboard-body .settings-field input,
+html body.dashboard-body .business-field input,
+html body.dashboard-body .business-field select,
+html body.dashboard-body .business-field textarea,
+html body.dashboard-body .business-filter input,
+html body.dashboard-body .business-filter select,
+html body.dashboard-body .billing-copy,
+html body.dashboard-body .settings-field input,
+html body.dashboard-body .theme-option,
+html body.dashboard-body .input-field input,
+html body.dashboard-body .input-field select,
+html body.dashboard-body .currency-field input {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid var(--app-border) !important;
+    color: var(--app-text) !important;
+}
+
+html body.dashboard-body .stat-label,
+html body.dashboard-body .stat-sub,
+html body.dashboard-body .settings-subtitle,
+html body.dashboard-body .billing-kicker,
+html body.dashboard-body .business-row-text span,
+html body.dashboard-body .goal-category,
+html body.dashboard-body .goal-footer,
+html body.dashboard-body .goal-progress-header .target,
+html body.dashboard-body .month-line,
+html body.dashboard-body .timeline-text span,
+html body.dashboard-body .category-meta,
+html body.dashboard-body .settings-row span,
+html body.dashboard-body .billing-payment-meta,
+html body.dashboard-body .theme-option span,
+html body.dashboard-body .template-card p,
+html body.dashboard-body .scope-card .scope-text span,
+html body.dashboard-body .recurring-text span,
+html body.dashboard-body .context-banner span {
+    color: var(--app-muted) !important;
+}
+
+html body.dashboard-body .stat-value,
+html body.dashboard-body .month-name,
+html body.dashboard-body .timeline-day-title,
+html body.dashboard-body .detail-title h2,
+html body.dashboard-body .category-name,
+html body.dashboard-body .category-total,
+html body.dashboard-body .timeline-text strong,
+html body.dashboard-body .billing-card h3,
+html body.dashboard-body .billing-panel h3,
+html body.dashboard-body .settings-card h3,
+html body.dashboard-body .goal-title,
+html body.dashboard-body .goal-progress-header .current,
+html body.dashboard-body .business-card h3,
+html body.dashboard-body .business-row-text strong,
+html body.dashboard-body .scope-card .scope-text strong,
+html body.dashboard-body .radio-card .label,
+html body.dashboard-body .recurring-text strong,
+html body.dashboard-body .context-banner strong {
+    color: var(--app-text) !important;
+}
+
+html body.dashboard-body .month-card,
+html body.dashboard-body .timeline-day,
+html body.dashboard-body .category-card,
+html body.dashboard-body .business-row,
+html body.dashboard-body .billing-payment-item,
+html body.dashboard-body .history-filters,
+html body.dashboard-body .template-card,
+html body.dashboard-body .theme-option {
+    box-shadow: none !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+}
+
+html body.dashboard-body .business-accent {
+    background: rgba(15, 23, 42, 0.04) !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+    box-shadow: none !important;
+}
+
+html body.dashboard-body .goal-actions button,
+html body.dashboard-body .settings-row strong,
+html body.dashboard-body .billing-meta-row strong {
+    color: var(--app-text) !important;
+}
+
+html body.dashboard-body .entry-form-card {
+    padding: 28px !important;
+}
+
+html body.dashboard-body .scope-card,
+html body.dashboard-body .radio-card {
+    background: rgba(255, 255, 255, 0.82) !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+html body.dashboard-body .scope-card.active,
+html body.dashboard-body .radio-card.active {
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 18px 28px rgba(15, 23, 42, 0.18) !important;
+}
+
+html body.dashboard-body .input-field i:first-child,
+html body.dashboard-body .currency-prefix {
+    color: #64748b !important;
+}
+
+html body.dashboard-body .recurring-option input {
+    accent-color: #1f2937 !important;
+}
+
+html body.dashboard-body .pf-empty,
+html body.dashboard-body .billing-history-empty,
+html body.dashboard-body .empty-state {
+    color: var(--app-muted) !important;
+}
+
+@media (max-width: 900px) {
+    html body.dashboard-body .page-header {
+        align-items: flex-start;
+    }
+}

@@ -52,6 +52,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyAuthHorizonImage();
 
+    const scenicWall = document.querySelector('.scenic-wall');
+    if (scenicWall && !scenicWall.dataset.ready) {
+        scenicWall.dataset.ready = 'true';
+        const scenicCount = 40;
+        for (let i = 0; i < scenicCount; i += 1) {
+            const tile = document.createElement('div');
+            tile.className = 'scenic-tile';
+            tile.style.backgroundImage = `url('https://picsum.photos/seed/horizon-${i + 1}/1920/1080')`;
+            tile.style.backgroundColor = '#0b0b0c';
+            scenicWall.appendChild(tile);
+        }
+    }
+
     // --- DISPLAY CURRENT DATE ---
     const dateDisplay = document.getElementById('currentDateDisplay');
     if (dateDisplay) {

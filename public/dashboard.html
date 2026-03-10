@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard-final.css?v=20260310-02">
+    <link rel="stylesheet" href="dashboard-final.css?v=20260310-04">
+    <link rel="stylesheet" href="app-final.css?v=20260310-01">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -36,16 +37,18 @@
             </div>
         </div>
         <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
-            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Wallet</a>
-            <a href="/transactions" class="nav-item" data-keep-label="true"><i class="fa-solid fa-receipt"></i> Transactions</a>
-            <a href="/history" class="nav-item"><i class="fa-solid fa-chart-line"></i> Revenue analytics</a>
-            <a href="/settings" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+            <a href="/dashboard" class="nav-item active" title="Dashboard"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a href="/transactions" class="nav-item" title="Transações"><i class="fa-solid fa-receipt"></i><span>Transações</span></a>
+            <a href="/investments" class="nav-item" title="Investimentos"><i class="fa-solid fa-wallet"></i><span>Investimentos</span></a>
+            <a href="/history" class="nav-item" title="Histórico"><i class="fa-solid fa-chart-line"></i><span>Histórico</span></a>
+            <a href="/goals" class="nav-item" title="Metas"><i class="fa-solid fa-bullseye"></i><span>Metas</span></a>
+            <a href="/cnpj" class="nav-item" title="CNPJ"><i class="fa-solid fa-building"></i><span>CNPJ</span></a>
+            <a href="/billing" class="nav-item" title="Assinatura"><i class="fa-solid fa-credit-card"></i><span>Assinatura</span></a>
+            <a href="/settings" class="nav-item" title="Configurações"><i class="fa-solid fa-gear"></i><span>Configurações</span></a>
         </nav>
         <div class="sidebar-footer">
-            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Setting</a>
-            <a href="/settings" class="nav-item"><i class="fa-regular fa-circle-question"></i> Help</a>
-            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
+            <a href="/settings" class="nav-item" title="Ajuda"><i class="fa-regular fa-circle-question"></i><span>Ajuda</span></a>
+            <a href="/login" class="nav-item logout" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></a>
         </div>
     </aside>
 
@@ -346,7 +349,7 @@
     </main>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260310-04"></script>
     <div class="horizon-modal" id="horizonModal" aria-hidden="true">
         <div class="horizon-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="horizonModalTitle">
             <div class="horizon-modal-header">
@@ -371,6 +374,24 @@
             <p class="horizon-disclaimer">Conteúdo educativo. Para decisões reais, consulte um profissional certificado.</p>
         </div>
     </div>
+    <script>
+        (function() {
+            const images = [
+                'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=80',
+                'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=2200&q=80',
+                'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=2200&q=80',
+                'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2200&q=80'
+            ];
+            let index = Math.floor(Math.random() * images.length);
+            const setBg = () => {
+                const url = images[index % images.length];
+                document.body.style.setProperty('--dashboard-bg', `url('${url}')`);
+                index += 1;
+            };
+            setBg();
+            setInterval(setBg, 300000);
+        })();
+    </script>
 </body>
 
 </html>
