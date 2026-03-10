@@ -1166,7 +1166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             const tr = document.createElement('tr');
                             const isIncome = t.type === 'income';
                             const iconBg = isIncome ? 'green-bg' : 'red-bg';
-                            const iconClass = isIncome ? 'fa-arrow-down' : 'fa-arrow-up';
+                            const iconClass = isIncome ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
                             const valueText = isIncome ? `+ ${formatMoney(t.value)}` : `- ${formatMoney(t.value)}`;
                             const valueClass = isIncome ? 'text-green' : 'text-red';
 
