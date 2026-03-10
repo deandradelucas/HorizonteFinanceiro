@@ -33,7 +33,7 @@
     .settings-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
     .settings-theme-status{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(20,201,123,.12);color:#14c97b;border:1px solid rgba(20,201,123,.18)}
     .settings-theme-status.disabled{background:rgba(148,163,184,.12);color:#94a3b8;border-color:rgba(148,163,184,.18)}
-    .theme-picker{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:18px}
+    .theme-picker{grid-template-columns:repeat(6,minmax(0,1fr));margin-top:18px}
     .theme-option{border:1px solid var(--border-color);background:var(--bg-color);border-radius:18px;padding:18px;cursor:pointer;text-align:left;transition:var(--transition)}
     .theme-option strong{display:block;color:var(--text-main);font-size:14px}
     .theme-option span{display:block;margin-top:6px;font-size:12px;color:var(--text-muted)}
@@ -177,6 +177,11 @@
                 <strong>Super Mario</strong>
                 <span>Céu, tijolos e clima clássico da Nintendo.</span>
               </button>
+              <button type="button" class="theme-option" data-theme-option="vitrificado">
+                <div class="theme-swatch"><i style="background:rgba(255,255,255,0.8);border:1px solid #e2e8f0"></i><i style="background:#0f172a"></i><i style="background:rgba(14,116,144,0.6)"></i></div>
+                <strong>Vitrificado</strong>
+                <span>Vidro translÃºcido com fundo visÃ­vel.</span>
+              </button>
             </div>
           </div>
 
@@ -264,7 +269,8 @@
       safira: 'Safira',
       cobre: 'Cobre',
       starwars: 'Star Wars',
-      mario: 'Super Mario'
+      mario: 'Super Mario',
+      vitrificado: 'Vitrificado'
     }[theme] || 'Padrão');
     const getSiteTheme = () => localStorage.getItem('siteTheme') || 'default';
     const applySiteTheme = (theme) => {

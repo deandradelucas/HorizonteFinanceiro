@@ -1782,7 +1782,7 @@ html body.dashboard-body .scenic-wall {
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
-    opacity: 1 !important;
+    opacity: var(--scenic-opacity, 1) !important;
     transition: opacity 0.4s ease !important;
     pointer-events: none !important;
     z-index: 0 !important;

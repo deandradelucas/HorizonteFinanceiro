@@ -9,6 +9,17 @@ html body.dashboard-body {
     color: var(--app-text);
 }
 
+html body.dashboard-body[data-theme="vitrificado"] {
+    --app-surface: rgba(255, 255, 255, 0.56);
+    --app-surface-strong: rgba(255, 255, 255, 0.74);
+    --app-border: rgba(15, 23, 42, 0.08);
+    --app-border-soft: rgba(255, 255, 255, 0.52);
+    --app-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+    --app-text: #0f172a;
+    --app-muted: #64748b;
+    --scenic-opacity: 0.7;
+}
+
 html body.dashboard-body .page-header {
     display: flex;
     align-items: flex-end;
