@@ -636,6 +636,7 @@
                     : 'Registre receitas, despesas e investimentos da pessoa física em um fluxo separado do CNPJ.';
             };
             const updateContextBanner = (scope) => {
+                if (!contextBannerTitle || !contextBannerSubtitle || !contextPill) return;
                 if (scope === 'pj') {
                     contextBannerTitle.textContent = 'Lançamento do CNPJ';
                     contextBannerSubtitle.textContent = 'Use este fluxo para separar faturamento, custos e investimentos da empresa.';
