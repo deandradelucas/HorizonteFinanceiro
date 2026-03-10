@@ -74,6 +74,7 @@
         <div class="user-profile admin-topbar-meta">
           <span class="date-display">{{ currentDate }}</span>
           <span class="admin-chip">Super Admin</span>
+          <span class="admin-status">Pagamento: em dia</span>
         </div>
       </header>
 
