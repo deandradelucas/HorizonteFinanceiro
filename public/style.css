@@ -3919,3 +3919,145 @@ body.dark-mode .pill {
 body.dark-mode .empty-state {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
 }
+
+/* =========================
+   Responsive global helpers
+   ========================= */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.main-content,
+.dashboard-content,
+.page-header,
+.section-header,
+.topbar,
+.horizon-agent,
+.horizon-content,
+.horizon-title,
+.horizon-meta,
+.dashboard-layout,
+.summary-cards,
+.history-shell,
+.history-filters,
+.history-stats,
+.history-months,
+.timeline,
+.invest-shell,
+.invest-filters,
+.invest-stats,
+.invest-grid,
+.invest-list,
+.month-list,
+.invest-v2-shell,
+.invest-v2-filters,
+.invest-v2-stats,
+.invest-v2-grid,
+.settings-shell,
+.settings-grid,
+.billing-shell,
+.billing-grid,
+.business-shell,
+.entry-form-card,
+.recent-transactions,
+.table-container {
+    min-width: 0;
+}
+
+@media (max-width: 1024px) {
+    body.dashboard-body .dashboard-shell,
+    body.transactions-body .dashboard-shell,
+    body.investments-body .dashboard-shell {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .history-filters,
+    .history-stats,
+    .detail-stats,
+    .category-grid,
+    .invest-v2-filters,
+    .invest-v2-stats,
+    .invest-v2-grid,
+    .settings-grid,
+    .billing-grid,
+    .business-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .filter-actions,
+    .detail-controls,
+    .settings-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .filter-actions > *,
+    .detail-controls > *,
+    .settings-actions > * {
+        width: 100%;
+    }
+
+    .recent-transactions {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .table-container {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .data-table {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard-content {
+        padding: 12px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar {
+        padding-inline: 12px;
+    }
+
+    .icon-btn,
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+    }
+}

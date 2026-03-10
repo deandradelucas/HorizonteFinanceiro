@@ -1717,6 +1717,98 @@ html body.dashboard-body .recent-transactions .desc-text {
     color: #1f2937 !important;
 }
 
+/* =========================
+   Dashboard responsive pass
+   ========================= */
+@media (max-width: 1200px) {
+    html body.dashboard-body .dashboard-content {
+        max-width: 100% !important;
+        padding-inline: 12px !important;
+    }
+
+    html body.dashboard-body .dashboard-rail {
+        display: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    html body.dashboard-body .dashboard-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        min-height: 100vh !important;
+    }
+
+    html body.dashboard-body .dashboard-content {
+        padding: 12px !important;
+    }
+
+    html body.dashboard-body .horizon-agent {
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+    }
+
+    html body.dashboard-body .horizon-actions {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+
+    html body.dashboard-body .horizon-actions > * {
+        flex: 1 1 140px !important;
+    }
+
+    html body.dashboard-body .horizon-meta {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    html body.dashboard-body .dashboard-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.dashboard-body .dashboard-layout > * {
+        grid-column: 1 / -1 !important;
+    }
+
+    html body.dashboard-body .summary-cards {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.dashboard-body .summary-card {
+        min-height: 132px !important;
+    }
+
+    html body.dashboard-body .recent-transactions .table-container {
+        overflow-x: auto !important;
+    }
+
+    html body.dashboard-body .recent-transactions .data-table {
+        min-width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    html body.dashboard-body .topbar {
+        grid-template-columns: auto 1fr !important;
+    }
+
+    html body.dashboard-body .topbar-actions {
+        justify-content: flex-end !important;
+    }
+
+    html body.dashboard-body .horizon-agent {
+        padding: 12px !important;
+    }
+
+    html body.dashboard-body .dashboard-content {
+        padding: 10px !important;
+    }
+}
+
 html body.dashboard-body .recent-transactions .item-meta small {
     color: #94a3b8 !important;
 }
