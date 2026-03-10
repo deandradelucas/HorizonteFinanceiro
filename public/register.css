@@ -2,9 +2,9 @@ body.auth-register-v2 {
     min-height: 100vh;
     margin: 0;
     overflow: hidden;
-    --auth-horizon-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80');
+    --auth-horizon-image: url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1800&q=80');
     background:
-        linear-gradient(180deg, rgba(143, 149, 166, 0.82), rgba(104, 111, 128, 0.9)),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.34), rgba(2, 6, 23, 0.56)),
         var(--auth-horizon-image) center center / cover no-repeat fixed;
 }
 
@@ -13,8 +13,9 @@ body.auth-register-v2::before {
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(circle at top left, rgba(41, 255, 180, 0.08), transparent 22%),
-        radial-gradient(circle at bottom right, rgba(111, 255, 163, 0.06), transparent 24%);
+        radial-gradient(circle at 18% 18%, rgba(110, 231, 183, 0.12), transparent 24%),
+        radial-gradient(circle at 82% 82%, rgba(125, 211, 252, 0.1), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(15, 23, 42, 0.18));
     pointer-events: none;
     z-index: 0;
 }
@@ -26,21 +27,23 @@ body.auth-register-v2 .register-shell-v2 {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 16px !important;
+    padding: 18px !important;
 }
 
 body.auth-register-v2 .register-card-v2 {
     position: relative !important;
-    width: min(430px, calc(100vw - 32px)) !important;
-    max-height: calc(100dvh - 32px) !important;
+    width: min(472px, calc(100vw - 36px)) !important;
+    max-height: calc(100dvh - 36px) !important;
     overflow: auto !important;
-    padding: 32px 28px 28px !important;
-    border-radius: 38px !important;
-    background: #0d1017 !important;
+    padding: 34px 30px 28px !important;
+    border-radius: 30px !important;
+    background: rgba(3, 7, 18, 0.28) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 24px 50px rgba(0, 0, 0, 0.26) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
 }
 
 body.auth-register-v2 .register-card-v2::before {
@@ -54,19 +57,6 @@ body.auth-register-v2 .register-card-v2::before {
     pointer-events: none;
 }
 
-body.auth-register-v2 .register-card-v2::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 96px;
-    border-radius: 0 0 inherit inherit;
-    background: radial-gradient(circle at center, rgba(116, 255, 177, 0.18), transparent 60%);
-    filter: blur(26px);
-    pointer-events: none;
-}
-
 body.auth-register-v2 .register-card-v2 > * {
     position: relative;
     z-index: 1;
@@ -76,18 +66,17 @@ body.auth-register-v2 .register-brand-v2 {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
-    margin-bottom: 24px !important;
+    margin-bottom: 22px !important;
 }
 
 body.auth-register-v2 .register-brand-mark-v2 {
-    width: 44px !important;
-    height: 44px !important;
+    width: 42px !important;
+    height: 42px !important;
     display: grid !important;
     place-items: center !important;
     border-radius: 999px !important;
-    background: #13251d !important;
-    border: none !important;
-    box-shadow: 0 0 20px rgba(98, 255, 170, 0.12) !important;
+    background: rgba(52, 211, 153, 0.12) !important;
+    border: 1px solid rgba(110, 231, 183, 0.18) !important;
 }
 
 body.auth-register-v2 .register-brand-mark-v2 span {
@@ -103,36 +92,36 @@ body.auth-register-v2 .register-brand-v2 h2 {
     margin: 0 !important;
     color: #ffffff !important;
     font-family: "Manrope", Inter, sans-serif !important;
-    font-size: 17px !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.02em !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.03em !important;
 }
 
 body.auth-register-v2 .register-heading-v2 {
-    margin-bottom: 28px !important;
+    margin-bottom: 22px !important;
 }
 
 body.auth-register-v2 .register-heading-v2 h1 {
     margin: 0 !important;
     color: #ffffff !important;
     font-family: "Manrope", Inter, sans-serif !important;
-    font-size: clamp(38px, 6vw, 42px) !important;
+    font-size: clamp(36px, 5.2vw, 44px) !important;
     line-height: 1.02 !important;
-    letter-spacing: -0.045em !important;
-    font-weight: 600 !important;
+    letter-spacing: -0.055em !important;
+    font-weight: 700 !important;
 }
 
 body.auth-register-v2 .register-heading-v2 p {
     margin: 10px 0 0 !important;
-    color: #a1a1aa !important;
-    font-size: 15px !important;
-    line-height: 1.5 !important;
+    color: rgba(226, 232, 240, 0.82) !important;
+    font-size: 14px !important;
+    line-height: 1.55 !important;
 }
 
 body.auth-register-v2 .register-form-v2 {
     display: flex !important;
     flex-direction: column !important;
-    gap: 20px !important;
+    gap: 16px !important;
 }
 
 body.auth-register-v2 .register-field-v2 {
@@ -141,10 +130,10 @@ body.auth-register-v2 .register-field-v2 {
 
 body.auth-register-v2 .register-field-v2 label {
     display: block !important;
-    margin-bottom: 10px !important;
-    color: #e4e4e7 !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
+    margin-bottom: 7px !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
     letter-spacing: -0.01em !important;
 }
 
@@ -154,53 +143,53 @@ body.auth-register-v2 .register-input-v2 {
 
 body.auth-register-v2 .register-input-v2 i:first-child {
     position: absolute !important;
-    left: 16px !important;
+    left: 15px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    color: rgba(167, 243, 208, 0.55) !important;
-    font-size: 16px !important;
+    color: rgba(226, 232, 240, 0.78) !important;
+    font-size: 15px !important;
     z-index: 1 !important;
 }
 
 body.auth-register-v2 .register-input-v2 input {
     width: 100% !important;
-    height: 56px !important;
-    padding: 14px 48px 14px 48px !important;
-    border-radius: 18px !important;
-    border: 1px solid rgba(110, 231, 183, 0.1) !important;
-    background: rgba(21, 24, 33, 0.9) !important;
+    height: 50px !important;
+    padding: 13px 46px 13px 44px !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(2, 6, 23, 0.22) !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: 15px !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
 }
 
 body.auth-register-v2 .register-input-v2 input::placeholder {
-    color: #71717a !important;
+    color: rgba(203, 213, 225, 0.68) !important;
 }
 
 body.auth-register-v2 .register-input-v2 input:focus {
     outline: none !important;
-    border-color: rgba(110, 231, 183, 0.4) !important;
-    background: rgba(21, 24, 33, 0.98) !important;
-    box-shadow: none !important;
+    border-color: rgba(52, 211, 153, 0.48) !important;
+    background: rgba(2, 6, 23, 0.28) !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
 }
 
 body.auth-register-v2 .register-toggle-v2 {
     position: absolute !important;
-    right: 10px !important;
+    right: 8px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 36px !important;
-    height: 36px !important;
+    width: 34px !important;
+    height: 34px !important;
     border: none !important;
     background: transparent !important;
-    color: #a1a1aa !important;
+    color: rgba(226, 232, 240, 0.76) !important;
     border-radius: 999px !important;
 }
 
 body.auth-register-v2 .register-toggle-v2:hover {
     color: #ffffff !important;
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.05) !important;
 }
 
 body.auth-register-v2 .register-strength-v2 {
@@ -219,52 +208,42 @@ body.auth-register-v2 .register-strength-v2 .strength-bar {
 }
 
 body.auth-register-v2 .register-note-v2 {
-    padding: 16px !important;
-    border-radius: 22px !important;
+    padding: 16px 18px !important;
+    border-radius: 18px !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    background: rgba(255, 255, 255, 0.02) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
 }
 
 body.auth-register-v2 .register-note-v2 strong {
     display: block;
     margin-bottom: 4px;
     font-size: 14px;
-    font-weight: 500;
-    color: #d4d4d8;
+    font-weight: 700;
+    color: #f3f4f6;
 }
 
 body.auth-register-v2 .register-note-v2 span {
     display: block;
     font-size: 12px;
     line-height: 1.6;
-    color: #71717a;
+    color: rgba(226, 232, 240, 0.66);
 }
 
 body.auth-register-v2 .register-submit-v2,
 body.auth-register-v2 .register-form-v2 .btn-primary {
     width: 100% !important;
-    min-height: 56px !important;
-    margin-top: 0 !important;
-    border-radius: 20px !important;
-    font-size: 18px !important;
+    min-height: 50px !important;
+    margin-top: 4px !important;
+    border-radius: 14px !important;
+    font-size: 17px !important;
     font-weight: 700 !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(167, 243, 208, 0.2) !important;
-    background: linear-gradient(90deg, #6adab8 0%, #7fe45f 100%) !important;
-    box-shadow: 0 12px 30px rgba(106, 218, 184, 0.22) !important;
-}
-
-body.auth-register-v2 .register-submit-v2:hover,
-body.auth-register-v2 .register-form-v2 .btn-primary:hover {
-    opacity: 0.95;
-    transform: none !important;
 }
 
 body.auth-register-v2 .register-login-v2 {
-    margin-top: 24px !important;
-    color: #71717a !important;
+    margin-top: 18px !important;
+    color: rgba(226, 232, 240, 0.78) !important;
     font-size: 14px !important;
-    text-align: center !important;
+    text-align: left !important;
 }
 
 body.auth-register-v2 .register-login-v2 a {
@@ -291,7 +270,7 @@ body.auth-register-v2 .register-login-v2 a:hover {
         width: calc(100vw - 20px) !important;
         max-height: calc(100dvh - 20px) !important;
         padding: 24px 18px 22px !important;
-        border-radius: 28px !important;
+        border-radius: 22px !important;
     }
 
     body.auth-register-v2 .register-brand-v2 {
@@ -303,25 +282,25 @@ body.auth-register-v2 .register-login-v2 a:hover {
     }
 
     body.auth-register-v2 .register-heading-v2 h1 {
-        font-size: 34px !important;
+        font-size: 32px !important;
     }
 
     body.auth-register-v2 .register-heading-v2 p {
-        font-size: 14px !important;
+        font-size: 13px !important;
     }
 
     body.auth-register-v2 .register-form-v2 {
-        gap: 16px !important;
+        gap: 14px !important;
     }
 
     body.auth-register-v2 .register-input-v2 input {
-        height: 52px !important;
+        height: 48px !important;
         font-size: 16px !important;
     }
 
     body.auth-register-v2 .register-submit-v2,
     body.auth-register-v2 .register-form-v2 .btn-primary {
-        min-height: 52px !important;
+        min-height: 48px !important;
         font-size: 16px !important;
     }
 }
@@ -335,14 +314,14 @@ body.auth-register-v2 .register-login-v2 a:hover {
         width: calc(100vw - 16px) !important;
         max-height: calc(100dvh - 16px) !important;
         padding: 22px 16px 20px !important;
-        border-radius: 24px !important;
+        border-radius: 18px !important;
     }
 
     body.auth-register-v2 .register-heading-v2 h1 {
-        font-size: 30px !important;
+        font-size: 28px !important;
     }
 
     body.auth-register-v2 .register-input-v2 input {
-        height: 50px !important;
+        height: 46px !important;
     }
 }
