@@ -55,14 +55,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const scenicWall = document.querySelector('.scenic-wall');
     if (scenicWall && !scenicWall.dataset.ready) {
         scenicWall.dataset.ready = 'true';
-        const scenicCount = 40;
-        for (let i = 0; i < scenicCount; i += 1) {
-            const tile = document.createElement('div');
-            tile.className = 'scenic-tile';
-            tile.style.backgroundImage = `url('https://picsum.photos/seed/horizon-${i + 1}/1920/1080')`;
-            tile.style.backgroundColor = '#0b0b0c';
-            scenicWall.appendChild(tile);
+        scenicWall.innerHTML = '';
+
+        const scenicImages = [
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2200&q=80",
+            "https://images.unsplash.com/photo-1441716844725-09cedc13a4e7?auto=format&fit=crop&w=2200&q=80"
+        ];
+
+        const intervalMs = 5 * 60 * 1000;
+        const indexKey = 'horizonScenicIndex';
+        const timeKey = 'horizonScenicLastChange';
+        const now = Date.now();
+
+        let index = Number.parseInt(localStorage.getItem(indexKey) || '0', 10);
+        let lastChange = Number.parseInt(localStorage.getItem(timeKey) || '0', 10);
+
+        if (!Number.isFinite(index) || index < 0 || index >= scenicImages.length) {
+            index = 0;
         }
+        if (!Number.isFinite(lastChange)) {
+            lastChange = 0;
+        }
+
+        const applyScenicImage = (idx) => {
+            const imageUrl = scenicImages[idx];
+            scenicWall.style.backgroundImage = `url('${imageUrl}')`;
+        };
+
+        if (now - lastChange >= intervalMs) {
+            index = (index + 1) % scenicImages.length;
+            lastChange = now;
+            localStorage.setItem(indexKey, String(index));
+            localStorage.setItem(timeKey, String(lastChange));
+        }
+
+        applyScenicImage(index);
+
+        setInterval(() => {
+            index = (index + 1) % scenicImages.length;
+            applyScenicImage(index);
+            localStorage.setItem(indexKey, String(index));
+            localStorage.setItem(timeKey, String(Date.now()));
+        }, intervalMs);
     }
 
     // --- DISPLAY CURRENT DATE ---

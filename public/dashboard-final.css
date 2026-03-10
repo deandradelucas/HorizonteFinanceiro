@@ -1776,24 +1776,20 @@ html body.dashboard-body::after {
 html body.dashboard-body .scenic-wall {
     position: fixed !important;
     inset: 0 !important;
-    display: grid !important;
-    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
-    grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-    padding: 24px !important;
+    display: block !important;
+    padding: 0 !important;
+    background-color: #050506 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
     opacity: 1 !important;
+    transition: opacity 0.4s ease !important;
     pointer-events: none !important;
     z-index: 0 !important;
 }
 
 html body.dashboard-body .scenic-tile {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 14px !important;
-    background-size: cover !important;
-    background-position: center !important;
-    filter: saturate(1.05) contrast(0.95) !important;
-    opacity: 0.7 !important;
+    display: none !important;
 }
 
 html body.dashboard-body .dashboard-shell {
