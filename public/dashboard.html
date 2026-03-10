@@ -24,6 +24,7 @@
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+        if (localStorage.getItem('glassMode') === 'enabled') document.body.classList.add('glass-mode');
     </script>
 
     <div class="scenic-wall" aria-hidden="true"></div>
@@ -78,6 +79,9 @@
                 </div>
             </div>
             <div class="topbar-actions">
+                <button id="glassToggleBtn" class="icon-btn" type="button" aria-label="Alternar vidro">
+                    <i class="fa-regular fa-circle-half-stroke"></i>
+                </button>
                 <button class="icon-btn" type="button" aria-label="Messages">
                     <i class="fa-regular fa-comment-dots"></i>
                 </button>
@@ -390,6 +394,18 @@
             };
             setBg();
             setInterval(setBg, 300000);
+        })();
+    </script>
+    <script src="script.js"></script>
+    <script>
+        (function() {
+            const btn = document.getElementById('glassToggleBtn');
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                document.body.classList.toggle('glass-mode');
+                const enabled = document.body.classList.contains('glass-mode');
+                localStorage.setItem('glassMode', enabled ? 'enabled' : 'disabled');
+            });
         })();
     </script>
 </body>
