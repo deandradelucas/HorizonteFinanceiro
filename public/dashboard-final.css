@@ -97,6 +97,7 @@ html body.dashboard-body .nav-item span {
 
 html body.dashboard-body .nav-item i {
     font-size: 18px !important;
+    color: currentColor !important;
 }
 
 html body.dashboard-body .nav-item[title="PF"],

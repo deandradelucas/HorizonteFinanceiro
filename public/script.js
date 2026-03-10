@@ -22,6 +22,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyStoredTheme();
 
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarUserRole = document.getElementById('sidebarUserRole');
+    const sidebarUserInitials = document.getElementById('sidebarUserInitials');
+    const sessionUserName = sessionStorage.getItem('userName');
+    if (sidebarUserName) sidebarUserName.textContent = sessionUserName || 'Usuário';
+    if (sidebarUserRole) {
+        const role = localStorage.getItem('userRole');
+        const label = role === 'super_admin' ? 'Super Admin' : 'Usuário';
+        sidebarUserRole.textContent = label;
+    }
+    if (sidebarUserInitials) {
+        const name = sessionUserName || 'Usuário';
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        const initials = parts.length === 1
+            ? parts[0].slice(0, 2).toUpperCase()
+            : `${parts[0][0] || ''}${parts[parts.length - 1][0] || ''}`.toUpperCase();
+        sidebarUserInitials.textContent = initials || 'HF';
+    }
+
     const applyAuthHorizonImage = () => {
         if (!document.body.classList.contains('auth-login-v2') && !document.body.classList.contains('auth-register-v2')) {
             return;
