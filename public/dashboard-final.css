@@ -81,6 +81,8 @@ html body.dashboard-body .sidebar-nav {
 }
 
 html body.dashboard-body .nav-item {
+    display: flex !important;
+    align-items: center !important;
     min-height: 44px !important;
     border-radius: 14px !important;
     color: rgba(255, 255, 255, 0.7) !important;
