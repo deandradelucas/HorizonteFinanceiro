@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard-final.css">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -23,19 +24,18 @@
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
-    <!-- Sidebar -->
+
     <aside class="sidebar">
         <div class="sidebar-header">
             <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
             <h2>Horizonte Financeiro</h2>
         </div>
         <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-house"></i>
-                Início</a>
+            <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-house"></i> Início</a>
             <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-            <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
-            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>
-                Histórico</a>
+            <a href="/cnpj" class="nav-item"><i class="fa-solid fa-building"></i> CNPJ</a>
+            <a href="/transactions" class="nav-item"><i class="fa-solid fa-user"></i> PF</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
             <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
             <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
         </nav>
@@ -44,7 +44,6 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
         <header class="topbar">
             <button id="mobileMenuBtn" class="mobile-menu-btn">
@@ -54,10 +53,9 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" placeholder="Buscar transações...">
             </div>
-            <div class="user-profile" style="display: flex; align-items: center;">
-                <span id="currentDateDisplay" class="date-display"
-                    style="margin-right: 15px; font-weight: 500; color: var(--text-muted); font-size: 14px; display: flex; align-items: center;"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar Tema">
+            <div class="user-profile">
+                <span id="currentDateDisplay" class="date-display"></span>
+                <button id="darkModeToggle" class="notification-btn" title="Alternar tema">
                     <i class="fa-solid fa-moon"></i>
                 </button>
             </div>
@@ -65,13 +63,12 @@
 
         <div class="dashboard-content">
             <div class="page-header dashboard-hero">
-                <div>
+                <div class="dashboard-hero-copy">
                     <div class="dashboard-hero-head">
-                        <h1 style="margin:0;">Visão Geral</h1>
+                        <h1>Visão Geral</h1>
                         <span id="billingStatusPill" class="dashboard-status-pill" hidden>Carregando vencimento</span>
                     </div>
-                    <p id="userWelcome" class="subtitle" style="margin-bottom: 0;">Bem-vindo(a) de volta! Aqui está o
-                        resumo das suas finanças.</p>
+                    <p id="userWelcome" class="subtitle">Bem-vindo(a) de volta! Aqui está o resumo das suas finanças.</p>
                     <div class="dashboard-hero-links">
                         <a href="/transactions" class="hero-link"><i class="fa-solid fa-user"></i> Pessoa Física</a>
                         <a href="/cnpj" class="hero-link"><i class="fa-solid fa-building"></i> CNPJ</a>
@@ -92,7 +89,7 @@
                     </div>
                     <div class="dashboard-actions">
                         <button type="button" id="dashboardLayoutCloseBtn" class="btn-secondary">Fechar</button>
-                        <button type="button" id="dashboardLayoutSaveBtn" class="btn-primary" style="width: auto;">Salvar layout</button>
+                        <button type="button" id="dashboardLayoutSaveBtn" class="btn-primary">Salvar layout</button>
                     </div>
                 </div>
                 <div id="dashboardLayoutControls" class="dashboard-layout-controls"></div>
@@ -108,1246 +105,114 @@
             </div>
 
             <div id="dashboardLayout" class="dashboard-layout">
-            <!-- Meta em Destaque -->
-            <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal" style="display: none;">
-                <div class="mario-hero-art" aria-hidden="true">
-                    <span class="coin coin-a"></span>
-                    <span class="coin coin-b"></span>
-                    <span class="coin coin-c"></span>
-                    <span class="brick brick-a"></span>
-                    <span class="brick brick-b"></span>
-                    <span class="pipe"></span>
-                </div>
-                <div class="goal-info-header">
-                    <div class="goal-text">
-                        <span class="goal-label">Meta em Destaque</span>
-                        <h2 id="mainGoalTitle" class="goal-main-title">Viagem para Europa</h2>
+                <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal" style="display: none;">
+                    <div class="goal-info-header">
+                        <div class="goal-text">
+                            <span class="goal-label">Meta em destaque</span>
+                            <h2 id="mainGoalTitle" class="goal-main-title">Objetivo Financeiro</h2>
+                        </div>
+                        <div class="motivation-area">
+                            <p id="motivationPhrase" class="motivation-phrase">Cada passo consistente fortalece a sua construção financeira.</p>
+                        </div>
                     </div>
-                    <div class="motivation-area">
-                        <p id="motivationPhrase" class="motivation-phrase">"Cada real economizado é um passo em direção
-                            ao seu sonho! 🚀"</p>
+                    <div class="goal-progress-wrapper">
+                        <div class="progress-bar-container">
+                            <div id="mainGoalBar" class="progress-bar-fill"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span id="mainGoalValues" class="values">R$ 5.000 de R$ 20.000</span>
+                            <span id="mainGoalPct" class="percentage">25%</span>
+                        </div>
                     </div>
-                </div>
-                <div class="goal-progress-wrapper">
-                    <div class="progress-bar-container">
-                        <div id="mainGoalBar" class="progress-bar-fill"></div>
-                    </div>
-                    <div class="progress-stats">
-                        <span id="mainGoalValues" class="values">R$ 5.000 de R$ 20.000</span>
-                        <span id="mainGoalPct" class="percentage">25%</span>
-                    </div>
+                    <div id="milestoneTrack" class="milestone-track"></div>
                 </div>
 
-                <!-- Trilha de Marcos -->
-                <div id="milestoneTrack" class="milestone-track"
-                    style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border-color);">
-                    <!-- Gerado via JavaScript -->
-                </div>
-            </div>
-
-            <style>
-                body.dashboard-body {
-                    background:
-                        radial-gradient(circle at top left, rgba(20, 201, 123, 0.08), transparent 22%),
-                        linear-gradient(180deg, #010409 0%, #050912 38%, #02060d 100%);
-                }
-
-                body.dashboard-body .sidebar {
-                    background: rgba(0, 0, 0, 0.94);
-                    border-right-color: rgba(255, 255, 255, 0.06);
-                }
-
-                body.dashboard-body .sidebar-header,
-                body.dashboard-body .sidebar-footer,
-                body.dashboard-body .topbar {
-                    background: rgba(3, 6, 11, 0.84);
-                    border-color: rgba(255, 255, 255, 0.06);
-                    backdrop-filter: blur(18px);
-                    -webkit-backdrop-filter: blur(18px);
-                }
-
-                body.dashboard-body .search-bar {
-                    background: rgba(255, 255, 255, 0.03);
-                    border-color: rgba(255, 255, 255, 0.08);
-                    box-shadow: none;
-                }
-
-                body.dashboard-body .search-bar input,
-                body.dashboard-body .search-bar i,
-                body.dashboard-body .subtitle,
-                body.dashboard-body .view-all,
-                body.dashboard-body .hero-link,
-                body.dashboard-body .insight-caption,
-                body.dashboard-body .card-meta,
-                body.dashboard-body .motivation-phrase {
-                    color: rgba(226, 232, 240, 0.76);
-                }
-
-                .dashboard-actions {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    flex-wrap: wrap;
-                }
-
-                .dashboard-hero {
-                    position: relative;
-                    padding: 28px;
-                    display: grid;
-                    grid-template-columns: minmax(0, 1.35fr) auto;
-                    gap: 22px;
-                    align-items: end;
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    border-radius: 28px;
-                    background:
-                        linear-gradient(180deg, rgba(7, 11, 18, 0.96), rgba(6, 10, 18, 0.9)),
-                        radial-gradient(circle at top right, rgba(20, 201, 123, 0.1), transparent 24%);
-                    box-shadow: 0 26px 44px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-                    overflow: hidden;
-                }
-
-                .dashboard-hero::after {
-                    content: '';
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.04), transparent 34%);
-                    pointer-events: none;
-                }
-
-                .dashboard-hero > * {
-                    position: relative;
-                    z-index: 1;
-                }
-
-                .dashboard-hero-head {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    flex-wrap: wrap;
-                    margin-bottom: 10px;
-                }
-
-                .dashboard-hero-head h1 {
-                    font-size: clamp(30px, 4vw, 40px);
-                    line-height: 1;
-                    letter-spacing: -0.05em;
-                    color: #ffffff;
-                }
-
-                .dashboard-hero-links,
-                .dashboard-hero-actions {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    flex-wrap: wrap;
-                    margin-top: 18px;
-                }
-
-                .dashboard-hero-actions {
-                    margin-top: 0;
-                    justify-content: flex-end;
-                    align-self: end;
-                }
-
-                .hero-link {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    min-height: 40px;
-                    padding: 0 14px;
-                    border-radius: 999px;
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    background: rgba(255, 255, 255, 0.03);
-                    color: rgba(226, 232, 240, 0.76);
-                    text-decoration: none;
-                    font-size: 13px;
-                    font-weight: 700;
-                    transition: var(--transition);
-                }
-
-                .hero-link:hover {
-                    color: #ffffff;
-                    border-color: rgba(20, 201, 123, 0.26);
-                    background: rgba(20, 201, 123, 0.08);
-                }
-
-                .dashboard-status-pill {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    border-radius: 999px;
-                    padding: 8px 12px;
-                    font-size: 12px;
-                    font-weight: 700;
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    background: rgba(255, 255, 255, 0.03);
-                    color: rgba(226, 232, 240, 0.72);
-                    box-shadow: none;
-                }
-
-                .btn-action {
-                    min-width: 190px;
-                }
-
-                .dashboard-status-pill.active {
-                    border-color: rgba(20, 201, 123, 0.22);
-                    background: rgba(20, 201, 123, 0.12);
-                    color: #14c97b;
-                }
-
-                .dashboard-status-pill.pending {
-                    border-color: rgba(245, 158, 11, 0.22);
-                    background: rgba(245, 158, 11, 0.12);
-                    color: #f59e0b;
-                }
-
-                .dashboard-status-pill.past_due {
-                    border-color: rgba(239, 68, 68, 0.22);
-                    background: rgba(239, 68, 68, 0.12);
-                    color: #ef4444;
-                }
-
-                .dashboard-status-pill.exempt {
-                    border-color: rgba(139, 92, 246, 0.24);
-                    background: rgba(139, 92, 246, 0.12);
-                    color: #8b5cf6;
-                }
-
-                .dashboard-actions-mobile {
-                    margin-bottom: 16px;
-                }
-
-                .dashboard-layout {
-                    display: grid;
-                    grid-template-columns: repeat(12, minmax(0, 1fr));
-                    gap: 20px;
-                    align-items: start;
-                }
-
-                .dashboard-widget {
-                    min-width: 0;
-                }
-
-                .summary-cards {
-                    grid-column: 1 / -1;
-                    margin-bottom: 0;
-                    grid-template-columns: repeat(4, minmax(0, 1fr));
-                }
-
-                .dashboard-chart-card {
-                    grid-column: span 8;
-                }
-
-                .dashboard-side-card {
-                    grid-column: span 4;
-                }
-
-                .recent-transactions {
-                    grid-column: 1 / -1;
-                    margin-bottom: 0;
-                }
-
-                .insight-card {
-                    position: relative;
-                    background: linear-gradient(180deg, rgba(7, 11, 18, 0.96), rgba(6, 10, 18, 0.9));
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    border-radius: var(--radius-lg);
-                    padding: 26px;
-                    overflow: hidden;
-                    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.3);
-                }
-
-                .insight-card::before {
-                    content: '';
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent 42%);
-                    pointer-events: none;
-                }
-
-                .insight-caption {
-                    color: #94a3b8;
-                    font-size: 13px;
-                    font-weight: 600;
-                }
-
-                .insight-empty {
-                    color: var(--text-muted);
-                    font-size: 14px;
-                    padding: 12px 0 4px;
-                }
-
-                .insight-bars {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
-                    margin-top: 10px;
-                }
-
-                .insight-bar-item {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                    padding: 14px 16px;
-                    border-radius: 20px;
-                    background: rgba(255, 255, 255, 0.03);
-                    border: 1px solid rgba(255, 255, 255, 0.06);
-                    backdrop-filter: blur(10px);
-                }
-
-                .insight-bar-head {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 12px;
-                }
-
-                .insight-bar-head strong {
-                    font-size: 14px;
-                    color: #f8fafc;
-                }
-
-                .insight-bar-head span {
-                    color: rgba(226, 232, 240, 0.72);
-                    font-size: 13px;
-                    font-weight: 600;
-                }
-
-                .insight-bar-track {
-                    width: 100%;
-                    height: 12px;
-                    border-radius: 999px;
-                    background: rgba(255, 255, 255, 0.08);
-                    overflow: hidden;
-                    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
-                }
-
-                .insight-bar-fill {
-                    height: 100%;
-                    border-radius: 999px;
-                    box-shadow: 0 0 22px rgba(96, 165, 250, 0.28);
-                }
-
-                .spending-map-row {
-                    display: grid;
-                    grid-template-columns: minmax(0, 1fr) auto;
-                    gap: 14px;
-                    align-items: center;
-                    padding: 16px 18px;
-                    border-radius: 20px;
-                    background: rgba(255, 255, 255, 0.03);
-                    border: 1px solid rgba(255, 255, 255, 0.06);
-                    backdrop-filter: blur(10px);
-                }
-
-                .spending-map-main {
-                    min-width: 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
-
-                .spending-map-copy {
-                    min-width: 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 4px;
-                }
-
-                .spending-map-copy strong {
-                    font-size: 14px;
-                    color: #f8fafc;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                .spending-map-copy span {
-                    font-size: 12px;
-                    color: rgba(226, 232, 240, 0.68);
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                .spending-map-value {
-                    font-size: 13px;
-                    font-weight: 700;
-                    color: #f8fafc;
-                    white-space: nowrap;
-                }
-
-                .mini-track {
-                    width: 100%;
-                    height: 10px;
-                    border-radius: 999px;
-                    overflow: hidden;
-                    background: rgba(255, 255, 255, 0.08);
-                }
-
-                .mini-track-fill {
-                    height: 100%;
-                    border-radius: inherit;
-                    background: linear-gradient(90deg, #14b8a6 0%, #0ea5e9 55%, #2563eb 100%);
-                }
-
-                .radar-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                    gap: 14px;
-                    margin-top: 12px;
-                }
-
-                .radar-metric {
-                    padding: 16px;
-                    border-radius: 20px;
-                    background: rgba(255, 255, 255, 0.03);
-                    border: 1px solid rgba(255, 255, 255, 0.06);
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-
-                .radar-metric span {
-                    font-size: 12px;
-                    font-weight: 700;
-                    letter-spacing: .04em;
-                    text-transform: uppercase;
-                    color: rgba(226, 232, 240, 0.64);
-                }
-
-                .radar-metric strong {
-                    font-size: 18px;
-                    line-height: 1.2;
-                    letter-spacing: -0.03em;
-                    color: #f8fafc;
-                }
-
-                .dashboard-widget.layout-hidden {
-                    display: none !important;
-                }
-
-                .dashboard-layout-editor {
-                    background: var(--card-bg);
-                    border: 1px solid var(--border-color);
-                    border-radius: 20px;
-                    padding: 20px;
-                    margin-bottom: 20px;
-                }
-
-                .dashboard-layout-editor-header,
-                .dashboard-layout-item,
-                .dashboard-layout-editor-actions {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 16px;
-                }
-
-                .dashboard-layout-editor-header {
-                    margin-bottom: 18px;
-                }
-
-                .dashboard-layout-editor-header h3 {
-                    margin: 0 0 4px;
-                    font-size: 18px;
-                }
-
-                .dashboard-layout-editor-header p {
-                    margin: 0;
-                    color: var(--text-muted);
-                    font-size: 14px;
-                }
-
-                .dashboard-layout-controls {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .dashboard-layout-item {
-                    padding: 14px 16px;
-                    border-radius: 16px;
-                    border: 1px solid var(--border-color);
-                    background: rgba(15, 23, 42, 0.18);
-                }
-
-                .dashboard-layout-item-info {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 4px;
-                }
-
-                .dashboard-layout-item-info strong {
-                    font-size: 15px;
-                }
-
-                .dashboard-layout-item-info span {
-                    font-size: 13px;
-                    color: var(--text-muted);
-                }
-
-                .dashboard-layout-item-actions {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    flex-wrap: wrap;
-                }
-
-                .layout-toggle {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 13px;
-                    color: var(--text-muted);
-                }
-
-                .layout-move-btn {
-                    width: 40px;
-                    height: 40px;
-                    padding: 0;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .main-goal-container {
-                    grid-column: 1 / -1;
-                    background: linear-gradient(180deg, rgba(7, 11, 18, 0.96), rgba(6, 10, 18, 0.92));
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    border-radius: 28px;
-                    padding: 28px;
-                    margin-bottom: 0;
-                    transition: var(--transition);
-                }
-
-                .goal-info-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    margin-bottom: 20px;
-                    gap: 16px;
-                }
-
-                .goal-label {
-                    font-size: 12px;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    color: var(--primary-color);
-                    letter-spacing: 0.5px;
-                }
-
-                .goal-main-title {
-                    font-size: clamp(28px, 4vw, 36px);
-                    font-weight: 800;
-                    margin-top: 8px;
-                    line-height: 1.05;
-                    letter-spacing: -0.04em;
-                }
-
-                .motivation-area {
-                    flex: 1;
-                    max-width: 400px;
-                    text-align: right;
-                }
-
-                .motivation-phrase {
-                    font-size: 14px;
-                    color: var(--text-muted);
-                    font-style: italic;
-                    line-height: 1.4;
-                }
-
-                .goal-progress-wrapper {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .progress-bar-container {
-                    height: 14px;
-                    background: var(--border-color);
-                    border-radius: 10px;
-                    overflow: hidden;
-                }
-
-                .progress-bar-fill {
-                    height: 100%;
-                    background: linear-gradient(90deg, var(--primary-color), #4ade80);
-                    width: 0%;
-                    border-radius: 10px;
-                    transition: width 1s ease-out;
-                }
-
-                .progress-stats {
-                    display: flex;
-                    justify-content: space-between;
-                    font-size: 14px;
-                    font-weight: 700;
-                }
-
-                .progress-stats .percentage {
-                    color: var(--primary-color);
-                }
-
-                .summary-card {
-                    position: relative;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    padding: 24px;
-                    gap: 16px;
-                    min-height: 184px;
-                    overflow: hidden;
-                    background: linear-gradient(180deg, rgba(7, 11, 18, 0.96), rgba(6, 10, 18, 0.9));
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.3);
-                    transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
-                }
-
-                .summary-card::after {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 4px;
-                    background: var(--card-accent, var(--primary-color));
-                    opacity: .9;
-                }
-
-                .summary-card:hover,
-                .insight-card:hover,
-                .recent-transactions:hover,
-                .main-goal-container:hover {
-                    transform: translateY(-2px);
-                    border-color: rgba(20, 201, 123, 0.16);
-                    box-shadow: 0 28px 44px rgba(0, 0, 0, 0.34);
-                }
-
-                .summary-card.tone-balance { --card-accent: #0ea5e9; }
-                .summary-card.tone-income { --card-accent: #22c55e; }
-                .summary-card.tone-expense { --card-accent: #ef4444; }
-                .summary-card.tone-investment { --card-accent: #8b5cf6; }
-
-                .card-kicker {
-                    display: inline-flex;
-                    align-items: center;
-                    min-height: 24px;
-                    padding: 0 10px;
-                    border-radius: 999px;
-                    background: rgba(255, 255, 255, 0.04);
-                    color: rgba(226, 232, 240, 0.64);
-                    font-size: 11px;
-                    font-weight: 800;
-                    text-transform: uppercase;
-                    letter-spacing: .08em;
-                }
-
-                .card-info {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 6px;
-                    width: 100%;
-                }
-
-                .card-info h3 {
-                    margin: 0;
-                    color: #f8fafc;
-                }
-
-                .card-info .amount {
-                    font-size: clamp(26px, 3vw, 34px);
-                    letter-spacing: -0.04em;
-                    color: #ffffff;
-                }
-
-                .card-meta {
-                    color: var(--text-muted);
-                    font-size: 13px;
-                    line-height: 1.5;
-                }
-
-                .recent-transactions {
-                    padding: 26px;
-                    background: linear-gradient(180deg, rgba(7, 11, 18, 0.96), rgba(6, 10, 18, 0.9));
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.3);
-                }
-
-                .recent-transactions .table-container {
-                    margin-top: 6px;
-                    padding: 10px;
-                    border-radius: 22px;
-                    background: rgba(255, 255, 255, 0.02);
-                    border: 1px solid rgba(255, 255, 255, 0.05);
-                }
-
-                .recent-transactions .section-header h3,
-                .insight-card .section-header h3 {
-                    font-size: 20px;
-                    letter-spacing: -0.03em;
-                    color: #f8fafc;
-                }
-
-                .recent-transactions .data-table th,
-                .recent-transactions .data-table td,
-                .recent-transactions .desc-text,
-                .recent-transactions .item-meta small,
-                .recent-transactions .empty-state,
-                .main-goal-container .goal-main-title,
-                .main-goal-container .values,
-                .main-goal-container .milestone-label,
-                .main-goal-container .goal-label {
-                    color: #f8fafc;
-                }
-
-                .recent-transactions .data-table thead th {
-                    color: rgba(226, 232, 240, 0.68);
-                }
-
-                .recent-transactions .data-table tbody tr {
-                    border-color: rgba(255, 255, 255, 0.06);
-                }
-
-                .recent-transactions .data-table tbody tr:hover {
-                    background: rgba(255, 255, 255, 0.03);
-                }
-
-                @media (max-width: 1100px) {
-                    .dashboard-hero {
-                        padding: 24px;
-                        grid-template-columns: 1fr;
-                    }
-
-                    .dashboard-chart-card,
-                    .dashboard-side-card,
-                    .summary-cards,
-                    .recent-transactions {
-                        grid-column: 1 / -1;
-                    }
-
-                    .summary-cards {
-                        grid-template-columns: repeat(2, minmax(0, 1fr));
-                    }
-                }
-
-                @media (max-width: 600px) {
-                    .dashboard-layout {
-                        grid-template-columns: 1fr;
-                        gap: 16px;
-                    }
-
-                    .dashboard-layout-editor-header,
-                    .dashboard-layout-item,
-                    .dashboard-layout-editor-actions {
-                        flex-direction: column;
-                        align-items: stretch;
-                    }
-
-                    .dashboard-layout-item-actions {
-                        justify-content: space-between;
-                    }
-
-                    .goal-info-header {
-                        flex-direction: column;
-                        gap: 8px;
-                    }
-
-                    .dashboard-hero-actions,
-                    .dashboard-hero-links {
-                        width: 100%;
-                    }
-
-                    .dashboard-hero-actions > *,
-                    .dashboard-hero-links > * {
-                        flex: 1 1 100%;
-                        justify-content: center;
-                    }
-
-                    .motivation-area {
-                        text-align: left;
-                        max-width: 100%;
-                    }
-
-                    .summary-cards {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .radar-grid {
-                        grid-template-columns: 1fr;
-                    }
-                }
-
-                /* Estilos da Trilha de Marcos */
-                .milestone-track {
-                    display: flex;
-                    justify-content: space-between;
-                    position: relative;
-                    padding-bottom: 8px;
-                }
-
-                .milestone-track::before {
-                    content: '';
-                    position: absolute;
-                    top: 10px;
-                    left: 0;
-                    right: 0;
-                    height: 4px;
-                    background: var(--border-color);
-                    z-index: 0;
-                    border-radius: 2px;
-                }
-
-                .milestone-step {
-                    position: relative;
-                    z-index: 1;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 8px;
-                    flex: 1;
-                }
-
-                .milestone-dot {
-                    width: 24px;
-                    height: 24px;
-                    background: var(--card-bg);
-                    border: 4px solid var(--border-color);
-                    border-radius: 50%;
-                    transition: var(--transition);
-                }
-
-                .milestone-step.achieved .milestone-dot {
-                    background: var(--primary-color);
-                    border-color: var(--primary-color);
-                    box-shadow: 0 0 15px var(--primary-color);
-                }
-
-                .milestone-step.current .milestone-dot {
-                    border-color: var(--primary-color);
-                    transform: scale(1.2);
-                    animation: pulse-milestone 2s infinite;
-                }
-
-                .milestone-label {
-                    font-size: 11px;
-                    font-weight: 700;
-                    color: var(--text-muted);
-                    transition: var(--transition);
-                }
-
-                .milestone-step.achieved .milestone-label,
-                .milestone-step.current .milestone-label {
-                    color: var(--text-main);
-                }
-
-                @keyframes pulse-milestone {
-                    0% {
-                        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4);
-                    }
-
-                    70% {
-                        box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
-                    }
-
-                    100% {
-                        box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
-                    }
-                }
-
-                @media (max-width: 500px) {
-                    .milestone-label {
-                        font-size: 9px;
-                        white-space: nowrap;
-                    }
-
-                    /* Esconde etiquetas intermediárias no mobile extremo se houver muitas */
-                }
-            </style>
-
-            <style>
-                html,
-                body.dashboard-body {
-                    min-height: 100%;
-                }
-
-                body.dashboard-body {
-                    display: block !important;
-                    justify-content: flex-start !important;
-                    align-items: stretch !important;
-                    margin: 0 !important;
-                    background:
-                        radial-gradient(circle at top left, rgba(110, 231, 183, 0.07), transparent 20%),
-                        linear-gradient(180deg, #010409 0%, #02060d 45%, #000000 100%) !important;
-                    position: relative;
-                    background-attachment: fixed !important;
-                }
-
-                body.dashboard-body::before {
-                    content: '';
-                    position: fixed;
-                    inset: 0;
-                    background:
-                        radial-gradient(circle at 18% 18%, rgba(110, 231, 183, 0.1), transparent 22%),
-                        radial-gradient(circle at 84% 20%, rgba(125, 211, 252, 0.08), transparent 24%),
-                        linear-gradient(180deg, rgba(2, 6, 23, 0.08), rgba(2, 6, 23, 0.22));
-                    pointer-events: none;
-                    z-index: 0;
-                }
-
-                body.dashboard-body .sidebar,
-                body.dashboard-body .main-content {
-                    position: relative;
-                    z-index: 1;
-                }
-
-                body.dashboard-body .main-content {
-                    display: block !important;
-                    margin: 0 0 0 280px !important;
-                    min-height: 100vh !important;
-                    padding: 18px !important;
-                }
-
-                body.dashboard-body .sidebar {
-                    background: rgba(0, 0, 0, 0.88);
-                    backdrop-filter: blur(18px);
-                    -webkit-backdrop-filter: blur(18px);
-                    border-right: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: none;
-                }
-
-                body.dashboard-body .sidebar-header,
-                body.dashboard-body .sidebar-footer,
-                body.dashboard-body .topbar {
-                    background: rgba(0, 0, 0, 0.72);
-                    backdrop-filter: blur(18px);
-                    -webkit-backdrop-filter: blur(18px);
-                    border-color: rgba(255, 255, 255, 0.08);
-                }
-
-                body.dashboard-body .sidebar-header h2,
-                body.dashboard-body .sidebar .nav-item,
-                body.dashboard-body .section-header h3,
-                body.dashboard-body .summary-card h3,
-                body.dashboard-body .goal-main-title,
-                body.dashboard-body .page-header h1 {
-                    font-family: "Manrope", Inter, sans-serif;
-                    letter-spacing: -0.03em;
-                }
-
-                body.dashboard-body .nav-item {
-                    border-radius: 16px;
-                    margin-bottom: 6px;
-                    color: rgba(226, 232, 240, 0.78);
-                }
-
-                body.dashboard-body .nav-item:hover,
-                body.dashboard-body .nav-item.active {
-                    background: rgba(255, 255, 255, 0.06);
-                    border-left-color: rgba(52, 211, 153, 0.5);
-                    color: #ffffff;
-                    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-                }
-
-                body.dashboard-body .topbar {
-                    position: relative !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: space-between !important;
-                    min-height: 78px !important;
-                    max-height: none !important;
-                    overflow: visible !important;
-                    margin: 0 0 16px !important;
-                    top: auto !important;
-                    left: auto !important;
-                    right: auto !important;
-                    padding: 16px 22px !important;
-                    z-index: 2 !important;
-                    border-radius: 26px !important;
-                }
-
-                body.dashboard-body .search-bar {
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: none;
-                }
-
-                body.dashboard-body .search-bar input,
-                body.dashboard-body .search-bar i,
-                body.dashboard-body .date-display {
-                    color: rgba(226, 232, 240, 0.78) !important;
-                }
-
-                body.dashboard-body .dashboard-content {
-                    padding: 0 !important;
-                }
-
-                body.dashboard-body .topbar > * {
-                    flex-shrink: 0;
-                }
-
-                body.dashboard-body .dashboard-hero,
-                body.dashboard-body .summary-card,
-                body.dashboard-body .insight-card,
-                body.dashboard-body .recent-transactions,
-                body.dashboard-body .main-goal-container {
-                    background: rgba(255, 255, 255, 0.08) !important;
-                    backdrop-filter: blur(16px) !important;
-                    -webkit-backdrop-filter: blur(16px) !important;
-                    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-                    box-shadow:
-                        0 0 0 1px rgba(255, 255, 255, 0.02),
-                        0 24px 44px rgba(0, 0, 0, 0.22) !important;
-                }
-
-                body.dashboard-body .dashboard-hero {
-                    border-radius: 30px;
-                    padding: 24px 30px;
-                    gap: 18px;
-                    background:
-                        linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.07)),
-                        radial-gradient(circle at top right, rgba(52, 211, 153, 0.08), transparent 26%) !important;
-                }
-
-                body.dashboard-body .dashboard-hero::after,
-                body.dashboard-body .insight-card::before,
-                body.dashboard-body .summary-card::after {
-                    opacity: 0.55;
-                }
-
-                body.dashboard-body .dashboard-hero-head h1 {
-                    font-size: clamp(34px, 4vw, 44px);
-                    color: #ffffff;
-                }
-
-                body.dashboard-body .subtitle {
-                    color: rgba(226, 232, 240, 0.76) !important;
-                    max-width: 760px;
-                }
-
-                body.dashboard-body .hero-link,
-                body.dashboard-body .dashboard-status-pill {
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    color: rgba(226, 232, 240, 0.74);
-                }
-
-                body.dashboard-body .hero-link:hover {
-                    background: rgba(52, 211, 153, 0.08);
-                    border-color: rgba(52, 211, 153, 0.22);
-                }
-
-                body.dashboard-body .btn-primary,
-                body.dashboard-body .btn-secondary {
-                    border-radius: 14px;
-                    min-height: 48px;
-                }
-
-                body.dashboard-body .btn-secondary {
-                    background: rgba(255, 255, 255, 0.08);
-                    border: 1px solid rgba(255, 255, 255, 0.12);
-                    color: #ffffff;
-                }
-
-                body.dashboard-body .summary-cards {
-                    gap: 18px;
-                }
-
-                body.dashboard-body .summary-card {
-                    border-radius: 24px;
-                    min-height: 172px;
-                    padding: 22px;
-                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.07)) !important;
-                }
-
-                body.dashboard-body .summary-card .card-kicker {
-                    background: rgba(255, 255, 255, 0.05);
-                    color: rgba(226, 232, 240, 0.66);
-                }
-
-                body.dashboard-body .summary-card .amount,
-                body.dashboard-body .summary-card h3,
-                body.dashboard-body .section-header h3,
-                body.dashboard-body .goal-main-title,
-                body.dashboard-body .progress-stats .values,
-                body.dashboard-body .progress-stats .percentage {
-                    color: #ffffff;
-                }
-
-                body.dashboard-body .card-meta,
-                body.dashboard-body .insight-caption,
-                body.dashboard-body .motivation-phrase,
-                body.dashboard-body .view-all,
-                body.dashboard-body .insight-empty,
-                body.dashboard-body .insight-bar-head span,
-                body.dashboard-body .spending-map-copy span {
-                    color: rgba(226, 232, 240, 0.68);
-                }
-
-                body.dashboard-body .insight-card,
-                body.dashboard-body .recent-transactions,
-                body.dashboard-body .main-goal-container {
-                    border-radius: 28px;
-                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.06)) !important;
-                }
-
-                body.dashboard-body .mario-hero-art {
-                    display: none;
-                }
-
-                body.dashboard-body .goal-label {
-                    color: rgba(110, 231, 183, 0.9);
-                    letter-spacing: 0.08em;
-                }
-
-                body.dashboard-body .progress-bar-container,
-                body.dashboard-body .insight-bar-track,
-                body.dashboard-body .mini-track {
-                    background: rgba(255, 255, 255, 0.08);
-                    border: none;
-                    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-                }
-
-                body.dashboard-body .progress-bar-fill {
-                    background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
-                    box-shadow: 0 8px 18px rgba(52, 211, 153, 0.22);
-                }
-
-                body.dashboard-body .insight-bar-item,
-                body.dashboard-body .spending-map-row,
-                body.dashboard-body .recent-transactions .table-container {
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: none;
-                }
-
-                body.dashboard-body .recent-transactions .data-table thead th {
-                    color: rgba(226, 232, 240, 0.62);
-                }
-
-                body.dashboard-body .recent-transactions .data-table tbody tr:hover {
-                    background: rgba(255, 255, 255, 0.03);
-                }
-
-                @media (max-width: 900px) {
-                    body.dashboard-body .main-content {
-                        margin-left: 0 !important;
-                        padding: 12px !important;
-                    }
-
-                    body.dashboard-body .dashboard-content {
-                        padding: 0 !important;
-                    }
-
-                    body.dashboard-body .topbar {
-                        padding: 14px 16px !important;
-                        margin-bottom: 14px !important;
-                    }
-
-                    body.dashboard-body .dashboard-hero,
-                    body.dashboard-body .summary-card,
-                    body.dashboard-body .insight-card,
-                    body.dashboard-body .recent-transactions,
-                    body.dashboard-body .main-goal-container {
-                        border-radius: 22px;
-                    }
-                }
-            </style>
-
-            <!-- Resumo Cards -->
-            <div class="summary-cards dashboard-widget" data-widget-key="summary">
-                <div class="summary-card tone-balance">
-                    <div class="card-icon blue"><i class="fa-solid fa-building-columns"></i></div>
-                    <div class="card-info">
-                        <span class="card-kicker">Panorama</span>
-                        <h3>Saldo Atual</h3>
-                        <p class="amount">R$ 0,00</p>
-                        <span class="card-meta">Posição consolidada do seu fluxo</span>
+                <div class="summary-cards dashboard-widget" data-widget-key="summary">
+                    <div class="summary-card tone-balance">
+                        <div class="card-icon blue"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="card-info">
+                            <span class="card-kicker">Panorama</span>
+                            <h3>Saldo Atual</h3>
+                            <p class="amount">R$ 0,00</p>
+                            <span class="card-meta">Posição consolidada do seu fluxo</span>
+                        </div>
+                    </div>
+                    <div class="summary-card tone-income">
+                        <div class="card-icon green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                        <div class="card-info">
+                            <span class="card-kicker">Entrada</span>
+                            <h3>Receitas</h3>
+                            <p class="amount">R$ 0,00</p>
+                            <span class="card-meta">Tudo que entrou no período atual</span>
+                        </div>
+                    </div>
+                    <div class="summary-card tone-expense">
+                        <div class="card-icon red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <div class="card-info">
+                            <span class="card-kicker">Saída</span>
+                            <h3>Despesas</h3>
+                            <p class="amount">R$ 0,00</p>
+                            <span class="card-meta">Gastos e compromissos do período</span>
+                        </div>
+                    </div>
+                    <div class="summary-card tone-investment">
+                        <div class="card-icon purple"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="card-info">
+                            <span class="card-kicker">Construção</span>
+                            <h3>Investimentos</h3>
+                            <p class="amount">R$ 0,00</p>
+                            <span class="card-meta">Capital direcionado para o futuro</span>
+                        </div>
                     </div>
                 </div>
-                <div class="summary-card tone-income">
-                    <div class="card-icon green"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                    <div class="card-info">
-                        <span class="card-kicker">Entrada</span>
-                        <h3>Receitas</h3>
-                        <p class="amount">R$ 0,00</p>
-                        <span class="card-meta">Tudo que entrou no período atual</span>
+
+                <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="category-chart">
+                    <div class="section-header">
+                        <h3>Categorias do Mês</h3>
+                        <span id="categoryChartPeriod" class="insight-caption">Mês atual</span>
+                    </div>
+                    <div id="categoryChartEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
+                    <div id="categoryChartBars" class="insight-bars"></div>
+                </div>
+
+                <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="subcategory-chart">
+                    <div class="section-header">
+                        <h3>Subcategorias do Mês</h3>
+                        <span id="subcategoryChartPeriod" class="insight-caption">Mês atual</span>
+                    </div>
+                    <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
+                    <div id="subcategoryChartBars" class="insight-bars"></div>
+                </div>
+
+                <div class="recent-transactions dashboard-widget" data-widget-key="recent">
+                    <div class="section-header">
+                        <h3>Transações Recentes</h3>
+                        <a href="/transactions" class="view-all">Ver todas</a>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th style="text-align: right;">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                        <div style="font-size: 32px; margin-bottom: 12px;"><i class="fa-solid fa-receipt"></i></div>
+                                        <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma transação encontrada</h3>
+                                        <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo Lançamento" para adicionar sua primeira transação.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="summary-card tone-expense">
-                    <div class="card-icon red"><i class="fa-solid fa-arrow-trend-down"></i></div>
-                    <div class="card-info">
-                        <span class="card-kicker">Saída</span>
-                        <h3>Despesas</h3>
-                        <p class="amount">R$ 0,00</p>
-                        <span class="card-meta">Gastos e compromissos do período</span>
-                    </div>
-                </div>
-                <div class="summary-card tone-investment">
-                    <div class="card-icon purple"><i class="fa-solid fa-piggy-bank"></i></div>
-                    <div class="card-info">
-                        <span class="card-kicker">Construção</span>
-                        <h3>Investimentos</h3>
-                        <p class="amount">R$ 0,00</p>
-                        <span class="card-meta">Capital direcionado para o futuro</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="category-chart">
-                <div class="section-header">
-                    <h3>Categorias do Mês</h3>
-                    <span id="categoryChartPeriod" class="insight-caption">Mês atual</span>
-                </div>
-                <div id="categoryChartEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
-                <div id="categoryChartBars" class="insight-bars"></div>
-            </div>
-
-            <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="subcategory-chart">
-                <div class="section-header">
-                    <h3>Subcategorias do Mês</h3>
-                    <span id="subcategoryChartPeriod" class="insight-caption">Mês atual</span>
-                </div>
-                <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
-                <div id="subcategoryChartBars" class="insight-bars"></div>
-            </div>
-
-            <!-- Recentes -->
-            <div class="recent-transactions dashboard-widget" data-widget-key="recent">
-                <div class="section-header">
-                    <h3>Transações Recentes</h3>
-                    <a href="/transactions" class="view-all">Ver todas</a>
-                </div>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Descrição</th>
-                                <th style="text-align: right;">Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="2" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                                    <div style="font-size: 32px; margin-bottom: 12px;"><i
-                                            class="fa-solid fa-receipt"></i>
-                                    </div>
-                                    <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma
-                                        transação
-                                        encontrada</h3>
-                                    <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo Lançamento" para
-                                        adicionar sua
-                                        primeira transação.</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
             </div>
         </div>
     </main>
-    <link rel="stylesheet" href="dashboard-final.css">
+
     <script src="script.js"></script>
 </body>
 
