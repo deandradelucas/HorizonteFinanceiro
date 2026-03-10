@@ -25,6 +25,7 @@
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
 
+    <div class="scenic-wall" aria-hidden="true"></div>
     <div class="dashboard-shell">
     <aside class="sidebar">
         <div class="sidebar-profile">
@@ -84,6 +85,56 @@
         </header>
 
         <div class="dashboard-content">
+            <aside class="dashboard-rail dashboard-rail-left">
+                <div class="rail-card rail-mission">
+                    <span class="rail-kicker">Missão Horizon</span>
+                    <strong>Hoje, o melhor ajuste é revisar seus gastos recorrentes.</strong>
+                    <span class="rail-subtitle">1 ação simples pode melhorar seu caixa ainda esta semana</span>
+                    <button class="rail-btn">Ver análise</button>
+                </div>
+
+                <div class="rail-card rail-week">
+                    <span class="rail-kicker">Meta da semana</span>
+                    <strong>Economizar R$ 120 em despesas variáveis</strong>
+                    <div class="rail-progress">
+                        <div class="rail-progress-fill" style="width: 42%;"></div>
+                    </div>
+                    <span class="rail-status">42% concluído</span>
+                    <span class="rail-subtitle">Você está no caminho certo</span>
+                </div>
+
+                <div class="rail-card rail-level">
+                    <span class="rail-kicker">Seu momento</span>
+                    <strong class="rail-status-main">Em atenção</strong>
+                    <span class="rail-subtitle">Seu caixa pede mais liquidez antes de aumentar risco</span>
+                    <div class="rail-ring">
+                        <div class="rail-ring-inner">42%</div>
+                    </div>
+                </div>
+            </aside>
+
+            <aside class="dashboard-rail dashboard-rail-right">
+                <div class="rail-card rail-radar">
+                    <span class="rail-kicker">Radar financeiro</span>
+                    <ul class="rail-list">
+                        <li>Caixa: pressionado</li>
+                        <li>Gastos fixos: sob controle</li>
+                        <li>Investimentos: bons, mas liquidez baixa</li>
+                    </ul>
+                </div>
+
+                <div class="rail-card rail-opportunity">
+                    <span class="rail-kicker">Oportunidade detectada</span>
+                    <strong>Você pode liberar até R$ 320/mês revisando 2 despesas recorrentes.</strong>
+                    <button class="rail-btn">Quero revisar</button>
+                </div>
+
+                <div class="rail-card rail-simulator">
+                    <span class="rail-kicker">Simulação rápida</span>
+                    <strong>Se você guardar R$ 15 por dia, pode acumular R$ 450 em 30 dias.</strong>
+                    <button class="rail-btn">Testar cenário</button>
+                </div>
+            </aside>
             <div class="page-header dashboard-hero simple-hero">
                 <div class="dashboard-title-row">
                     <h1>Dashboard</h1>

@@ -179,6 +179,124 @@ html body.dashboard-body .dashboard-content {
     gap: 16px !important;
 }
 
+html body.dashboard-body .dashboard-rail {
+    position: fixed !important;
+    top: 120px !important;
+    width: 240px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    z-index: 2 !important;
+}
+
+html body.dashboard-body .dashboard-rail-left {
+    left: 110px !important;
+}
+
+html body.dashboard-body .dashboard-rail-right {
+    right: 24px !important;
+}
+
+html body.dashboard-body .rail-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    color: #111827 !important;
+    border-radius: 20px !important;
+    padding: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 18px 36px rgba(2, 6, 23, 0.25) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    transition: transform 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+html body.dashboard-body .rail-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 24px 48px rgba(2, 6, 23, 0.3) !important;
+}
+
+html body.dashboard-body .rail-kicker {
+    font-size: 11px !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    color: rgba(15, 23, 42, 0.6) !important;
+    font-weight: 700 !important;
+}
+
+html body.dashboard-body .rail-subtitle {
+    font-size: 12px !important;
+    color: rgba(30, 41, 59, 0.7) !important;
+}
+
+html body.dashboard-body .rail-btn {
+    align-self: flex-start !important;
+    border: none !important;
+    background: #111827 !important;
+    color: #ffffff !important;
+    border-radius: 999px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+html body.dashboard-body .rail-progress {
+    height: 6px !important;
+    background: rgba(15, 23, 42, 0.15) !important;
+    border-radius: 999px !important;
+    overflow: hidden !important;
+}
+
+html body.dashboard-body .rail-progress-fill {
+    height: 100% !important;
+    background: linear-gradient(90deg, #14b8a6, #22d3ee) !important;
+}
+
+html body.dashboard-body .rail-status {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: rgba(15, 23, 42, 0.75) !important;
+}
+
+html body.dashboard-body .rail-status-main {
+    font-size: 18px !important;
+}
+
+html body.dashboard-body .rail-ring {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    border: 6px solid rgba(14, 165, 233, 0.3) !important;
+    border-top-color: #0ea5e9 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    color: rgba(15, 23, 42, 0.75) !important;
+}
+
+html body.dashboard-body .rail-ring-inner {
+    font-weight: 700 !important;
+}
+
+html body.dashboard-body .rail-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: grid !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    color: rgba(30, 41, 59, 0.7) !important;
+}
+
+@media (max-width: 1200px) {
+    html body.dashboard-body .dashboard-rail {
+        display: none !important;
+    }
+}
+
 html body.dashboard-body .dashboard-actions {
     display: flex !important;
     align-items: center !important;
@@ -705,6 +823,7 @@ html body.dashboard-body .hyper-copy-foot {
     html body.dashboard-body .sidebar {
         transform: translateX(-100%) !important;
         transition: transform 0.3s ease !important;
+        width: 260px !important;
     }
 
     html body.dashboard-body .sidebar.active {
@@ -771,6 +890,34 @@ html body.dashboard-body .hyper-copy-foot {
 
     html body.dashboard-body .subtitle {
         font-size: 14px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero {
+        padding: 16px !important;
+    }
+
+    html body.dashboard-body .summary-card {
+        min-height: 132px !important;
+        padding: 14px !important;
+        gap: 10px !important;
+    }
+
+    html body.dashboard-body .card-icon {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 12px !important;
+    }
+
+    html body.dashboard-body .summary-card .amount {
+        font-size: clamp(22px, 7vw, 26px) !important;
+        margin: 6px 0 4px !important;
+    }
+
+    html body.dashboard-body .insight-card,
+    html body.dashboard-body .recent-transactions,
+    html body.dashboard-body .main-goal-container,
+    html body.dashboard-body .dashboard-layout-editor {
+        padding: 16px !important;
     }
 
     html body.dashboard-body .dashboard-hero-links > *,
@@ -1256,13 +1403,16 @@ html body.dashboard-body .summary-cards {
 }
 
 html body.dashboard-body .summary-card {
-    background: rgba(255, 255, 255, 0.68) !important;
-    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.12)) !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    background-image:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
     border-radius: 24px !important;
     padding: 18px !important;
     min-height: 150px !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08) !important;
+    box-shadow:
+        0 16px 34px rgba(15, 23, 42, 0.08),
+        0 10px 22px rgba(15, 23, 42, 0.12) !important;
     display: flex !important;
     gap: 14px !important;
     backdrop-filter: blur(18px) saturate(160%) !important;
@@ -1320,18 +1470,25 @@ html body.dashboard-body .summary-card .card-meta {
     font-size: 13px !important;
 }
 
+html body.dashboard-body .summary-income .summary-icon,
+html body.dashboard-body .summary-expense .summary-icon,
+html body.dashboard-body .summary-investment .summary-icon {
+    background: rgba(148, 163, 184, 0.18) !important;
+    color: #1f2937 !important;
+}
+
 html body.dashboard-body .summary-income .summary-icon {
-    background: #dcfce7 !important;
+    background: rgba(22, 163, 74, 0.16) !important;
     color: #16a34a !important;
 }
 
 html body.dashboard-body .summary-expense .summary-icon {
-    background: #fee2e2 !important;
+    background: rgba(239, 68, 68, 0.16) !important;
     color: #ef4444 !important;
 }
 
 html body.dashboard-body .summary-investment .summary-icon {
-    background: #e0e7ff !important;
+    background: rgba(79, 70, 229, 0.16) !important;
     color: #4f46e5 !important;
 }
 
@@ -1580,4 +1737,97 @@ html body.dashboard-body .dashboard-actions {
     html body.dashboard-body .horizon-input button {
         width: 100% !important;
     }
+}
+
+/* === Premium desktop layout overrides === */
+html body.dashboard-body {
+    background: #0b0b0c !important;
+    padding: 40px !important;
+}
+
+html body.dashboard-body::before,
+html body.dashboard-body::after {
+    display: none !important;
+}
+
+html body.dashboard-body .premium-layout {
+    max-width: 1440px !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    grid-template-columns: 240px minmax(0, 1fr) 240px !important;
+    gap: 28px !important;
+    align-items: start !important;
+}
+
+html body.dashboard-body .dashboard-shell {
+    background: #f7f7f7 !important;
+    border-radius: 36px !important;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4) !important;
+}
+
+html body.dashboard-body .premium-side {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+}
+
+html body.dashboard-body .premium-card {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    padding: 18px !important;
+    border: 1px solid rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24) !important;
+}
+
+html body.dashboard-body .premium-card h4 {
+    margin: 0 0 8px !important;
+    font-size: 15px !important;
+    color: #111827 !important;
+}
+
+html body.dashboard-body .premium-card p {
+    margin: 0 !important;
+    color: #6b7280 !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+}
+
+html body.dashboard-body .summary-card {
+    background: #ffffff !important;
+    background-image: none !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+html body.dashboard-body .summary-card::before {
+    display: none !important;
+}
+
+html body.dashboard-body .insight-card,
+html body.dashboard-body .recent-transactions,
+html body.dashboard-body .main-goal-container {
+    background: #ffffff !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08) !important;
+}
+
+html body.dashboard-body .sidebar {
+    background: #f3f4f6 !important;
+    border-right: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+html body.dashboard-body .topbar {
+    background: transparent !important;
+}
+
+html body.dashboard-body .horizon-agent {
+    background: #ffffff !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+html body.dashboard-body .horizon-pill {
+    background: #f3f4f6 !important;
 }
