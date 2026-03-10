@@ -56,6 +56,10 @@ html body.dashboard-body .sidebar-footer {
     background: transparent !important;
 }
 
+html body.dashboard-body .sidebar-profile {
+    display: none !important;
+}
+
 html body.dashboard-body .sidebar-header {
     padding: 22px 18px 14px !important;
     gap: 12px !important;
@@ -81,10 +85,20 @@ html body.dashboard-body .nav-item {
     border-left: none !important;
     font-weight: 600 !important;
     transition: background 0.2s ease, color 0.2s ease !important;
+    justify-content: center !important;
+    gap: 0 !important;
 }
 
 html body.dashboard-body .nav-item span {
     display: none !important;
+}
+
+html body.dashboard-body .nav-item i {
+    font-size: 18px !important;
+}
+
+html body.dashboard-body .sidebar-footer {
+    padding-top: 8px !important;
 }
 
 html body.dashboard-body .nav-item:hover,
