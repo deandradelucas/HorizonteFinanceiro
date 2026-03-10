@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard-final.css?v=20260309-01">
+    <link rel="stylesheet" href="dashboard-final.css?v=20260310-02">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -25,22 +25,26 @@
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
 
+    <div class="dashboard-shell">
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
-            <h2>Horizonte Financeiro</h2>
+        <div class="sidebar-profile">
+            <div class="profile-avatar">GM</div>
+            <div class="profile-info">
+                <strong>Gadiel Machado</strong>
+                <span>Designer</span>
+            </div>
         </div>
         <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-            <a href="/cnpj" class="nav-item"><i class="fa-solid fa-building"></i> CNPJ</a>
-            <a href="/transactions" class="nav-item"><i class="fa-solid fa-user"></i> PF</a>
-            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
-            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+            <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Wallet</a>
+            <a href="/transactions" class="nav-item" data-keep-label="true"><i class="fa-solid fa-receipt"></i> Transactions</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-chart-line"></i> Revenue analytics</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Setting</a>
+            <a href="/settings" class="nav-item"><i class="fa-regular fa-circle-question"></i> Help</a>
+            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
         </div>
     </aside>
 
@@ -49,35 +53,41 @@
             <button id="mobileMenuBtn" class="mobile-menu-btn">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar transações...">
+            <div class="horizon-agent" aria-live="polite">
+                <div class="horizon-avatar">H</div>
+                <div class="horizon-content">
+                    <div class="horizon-title">
+                        <strong>Horizon</strong>
+                        <span>Agente de inteligência financeira</span>
+                    </div>
+                    <p id="horizonTip" class="horizon-tip">Organize sua semana financeira com pequenas metas diárias.</p>
+                    <div class="horizon-meta">
+                        <span id="horizonBalance" class="horizon-pill">Saldo: R$ 0,00</span>
+                        <span id="horizonCashflow" class="horizon-pill">Fluxo: R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="horizon-actions">
+                    <button id="horizonVoiceBtn" class="horizon-cta horizon-cta--ghost" type="button" aria-label="Falar com Horizon">
+                        <i class="fa-solid fa-microphone"></i> Falar
+                    </button>
+                    <button id="horizonOpenBtn" class="horizon-cta" type="button" data-horizon-open="true">Perguntar</button>
+                </div>
             </div>
-            <div class="user-profile">
-                <span id="currentDateDisplay" class="date-display"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar tema">
-                    <i class="fa-solid fa-moon"></i>
+            <div class="topbar-actions">
+                <button class="icon-btn" type="button" aria-label="Messages">
+                    <i class="fa-regular fa-comment-dots"></i>
+                </button>
+                <button class="icon-btn" type="button" aria-label="Notifications">
+                    <i class="fa-regular fa-bell"></i>
                 </button>
             </div>
         </header>
 
         <div class="dashboard-content">
-            <div class="page-header dashboard-hero">
-                <div class="dashboard-hero-copy">
-                    <div class="dashboard-hero-head">
-                        <h1>Visão Geral</h1>
-                        <span id="billingStatusPill" class="dashboard-status-pill" hidden>Carregando vencimento</span>
-                    </div>
-                    <p id="userWelcome" class="subtitle">Bem-vindo(a) de volta! Aqui está o resumo das suas finanças.</p>
-                    <div class="dashboard-hero-links">
-                        <a href="/transactions" class="hero-link"><i class="fa-solid fa-user"></i> Pessoa Física</a>
-                        <a href="/cnpj" class="hero-link"><i class="fa-solid fa-building"></i> CNPJ</a>
-                        <a href="/history" class="hero-link"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
-                    </div>
-                </div>
-                <div class="dashboard-hero-actions">
-                    <a href="/register-item-pf" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo lançamento PF</a>
-                    <a href="/register-item-pj" class="btn-secondary btn-action"><i class="fa-solid fa-building"></i> Novo lançamento PJ</a>
+            <div class="page-header dashboard-hero simple-hero">
+                <div class="dashboard-title-row">
+                    <h1>Dashboard</h1>
+                    <span id="billingStatusPill" class="dashboard-status-pill" hidden>Carregando vencimento</span>
                 </div>
             </div>
 
@@ -106,96 +116,158 @@
 
             <div id="dashboardLayout" class="dashboard-layout">
                 <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal" style="display: none;">
-                    <div class="goal-info-header">
-                        <div class="goal-text">
-                            <span class="goal-label">Meta em destaque</span>
-                            <h2 id="mainGoalTitle" class="goal-main-title">Objetivo Financeiro</h2>
+                    <div class="payables-card">
+                        <div class="section-header">
+                            <h3>Payables</h3>
                         </div>
-                        <div class="motivation-area">
-                            <p id="motivationPhrase" class="motivation-phrase">Cada passo consistente fortalece a sua construção financeira.</p>
-                        </div>
+                        <ul class="mini-list">
+                            <li>
+                                <div class="mini-icon"><i class="fa-regular fa-file-lines"></i></div>
+                                <div>
+                                    <p>$202.98</p>
+                                    <span>Electricity Bill</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mini-icon"><i class="fa-regular fa-file-lines"></i></div>
+                                <div>
+                                    <p>$3,030.98</p>
+                                    <span>Rent or Mortgage</span>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="goal-progress-wrapper">
-                        <div class="progress-bar-container">
-                            <div id="mainGoalBar" class="progress-bar-fill"></div>
+                    <div class="goal-legacy">
+                        <div class="goal-info-header">
+                            <div class="goal-text">
+                                <span class="goal-label">Meta em destaque</span>
+                                <h2 id="mainGoalTitle" class="goal-main-title">Objetivo Financeiro</h2>
+                            </div>
+                            <div class="motivation-area">
+                                <p id="motivationPhrase" class="motivation-phrase">Cada passo consistente fortalece a sua construção financeira.</p>
+                            </div>
                         </div>
-                        <div class="progress-stats">
-                            <span id="mainGoalValues" class="values">R$ 5.000 de R$ 20.000</span>
-                            <span id="mainGoalPct" class="percentage">25%</span>
+                        <div class="goal-progress-wrapper">
+                            <div class="progress-bar-container">
+                                <div id="mainGoalBar" class="progress-bar-fill"></div>
+                            </div>
+                            <div class="progress-stats">
+                                <span id="mainGoalValues" class="values">R$ 5.000 de R$ 20.000</span>
+                                <span id="mainGoalPct" class="percentage">25%</span>
+                            </div>
                         </div>
+                        <div id="milestoneTrack" class="milestone-track"></div>
                     </div>
-                    <div id="milestoneTrack" class="milestone-track"></div>
                 </div>
 
                 <div class="summary-cards dashboard-widget" data-widget-key="summary">
-                    <div class="summary-card tone-balance">
-                        <div class="card-icon blue"><i class="fa-solid fa-building-columns"></i></div>
+                    <div class="summary-card summary-balance" data-summary-key="balance">
+                        <div class="summary-icon"><i class="fa-solid fa-building-columns"></i></div>
                         <div class="card-info">
-                            <span class="card-kicker">Panorama</span>
-                            <h3>Saldo Atual</h3>
+                            <span class="card-kicker">Saldo em Conta</span>
                             <p class="amount">R$ 0,00</p>
-                            <span class="card-meta">Posição consolidada do seu fluxo</span>
+                            <span class="card-meta">Disponível agora</span>
                         </div>
                     </div>
-                    <div class="summary-card tone-income">
-                        <div class="card-icon green"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                        <div class="card-info">
-                            <span class="card-kicker">Entrada</span>
-                            <h3>Receitas</h3>
-                            <p class="amount">R$ 0,00</p>
-                            <span class="card-meta">Tudo que entrou no período atual</span>
-                        </div>
-                    </div>
-                    <div class="summary-card tone-expense">
-                        <div class="card-icon red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    <div class="summary-card summary-expense" data-summary-key="expense">
+                        <div class="summary-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
                         <div class="card-info">
                             <span class="card-kicker">Saída</span>
-                            <h3>Despesas</h3>
                             <p class="amount">R$ 0,00</p>
-                            <span class="card-meta">Gastos e compromissos do período</span>
+                            <span class="card-meta">Despesas do período</span>
                         </div>
                     </div>
-                    <div class="summary-card tone-investment">
-                        <div class="card-icon purple"><i class="fa-solid fa-piggy-bank"></i></div>
+                    <div class="summary-card summary-income" data-summary-key="income">
+                        <div class="summary-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
                         <div class="card-info">
-                            <span class="card-kicker">Construção</span>
-                            <h3>Investimentos</h3>
+                            <span class="card-kicker">Entrada</span>
                             <p class="amount">R$ 0,00</p>
-                            <span class="card-meta">Capital direcionado para o futuro</span>
+                            <span class="card-meta">Receitas do período</span>
+                        </div>
+                    </div>
+                    <div class="summary-card summary-investment" data-summary-key="investment">
+                        <div class="summary-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="card-info">
+                            <span class="card-kicker">Investimentos</span>
+                            <p class="amount">R$ 0,00</p>
+                            <span class="card-meta">Aportes no período</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="category-chart">
                     <div class="section-header">
-                        <h3>Categorias do Mês</h3>
+                        <h3>Monthly earnings</h3>
                         <span id="categoryChartPeriod" class="insight-caption">Mês atual</span>
                     </div>
+                    <div class="earnings-chart-body">
+                        <svg viewBox="0 0 260 140" aria-hidden="true" class="earnings-chart">
+                            <path d="M10 90 C35 65, 55 70, 80 82 C105 95, 125 60, 150 62 C175 64, 195 40, 220 46 C235 50, 245 40, 255 30" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round" />
+                            <g stroke="#cbd5f5" stroke-width="1" stroke-dasharray="4 4">
+                                <line x1="30" y1="30" x2="30" y2="120" />
+                                <line x1="80" y1="30" x2="80" y2="120" />
+                                <line x1="130" y1="30" x2="130" y2="120" />
+                                <line x1="180" y1="30" x2="180" y2="120" />
+                                <line x1="230" y1="30" x2="230" y2="120" />
+                            </g>
+                        </svg>
+                    </div>
                     <div id="categoryChartEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
-                    <div id="categoryChartBars" class="insight-bars"></div>
+                    <div id="categoryChartBars" class="insight-bars" hidden></div>
                 </div>
 
                 <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="subcategory-chart">
                     <div class="section-header">
-                        <h3>Subcategorias do Mês</h3>
-                        <span id="subcategoryChartPeriod" class="insight-caption">Mês atual</span>
+                        <h3>Earnings</h3>
+                        <span id="subcategoryChartPeriod" class="insight-caption">Monthly</span>
+                    </div>
+                    <div class="earnings-donut">
+                        <svg viewBox="0 0 160 160" aria-hidden="true">
+                            <circle cx="80" cy="80" r="54" fill="none" stroke="#e5e7eb" stroke-width="10" />
+                            <circle cx="80" cy="80" r="54" fill="none" stroke="#1f2937" stroke-width="10" stroke-linecap="round" stroke-dasharray="220 340" transform="rotate(-90 80 80)" />
+                            <text x="80" y="78" text-anchor="middle" font-size="16" fill="#111827">$4,523.98</text>
+                            <text x="80" y="98" text-anchor="middle" font-size="11" fill="#10b981">+25%</text>
+                        </svg>
                     </div>
                     <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
-                    <div id="subcategoryChartBars" class="insight-bars"></div>
+                    <div id="subcategoryChartBars" class="insight-bars" hidden></div>
                 </div>
 
                 <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="recurring-chart">
                     <div class="section-header">
-                        <h3>Recorrentes do Mês</h3>
-                        <span id="recurringChartPeriod" class="insight-caption">Mês atual</span>
+                        <h3>Receipts</h3>
+                        <span id="recurringChartPeriod" class="insight-caption">Últimos lançamentos</span>
                     </div>
+                    <ul class="mini-list">
+                        <li>
+                            <div class="mini-icon"><i class="fa-solid fa-arrow-up"></i></div>
+                            <div>
+                                <p>$5,000.00</p>
+                                <span>Salary</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="mini-icon"><i class="fa-solid fa-arrow-up"></i></div>
+                            <div>
+                                <p>$593.00</p>
+                                <span>Service</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="mini-icon"><i class="fa-solid fa-arrow-up"></i></div>
+                            <div>
+                                <p>$3,030.98</p>
+                                <span>Rent or Mortgage</span>
+                            </div>
+                        </li>
+                    </ul>
                     <div id="recurringChartEmpty" class="insight-empty" hidden>Nenhuma transação recorrente no mês.</div>
-                    <div id="recurringChartBars" class="insight-bars"></div>
+                    <div id="recurringChartBars" class="insight-bars" hidden></div>
                 </div>
 
                 <div class="recent-transactions dashboard-widget" data-widget-key="recent">
                     <div class="section-header">
-                        <h3>Transações Recentes</h3>
+                        <h3>Transactions</h3>
                         <a href="/transactions" class="view-all">Ver todas</a>
                     </div>
                     <div class="table-container">
@@ -221,8 +293,33 @@
             </div>
         </div>
     </main>
+    </div>
 
     <script src="script.js"></script>
+    <div class="horizon-modal" id="horizonModal" aria-hidden="true">
+        <div class="horizon-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="horizonModalTitle">
+            <div class="horizon-modal-header">
+                <div>
+                    <h2 id="horizonModalTitle">Horizon</h2>
+                    <p>Seu agente de inteligência financeira para conta, metas e mercado, incluindo bolsa.</p>
+                </div>
+                <button class="horizon-close" id="horizonCloseBtn" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="horizon-chat" id="horizonChat">
+                <div class="horizon-message horizon-message--agent">
+                    <strong>Horizon</strong>
+                    <p>Olá! Posso analisar sua conta atual, sugerir ajustes e explicar movimentos do mercado.</p>
+                </div>
+            </div>
+            <form class="horizon-input" id="horizonForm">
+                <input id="horizonInput" type="text" placeholder="Pergunte sobre sua conta, renda fixa, bolsa ou estratégia..." autocomplete="off">
+                <button type="submit">Enviar</button>
+            </form>
+            <p class="horizon-disclaimer">Conteúdo educativo. Para decisões reais, consulte um profissional certificado.</p>
+        </div>
+    </div>
 </body>
 
 </html>

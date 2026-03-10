@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const pfLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
             .find((item) => (item.getAttribute('href') || '') === '/transactions');
-        if (pfLink) {
+        if (pfLink && !pfLink.dataset.keepLabel) {
             pfLink.innerHTML = '<i class="fa-solid fa-user"></i> PF';
         }
 
@@ -910,13 +910,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     .reduce((sum, t) => sum + toSafeNumber(t.value), 0);
 
                 // Atualizar os Cards
-                const amountElements = document.querySelectorAll('.summary-card .amount');
-                if (amountElements.length >= 3) {
-                    amountElements[0].textContent = formatMoney(currentBalance);
-                    amountElements[1].textContent = formatMoney(totalIncomes);
-                    amountElements[2].textContent = formatMoney(totalExpenses);
-                    if (amountElements[3]) amountElements[3].textContent = formatMoney(investedTotal);
+                const summaryValues = {
+                    balance: formatMoney(currentBalance),
+                    income: formatMoney(totalIncomes),
+                    expense: formatMoney(totalExpenses),
+                    investment: formatMoney(investedTotal)
+                };
+
+                document.querySelectorAll('.summary-card[data-summary-key]').forEach((card) => {
+                    const key = card.dataset.summaryKey;
+                    const amountEl = card.querySelector('.amount');
+                    if (amountEl && summaryValues[key]) {
+                        amountEl.textContent = summaryValues[key];
+                    }
+                });
+
+                const horizonBalance = document.getElementById('horizonBalance');
+                const horizonCashflow = document.getElementById('horizonCashflow');
+                const horizonTip = document.getElementById('horizonTip');
+                if (horizonBalance) horizonBalance.textContent = `Saldo: ${formatMoney(currentBalance)}`;
+
+                const flowValue = totalIncomes - totalExpenses;
+                if (horizonCashflow) horizonCashflow.textContent = `Fluxo: ${formatMoney(flowValue)}`;
+
+                if (horizonTip) {
+                    const delta = Math.abs(flowValue);
+                    if (flowValue < 0) {
+                        horizonTip.textContent = `A saída está ${formatMoney(delta)} acima da entrada. Que tal revisar despesas recorrentes?`;
+                    } else if (flowValue > 0) {
+                        horizonTip.textContent = `A entrada está ${formatMoney(delta)} acima da saída. Considere reforçar sua reserva.`;
+                    } else {
+                        horizonTip.textContent = 'Entrada e saída estão equilibradas no período.';
+                    }
                 }
+
+                window.horizonContext = {
+                    balance: formatMoney(currentBalance),
+                    income: formatMoney(totalIncomes),
+                    expense: formatMoney(totalExpenses),
+                    investment: formatMoney(investedTotal),
+                    cashflow: formatMoney(flowValue),
+                    balanceValue: currentBalance,
+                    incomeValue: totalIncomes,
+                    expenseValue: totalExpenses,
+                    investmentValue: investedTotal,
+                    cashflowValue: flowValue,
+                    monthLabel: currentMonthLabel,
+                    transactionsCount: transactions.length,
+                    topCategories: categoryChartData
+                };
 
                 const categoryPeriod = document.getElementById('categoryChartPeriod');
                 const subcategoryPeriod = document.getElementById('subcategoryChartPeriod');
@@ -1146,6 +1188,234 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Erro ao sincronizar tema com o servidor:', err);
                 }
             }
+        });
+    }
+
+    // --- HORIZON AGENT ---
+    const horizonOpenBtn = document.getElementById('horizonOpenBtn');
+    const horizonVoiceBtn = document.getElementById('horizonVoiceBtn');
+    const horizonModal = document.getElementById('horizonModal');
+    const horizonCloseBtn = document.getElementById('horizonCloseBtn');
+    const horizonChat = document.getElementById('horizonChat');
+    const horizonForm = document.getElementById('horizonForm');
+    const horizonInput = document.getElementById('horizonInput');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const voiceRecognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+    if (voiceRecognition) {
+        voiceRecognition.lang = 'pt-BR';
+        voiceRecognition.interimResults = false;
+        voiceRecognition.maxAlternatives = 1;
+    }
+
+    const openHorizonModal = () => {
+        if (!horizonModal) return;
+        horizonModal.classList.add('open');
+        horizonModal.setAttribute('aria-hidden', 'false');
+
+        if (horizonChat && window.horizonContext) {
+            const { balance, income, expense, investment, cashflow, monthLabel } = window.horizonContext;
+            let summary = horizonChat.querySelector('[data-horizon-summary="true"]');
+            if (!summary) {
+                summary = document.createElement('div');
+                summary.className = 'horizon-message horizon-message--agent';
+                summary.dataset.horizonSummary = 'true';
+                horizonChat.appendChild(summary);
+            }
+            summary.innerHTML = `
+                <strong>Horizon</strong>
+                <p>${monthLabel}: saldo ${balance}, entrada ${income}, saída ${expense}, investimentos ${investment} e fluxo ${cashflow}.</p>
+            `;
+            horizonChat.scrollTop = horizonChat.scrollHeight;
+        }
+
+        if (horizonInput) horizonInput.focus();
+    };
+
+    const closeHorizonModal = () => {
+        if (!horizonModal) return;
+        horizonModal.classList.remove('open');
+        horizonModal.setAttribute('aria-hidden', 'true');
+    };
+
+    if (horizonOpenBtn) {
+        horizonOpenBtn.addEventListener('click', openHorizonModal);
+    }
+
+    if (horizonVoiceBtn) {
+        horizonVoiceBtn.addEventListener('click', () => {
+            if (!voiceRecognition) {
+                const fallback = document.createElement('div');
+                fallback.className = 'horizon-message horizon-message--agent';
+                fallback.innerHTML = '<strong>Horizon</strong><p>Seu navegador não suporta entrada por voz.</p>';
+                horizonChat?.appendChild(fallback);
+                return;
+            }
+
+            openHorizonModal();
+            horizonVoiceBtn.classList.add('is-listening');
+            horizonVoiceBtn.textContent = 'Ouvindo...';
+            voiceRecognition.start();
+        });
+
+        if (voiceRecognition) {
+            voiceRecognition.addEventListener('result', (event) => {
+                const transcript = event.results?.[0]?.[0]?.transcript || '';
+                if (horizonInput) {
+                    horizonInput.value = transcript;
+                    horizonInput.focus();
+                }
+            });
+
+            const resetVoiceButton = () => {
+                if (!horizonVoiceBtn) return;
+                horizonVoiceBtn.classList.remove('is-listening');
+                horizonVoiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Falar';
+            };
+
+            voiceRecognition.addEventListener('end', resetVoiceButton);
+            voiceRecognition.addEventListener('error', resetVoiceButton);
+        }
+    }
+
+    document.addEventListener('click', (event) => {
+        if (event.target.closest('[data-horizon-open="true"]')) {
+            openHorizonModal();
+        }
+    });
+
+    if (horizonCloseBtn) {
+        horizonCloseBtn.addEventListener('click', closeHorizonModal);
+    }
+
+    if (horizonModal) {
+        horizonModal.addEventListener('click', (event) => {
+            if (event.target === horizonModal) {
+                closeHorizonModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && horizonModal?.classList.contains('open')) {
+            closeHorizonModal();
+        }
+    });
+
+    const formatBRL = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+        .format(Number.isFinite(value) ? value : 0);
+
+    const getHorizonResponse = (question) => {
+        const q = question.toLowerCase();
+        const ctx = window.horizonContext || {};
+        const cashflow = Number(ctx.cashflowValue || 0);
+        const income = Number(ctx.incomeValue || 0);
+        const expense = Number(ctx.expenseValue || 0);
+        const investment = Number(ctx.investmentValue || 0);
+        const balance = Number(ctx.balanceValue || 0);
+        const monthLabel = ctx.monthLabel || 'Período atual';
+        const topCategory = Array.isArray(ctx.topCategories) && ctx.topCategories[0]
+            ? ctx.topCategories[0]
+            : null;
+
+        const hasData = income !== 0 || expense !== 0 || investment !== 0 || (ctx.transactionsCount || 0) > 0;
+        const sections = [];
+
+        if (!hasData) {
+            sections.push({ title: 'Diagnóstico', text: 'Ainda não tenho dados suficientes para analisar sua conta.' });
+            sections.push({ title: 'O que está indo bem', text: 'Você já abriu o painel — isso é o primeiro passo certo.' });
+            sections.push({ title: 'Pontos de atenção', text: 'Sem entradas e saídas registradas, não consigo medir seu fluxo.' });
+            sections.push({ title: 'O que fazer agora', text: 'Registre pelo menos 10 transações recentes para termos um diagnóstico real.' });
+            sections.push({ title: 'Próximo passo recomendado', text: 'Me diga sua renda média mensal e seus custos fixos para eu montar um plano.' });
+        } else {
+            const diagnosticParts = [
+                `${monthLabel}: entrada ${formatBRL(income)}, saída ${formatBRL(expense)}, investimentos ${formatBRL(investment)} e fluxo ${formatBRL(cashflow)}.`,
+                `Saldo em conta: ${formatBRL(balance)}.`
+            ];
+            if (topCategory) {
+                diagnosticParts.push(`Maior categoria de gasto: ${topCategory.label} (${formatBRL(topCategory.total)}).`);
+            }
+            sections.push({ title: 'Diagnóstico', text: diagnosticParts.join(' ') });
+
+            const positives = [];
+            if (income > 0) positives.push('Há entrada registrada, o que permite planejar com mais clareza.');
+            if (cashflow > 0) positives.push('Seu fluxo está positivo, indicando margem financeira.');
+            if (investment > 0) positives.push('Você já está investindo, sinal de disciplina.');
+            if (!positives.length) positives.push('Você está no início da organização financeira, o que é positivo.');
+            sections.push({ title: 'O que está indo bem', text: positives.join(' ') });
+
+            const alerts = [];
+            if (cashflow < 0) alerts.push(`A saída supera a entrada em ${formatBRL(Math.abs(cashflow))}.`);
+            if (balance < 0) alerts.push(`Saldo em conta negativo (${formatBRL(balance)}).`);
+            if (expense > income && income > 0) alerts.push('O padrão de gastos está acima da capacidade de entrada.');
+            if (topCategory && expense > 0 && topCategory.total / expense > 0.5) {
+                alerts.push(`Alta concentração de gastos em ${topCategory.label}.`);
+            }
+            if (!alerts.length) alerts.push('Nenhum desequilíbrio crítico identificado neste período.');
+            sections.push({ title: 'Pontos de atenção', text: alerts.join(' ') });
+
+            const actions = [];
+            if (cashflow < 0) {
+                actions.push('Revise gastos recorrentes e defina um teto por categoria.');
+                actions.push('Negocie contas fixas com maior peso no mês.');
+            } else {
+                actions.push('Separe uma parte do fluxo positivo para reserva de emergência.');
+                actions.push('Automatize aportes mensais para manter consistência.');
+            }
+            if (topCategory) {
+                actions.push(`Crie um limite específico para ${topCategory.label} já no próximo mês.`);
+            }
+            sections.push({ title: 'O que fazer agora', text: actions.slice(0, 3).join(' ') });
+
+            const isBusiness = q.includes('cnpj') || q.includes('empresa') || q.includes('negócio') || q.includes('mei');
+            if (q.includes('bolsa') || q.includes('ação') || q.includes('acoes')) {
+                sections.push({
+                    title: 'Próximo passo recomendado',
+                    text: cashflow <= 0
+                        ? 'Antes de bolsa, estabilize o fluxo e construa reserva. Depois, definimos perfil, prazo e percentual de alocação.'
+                        : 'Defina seu perfil e prazo. Comece com uma parcela pequena e diversificada, sem comprometer caixa.'
+                });
+            } else if (q.includes('renda fixa') || q.includes('tesouro')) {
+                sections.push({
+                    title: 'Próximo passo recomendado',
+                    text: 'Para liquidez, priorize Tesouro Selic. Para metas, avalie CDB/LCI/LCA conforme prazo e imposto.'
+                });
+            } else if (isBusiness) {
+                sections.push({
+                    title: 'Próximo passo recomendado',
+                    text: 'Mapeie capital de giro, custos fixos e sazonalidade. Separar caixa do sócio é prioridade.'
+                });
+            } else {
+                sections.push({
+                    title: 'Próximo passo recomendado',
+                    text: 'Me diga sua renda mensal, custos fixos e objetivo principal para montar um plano de 30 dias.'
+                });
+            }
+        }
+
+        return sections
+            .map((section) => `<span class="horizon-section-title">${section.title}:</span> ${section.text}`)
+            .join('<br>');
+    };
+
+    if (horizonForm && horizonInput && horizonChat) {
+        horizonForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const text = horizonInput.value.trim();
+            if (!text) return;
+
+            const userMessage = document.createElement('div');
+            userMessage.className = 'horizon-message horizon-message--user';
+            userMessage.innerHTML = `<strong>Você</strong><p>${text}</p>`;
+            horizonChat.appendChild(userMessage);
+
+            const agentMessage = document.createElement('div');
+            agentMessage.className = 'horizon-message horizon-message--agent';
+            agentMessage.innerHTML = `<strong>Horizon</strong><p>${getHorizonResponse(text)}</p>`;
+            horizonChat.appendChild(agentMessage);
+
+            horizonChat.scrollTop = horizonChat.scrollHeight;
+            horizonInput.value = '';
         });
     }
 

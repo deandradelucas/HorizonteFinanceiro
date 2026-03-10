@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PF - Horizonte Financeiro</title>
+    <title>Transactions - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="transactions-final.css?v=20260310-01">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .pf-panel{display:grid;gap:24px}
@@ -22,28 +23,32 @@
         @media (max-width:900px){.pf-summary{grid-template-columns:1fr}.pf-actions{width:100%}.pf-actions a{flex:1 1 100%}}
     </style>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body transactions-body">
     <script>
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
+    <div class="dashboard-shell">
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
-            <h2>Horizonte Financeiro</h2>
+        <div class="sidebar-profile">
+            <div class="profile-avatar">GM</div>
+            <div class="profile-info">
+                <strong>Gadiel Machado</strong>
+                <span>Designer</span>
+            </div>
         </div>
         <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-            <a href="/cnpj" class="nav-item"><i class="fa-solid fa-building"></i> CNPJ</a>
-            <a href="/transactions" class="nav-item active"><i class="fa-solid fa-user"></i> PF</a>
-            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
-            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Wallet</a>
+            <a href="/transactions" class="nav-item active" data-keep-label="true"><i class="fa-solid fa-receipt"></i> Transactions</a>
+            <a href="/history" class="nav-item"><i class="fa-solid fa-chart-line"></i> Revenue analytics</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Setting</a>
+            <a href="/settings" class="nav-item"><i class="fa-regular fa-circle-question"></i> Help</a>
+            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
         </div>
     </aside>
     <main class="main-content">
@@ -51,17 +56,21 @@
             <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="pfSearchInput" type="text" placeholder="Filtrar lançamentos PF...">
+                <input id="pfSearchInput" type="text" placeholder="Search transactions">
             </div>
-            <div class="user-profile" style="display:flex;align-items:center;">
-                <span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+            <div class="topbar-actions">
+                <button class="icon-btn" type="button" aria-label="Messages">
+                    <i class="fa-regular fa-comment-dots"></i>
+                </button>
+                <button class="icon-btn" type="button" aria-label="Notifications">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
             </div>
         </header>
         <div class="dashboard-content pf-panel">
             <div class="page-header">
                 <div>
-                    <h1>Pessoa Física</h1>
+                    <h1>Transactions</h1>
                     <p class="subtitle">Centralize os lançamentos da sua rotina pessoal sem misturar com o financeiro do CNPJ.</p>
                 </div>
                 <div class="page-header-actions">
@@ -109,6 +118,7 @@
             </div>
         </div>
     </main>
+    </div>
     <script src="script.js"></script>
     <script>
         const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(value || 0));

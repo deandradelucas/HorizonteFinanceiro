@@ -1,0 +1,258 @@
+html body.transactions-body {
+    font-family: "Manrope", Inter, sans-serif !important;
+    background: #8ea7de !important;
+    padding: 24px !important;
+}
+
+html body.transactions-body .dashboard-shell {
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    background: #f8faff !important;
+    border-radius: 36px !important;
+    display: flex !important;
+    overflow: hidden !important;
+    min-height: calc(100vh - 48px) !important;
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.15) !important;
+}
+
+html body.transactions-body .sidebar {
+    position: relative !important;
+    width: 240px !important;
+    height: auto !important;
+    background: #f1f4f9 !important;
+    border-right: 1px solid rgba(15, 23, 42, 0.06) !important;
+    padding: 24px 18px !important;
+    box-shadow: none !important;
+}
+
+html body.transactions-body .sidebar-profile {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 26px !important;
+}
+
+html body.transactions-body .profile-avatar {
+    width: 76px !important;
+    height: 76px !important;
+    border-radius: 50% !important;
+    background: #dce6f6 !important;
+    display: grid !important;
+    place-items: center !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+}
+
+html body.transactions-body .profile-info {
+    text-align: center !important;
+}
+
+html body.transactions-body .profile-info strong {
+    display: block !important;
+    color: #0f172a !important;
+    font-size: 15px !important;
+}
+
+html body.transactions-body .profile-info span {
+    color: #94a3b8 !important;
+    font-size: 13px !important;
+}
+
+html body.transactions-body .sidebar-nav {
+    padding: 0 !important;
+    gap: 8px !important;
+}
+
+html body.transactions-body .nav-item {
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+}
+
+html body.transactions-body .nav-item.active {
+    background: #dbe7ff !important;
+    color: #1f2937 !important;
+    box-shadow: none !important;
+}
+
+html body.transactions-body .sidebar-footer {
+    margin-top: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding-top: 20px !important;
+}
+
+html body.transactions-body .main-content {
+    margin-left: 0 !important;
+    padding: 28px 30px 34px !important;
+    background: #ffffff !important;
+}
+
+html body.transactions-body .topbar {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 14px !important;
+    grid-template-columns: auto 1fr auto !important;
+}
+
+html body.transactions-body .search-bar {
+    max-width: 360px !important;
+    background: #f1f4f9 !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    border-radius: 999px !important;
+    padding: 6px 14px !important;
+}
+
+html body.transactions-body .search-bar i {
+    color: #64748b !important;
+}
+
+html body.transactions-body .search-bar input {
+    color: #475569 !important;
+}
+
+html body.transactions-body .topbar-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    justify-content: flex-end !important;
+}
+
+html body.transactions-body .icon-btn {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    background: #f1f4f9 !important;
+    color: #1f2937 !important;
+    display: grid !important;
+    place-items: center !important;
+}
+
+html body.transactions-body .page-header {
+    align-items: center !important;
+    margin: 6px 0 16px !important;
+}
+
+html body.transactions-body .page-header h1 {
+    color: #1f2937 !important;
+    font-size: 26px !important;
+}
+
+html body.transactions-body .subtitle {
+    color: #94a3b8 !important;
+}
+
+html body.transactions-body .pf-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+html body.transactions-body .pf-stat {
+    background: #f4f7fc !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+html body.transactions-body .recent-transactions {
+    background: #f4f7fc !important;
+    border-radius: 24px !important;
+    padding: 18px !important;
+    border: none !important;
+}
+
+html body.transactions-body .recent-transactions .table-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+html body.transactions-body .recent-transactions .data-table thead th {
+    color: #94a3b8 !important;
+    text-transform: uppercase !important;
+    font-size: 11px !important;
+    letter-spacing: 0.08em !important;
+}
+
+html body.transactions-body .recent-transactions .data-table tbody tr {
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+html body.transactions-body .recent-transactions .item-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 12px !important;
+    display: grid !important;
+    place-items: center !important;
+    background: #eef2ff !important;
+    color: #1f2937 !important;
+}
+
+html body.transactions-body .recent-transactions .desc-text {
+    color: #1f2937 !important;
+}
+
+html body.transactions-body .recent-transactions .item-meta small {
+    color: #94a3b8 !important;
+}
+
+html body.transactions-body .context-switcher {
+    background: #f1f4f9 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+html body.transactions-body .context-switch-link {
+    color: #64748b !important;
+}
+
+html body.transactions-body .context-switch-link.active {
+    background: #dbe7ff !important;
+    color: #1f2937 !important;
+}
+
+@media (max-width: 1100px) {
+    html body.transactions-body .dashboard-shell {
+        flex-direction: column !important;
+    }
+
+    html body.transactions-body .sidebar {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 16px !important;
+    }
+
+    html body.transactions-body .sidebar-nav {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+    }
+
+    html body.transactions-body .sidebar-footer {
+        flex-direction: row !important;
+    }
+}
+
+@media (max-width: 900px) {
+    html body.transactions-body .pf-summary {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 720px) {
+    html body.transactions-body {
+        padding: 10px !important;
+    }
+
+    html body.transactions-body .search-bar {
+        max-width: 100% !important;
+    }
+}
