@@ -1,10 +1,10 @@
-// ============================================================
+﻿// ============================================================
 // LEGEND: Este script pertence ao "Horizonte Financeiro"
 // LEGEND (PT): Service Worker para funcionalidade PWA (Progressive Web App).
 //   - Cacheia assets estaticos para uso offline
 //   - Intercepta requisicoes fetch para servir do cache
 // ============================================================
-const CACHE_NAME = 'horizonte-v5.5';
+const CACHE_NAME = 'horizonte-v5.6';
 const ASSETS = [
   '/login.html',
   '/index.html',
@@ -53,3 +53,4 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((response) => response || fetch(event.request))
   );
 });
+

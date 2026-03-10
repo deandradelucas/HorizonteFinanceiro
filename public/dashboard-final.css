@@ -1,12 +1,11 @@
-html body.dashboard-body {
+﻿html body.dashboard-body {
     display: block !important;
-    min-height: 100% !important;
+    min-height: 100vh !important;
     margin: 0 !important;
-    justify-content: flex-start !important;
-    align-items: stretch !important;
     background:
-        radial-gradient(circle at 18% 16%, rgba(34, 197, 94, 0.07), transparent 18%),
-        linear-gradient(180deg, #030507 0%, #020406 56%, #000000 100%) !important;
+        radial-gradient(circle at 18% 10%, rgba(30, 255, 161, 0.07), transparent 16%),
+        radial-gradient(circle at 82% 14%, rgba(59, 130, 246, 0.08), transparent 18%),
+        linear-gradient(180deg, #020305 0%, #04060a 46%, #000000 100%) !important;
     background-attachment: fixed !important;
 }
 
@@ -15,8 +14,8 @@ html body.dashboard-body::before {
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(circle at 78% 18%, rgba(59, 130, 246, 0.08), transparent 22%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+        linear-gradient(90deg, rgba(16, 185, 129, 0.06), transparent 14%, transparent 86%, rgba(37, 99, 235, 0.07)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0));
     pointer-events: none;
     z-index: 0;
 }
@@ -26,7 +25,7 @@ html body.dashboard-body .sidebar {
     inset: 0 auto 0 0 !important;
     width: 280px !important;
     height: 100vh !important;
-    background: rgba(0, 0, 0, 0.82) !important;
+    background: rgba(0, 0, 0, 0.86) !important;
     backdrop-filter: blur(22px) !important;
     -webkit-backdrop-filter: blur(22px) !important;
     border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -40,25 +39,25 @@ html body.dashboard-body .sidebar-footer {
 }
 
 html body.dashboard-body .sidebar-header {
-    padding: 24px 22px 18px !important;
+    padding: 24px 20px 18px !important;
 }
 
 html body.dashboard-body .sidebar-header h2 {
+    color: #ffffff !important;
     font-family: "Manrope", Inter, sans-serif !important;
     font-size: 18px !important;
-    line-height: 1.15 !important;
-    color: #ffffff !important;
+    line-height: 1.1 !important;
 }
 
 html body.dashboard-body .sidebar-nav {
-    padding: 14px 12px !important;
+    padding: 12px !important;
     gap: 6px !important;
 }
 
 html body.dashboard-body .nav-item {
     min-height: 46px !important;
     border-radius: 16px !important;
-    color: rgba(255, 255, 255, 0.74) !important;
+    color: rgba(255, 255, 255, 0.72) !important;
     border-left: none !important;
     font-weight: 600 !important;
 }
@@ -73,52 +72,71 @@ html body.dashboard-body .nav-item.active {
 html body.dashboard-body .main-content {
     position: relative !important;
     z-index: 1 !important;
-    display: block !important;
     margin-left: 280px !important;
     min-height: 100vh !important;
-    padding: 18px 18px 32px !important;
+    padding: 18px 18px 28px !important;
 }
 
 html body.dashboard-body .topbar {
     position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 16px !important;
+    min-height: 74px !important;
+    margin: 0 0 18px !important;
+    padding: 14px 18px !important;
+    border-radius: 26px !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    box-shadow: 0 20px 36px rgba(0, 0, 0, 0.16) !important;
     top: auto !important;
     left: auto !important;
     right: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    min-height: 78px !important;
-    margin: 0 0 18px !important;
-    padding: 14px 18px !important;
-    border-radius: 28px !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(18px) !important;
-    -webkit-backdrop-filter: blur(18px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.16) !important;
     overflow: visible !important;
+}
+
+html body.dashboard-body .mobile-menu-btn {
+    display: none !important;
 }
 
 html body.dashboard-body .search-bar {
     width: min(520px, 100%) !important;
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 18px !important;
+    box-shadow: none !important;
 }
 
 html body.dashboard-body .search-bar input,
 html body.dashboard-body .search-bar i,
 html body.dashboard-body .date-display,
 html body.dashboard-body .subtitle,
-html body.dashboard-body .view-all,
-html body.dashboard-body .hero-link,
 html body.dashboard-body .insight-caption,
 html body.dashboard-body .card-meta,
-html body.dashboard-body .motivation-phrase {
-    color: rgba(226, 232, 240, 0.74) !important;
+html body.dashboard-body .motivation-phrase,
+html body.dashboard-body .view-all {
+    color: rgba(226, 232, 240, 0.76) !important;
+}
+
+html body.dashboard-body .user-profile {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+}
+
+html body.dashboard-body .date-display {
+    font-size: 14px !important;
+    font-weight: 600 !important;
 }
 
 html body.dashboard-body .notification-btn {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: #ffffff !important;
@@ -129,6 +147,26 @@ html body.dashboard-body .dashboard-content {
     max-width: 1280px !important;
     margin: 0 auto !important;
     padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+}
+
+html body.dashboard-body .dashboard-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+}
+
+html body.dashboard-body .dashboard-actions-mobile {
+    display: flex !important;
+    justify-content: flex-start !important;
+    margin: 0 !important;
+}
+
+html body.dashboard-body .dashboard-layout-trigger {
+    width: auto !important;
 }
 
 html body.dashboard-body .dashboard-hero,
@@ -138,39 +176,78 @@ html body.dashboard-body .recent-transactions,
 html body.dashboard-body .main-goal-container,
 html body.dashboard-body .dashboard-layout-editor {
     background: rgba(255, 255, 255, 0.09) !important;
-    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 28px !important;
     backdrop-filter: blur(18px) !important;
     -webkit-backdrop-filter: blur(18px) !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 20px 38px rgba(0, 0, 0, 0.14) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 36px rgba(0, 0, 0, 0.16) !important;
 }
 
 html body.dashboard-body .dashboard-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.2fr) auto !important;
+    align-items: end !important;
+    gap: 22px !important;
     padding: 28px !important;
-    margin-bottom: 16px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.06)),
+        radial-gradient(circle at top right, rgba(20, 201, 123, 0.08), transparent 26%) !important;
+}
+
+html body.dashboard-body .dashboard-hero-copy {
+    min-width: 0 !important;
+}
+
+html body.dashboard-body .dashboard-hero-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 10px !important;
 }
 
 html body.dashboard-body .dashboard-hero-head h1,
 html body.dashboard-body .section-header h3,
 html body.dashboard-body .summary-card h3,
 html body.dashboard-body .goal-main-title {
-    font-family: "Manrope", Inter, sans-serif !important;
+    margin: 0 !important;
     color: #ffffff !important;
+    font-family: "Manrope", Inter, sans-serif !important;
     letter-spacing: -0.04em !important;
 }
 
 html body.dashboard-body .dashboard-hero-head h1 {
-    font-size: clamp(32px, 4vw, 42px) !important;
+    font-size: clamp(34px, 4vw, 46px) !important;
+    line-height: 0.95 !important;
 }
 
-html body.dashboard-body .hero-link,
 html body.dashboard-body .dashboard-status-pill,
-html body.dashboard-body .card-kicker {
+html body.dashboard-body .hero-link,
+html body.dashboard-body .card-kicker,
+html body.dashboard-body .goal-label {
+    display: inline-flex !important;
+    align-items: center !important;
+    min-height: 34px !important;
+    padding: 0 12px !important;
+    border-radius: 999px !important;
     background: rgba(255, 255, 255, 0.06) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    color: rgba(255, 255, 255, 0.72) !important;
+    color: rgba(255, 255, 255, 0.74) !important;
+}
+
+html body.dashboard-body .dashboard-hero-links,
+html body.dashboard-body .dashboard-hero-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    margin-top: 18px !important;
+}
+
+html body.dashboard-body .dashboard-hero-actions {
+    justify-content: flex-end !important;
 }
 
 html body.dashboard-body .btn-primary,
@@ -185,23 +262,73 @@ html body.dashboard-body .btn-secondary {
     color: #ffffff !important;
 }
 
-html body.dashboard-body .summary-cards {
+html body.dashboard-body .dashboard-layout {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
     gap: 18px !important;
+    align-items: start !important;
+}
+
+html body.dashboard-body .dashboard-widget[data-widget-key="goal"],
+html body.dashboard-body .dashboard-widget[data-widget-key="summary"],
+html body.dashboard-body .dashboard-widget[data-widget-key="recent"] {
+    grid-column: 1 / -1 !important;
+}
+
+html body.dashboard-body .dashboard-widget[data-widget-key="category-chart"],
+html body.dashboard-body .dashboard-widget[data-widget-key="subcategory-chart"] {
+    grid-column: span 6 !important;
+}
+
+html body.dashboard-body .summary-cards {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    margin: 0 !important;
 }
 
 html body.dashboard-body .summary-card {
-    min-height: 176px !important;
+    min-height: 184px !important;
+    padding: 22px !important;
+    display: flex !important;
+    gap: 16px !important;
+    align-items: flex-start !important;
+}
+
+html body.dashboard-body .card-icon {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
+}
+
+html body.dashboard-body .summary-card .amount {
+    margin: 12px 0 10px !important;
+    font-size: clamp(30px, 3vw, 36px) !important;
+    line-height: 0.95 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.05em !important;
+    font-family: "Manrope", Inter, sans-serif !important;
+}
+
+html body.dashboard-body .insight-card,
+html body.dashboard-body .recent-transactions,
+html body.dashboard-body .main-goal-container,
+html body.dashboard-body .dashboard-layout-editor {
     padding: 24px !important;
 }
 
-html body.dashboard-body .summary-card .amount,
-html body.dashboard-body .progress-stats .values,
-html body.dashboard-body .progress-stats .percentage {
-    color: #ffffff !important;
+html body.dashboard-body .section-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 18px !important;
 }
 
-html body.dashboard-body .mario-hero-art {
-    display: none !important;
+html body.dashboard-body .insight-bars {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
 }
 
 html body.dashboard-body .insight-bar-item,
@@ -212,8 +339,9 @@ html body.dashboard-body .recent-transactions .table-container {
     box-shadow: none !important;
 }
 
-html body.dashboard-body .recent-transactions .data-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.03) !important;
+html body.dashboard-body .recent-transactions .table-container {
+    border-radius: 20px !important;
+    overflow: hidden !important;
 }
 
 html body.dashboard-body .recent-transactions .data-table thead th {
@@ -225,69 +353,98 @@ html body.dashboard-body .recent-transactions .data-table thead th {
     padding: 14px 16px !important;
 }
 
-html body.dashboard-body .recent-transactions .data-table thead th:first-child {
-    width: 72% !important;
-    text-align: left !important;
-}
-
-html body.dashboard-body .recent-transactions .data-table thead th:last-child {
-    width: 28% !important;
-    text-align: right !important;
-}
-
 html body.dashboard-body .recent-transactions .data-table tbody td {
     padding: 16px !important;
-    vertical-align: middle !important;
-}
-
-html body.dashboard-body .recent-transactions .item-desc {
-    gap: 14px !important;
-    align-items: center !important;
 }
 
 html body.dashboard-body .recent-transactions .desc-text {
-    display: block !important;
-    max-width: 100% !important;
     color: #ffffff !important;
     font-size: 15px !important;
     font-weight: 700 !important;
-    line-height: 1.35 !important;
-    letter-spacing: -0.02em !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
 }
 
-html body.dashboard-body .recent-transactions .item-meta {
-    margin-top: 6px !important;
-    gap: 8px !important;
+html body.dashboard-body .goal-info-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
 }
 
-html body.dashboard-body .recent-transactions .item-meta small {
-    color: rgba(255, 255, 255, 0.56) !important;
-    font-size: 12px !important;
+html body.dashboard-body .goal-main-title {
+    font-size: clamp(32px, 4vw, 44px) !important;
+    line-height: 0.96 !important;
+}
+
+html body.dashboard-body .goal-progress-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+}
+
+html body.dashboard-body .progress-bar-container {
+    height: 14px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+html body.dashboard-body .progress-bar-fill {
+    background: linear-gradient(90deg, #34d399 0%, #10b981 100%) !important;
+}
+
+html body.dashboard-body .progress-stats {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+}
+
+html body.dashboard-body .milestone-track {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+}
+
+@media (max-width: 1080px) {
+    html body.dashboard-body .dashboard-hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-actions {
+        justify-content: flex-start !important;
+    }
+
+    html body.dashboard-body .summary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    html body.dashboard-body .dashboard-widget[data-widget-key="category-chart"],
+    html body.dashboard-body .dashboard-widget[data-widget-key="subcategory-chart"] {
+        grid-column: 1 / -1 !important;
+    }
 }
 
 @media (max-width: 900px) {
+    html body.dashboard-body .sidebar {
+        transform: translateX(-100%) !important;
+        transition: transform 0.3s ease !important;
+    }
+
+    html body.dashboard-body .sidebar.active {
+        transform: translateX(0) !important;
+    }
+
     html body.dashboard-body .main-content {
         margin-left: 0 !important;
         padding: 12px !important;
     }
 
-    html body.dashboard-body .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease !important;
-    }
-
-    html body.dashboard-body .sidebar.active {
-        transform: translateX(0);
-    }
-
     html body.dashboard-body .topbar {
-        padding: 14px 16px !important;
-        margin-bottom: 14px !important;
+        grid-template-columns: auto minmax(0, 1fr) auto !important;
+        padding: 12px 14px !important;
         border-radius: 22px !important;
-        gap: 12px !important;
+    }
+
+    html body.dashboard-body .mobile-menu-btn {
+        display: inline-flex !important;
     }
 
     html body.dashboard-body .search-bar {
@@ -295,58 +452,61 @@ html body.dashboard-body .recent-transactions .item-meta small {
         min-width: 0 !important;
     }
 
-    html body.dashboard-body .user-profile {
-        margin-left: auto !important;
-        gap: 10px !important;
-    }
-
     html body.dashboard-body .dashboard-content {
-        max-width: 100% !important;
+        gap: 14px !important;
     }
 
     html body.dashboard-body .dashboard-hero,
     html body.dashboard-body .summary-card,
     html body.dashboard-body .insight-card,
     html body.dashboard-body .recent-transactions,
-    html body.dashboard-body .main-goal-container {
+    html body.dashboard-body .main-goal-container,
+    html body.dashboard-body .dashboard-layout-editor {
         border-radius: 22px !important;
     }
 
-    html body.dashboard-body .dashboard-hero {
-        padding: 22px !important;
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
+    html body.dashboard-body .dashboard-hero,
+    html body.dashboard-body .insight-card,
+    html body.dashboard-body .recent-transactions,
+    html body.dashboard-body .main-goal-container,
+    html body.dashboard-body .dashboard-layout-editor {
+        padding: 20px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    html body.dashboard-body .topbar {
+        grid-template-columns: auto 1fr auto !important;
+        gap: 10px !important;
+        min-height: 68px !important;
+        border-radius: 18px !important;
     }
 
-    html body.dashboard-body .dashboard-hero-actions,
-    html body.dashboard-body .dashboard-hero-links {
-        width: 100% !important;
-        justify-content: flex-start !important;
+    html body.dashboard-body .date-display {
+        display: none !important;
     }
 
-    html body.dashboard-body .dashboard-hero-actions > *,
-    html body.dashboard-body .dashboard-hero-links > * {
-        flex: 1 1 calc(50% - 8px) !important;
+    html body.dashboard-body .dashboard-hero-head h1 {
+        font-size: 32px !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-links > *,
+    html body.dashboard-body .dashboard-hero-actions > * {
+        flex: 1 1 100% !important;
         justify-content: center !important;
-        min-width: 0 !important;
     }
 
     html body.dashboard-body .summary-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 14px !important;
+        grid-template-columns: 1fr !important;
     }
 
     html body.dashboard-body .summary-card {
-        min-height: 154px !important;
+        min-height: 156px !important;
         padding: 18px !important;
     }
 
-    html body.dashboard-body .dashboard-chart-card,
-    html body.dashboard-body .dashboard-side-card,
-    html body.dashboard-body .recent-transactions,
-    html body.dashboard-body .main-goal-container,
-    html body.dashboard-body .summary-cards {
-        grid-column: 1 / -1 !important;
+    html body.dashboard-body .dashboard-layout {
+        gap: 14px !important;
     }
 
     html body.dashboard-body .recent-transactions .table-container {
@@ -354,59 +514,6 @@ html body.dashboard-body .recent-transactions .item-meta small {
     }
 
     html body.dashboard-body .recent-transactions .data-table {
-        min-width: 560px !important;
-    }
-}
-
-@media (max-width: 640px) {
-    html body.dashboard-body .main-content {
-        padding: 10px !important;
-    }
-
-    html body.dashboard-body .topbar {
-        min-height: 68px !important;
-        padding: 12px 14px !important;
-        border-radius: 18px !important;
-    }
-
-    html body.dashboard-body .dashboard-hero-head h1 {
-        font-size: 30px !important;
-    }
-
-    html body.dashboard-body .dashboard-hero {
-        padding: 18px !important;
-    }
-
-    html body.dashboard-body .dashboard-hero-actions > *,
-    html body.dashboard-body .dashboard-hero-links > * {
-        flex: 1 1 100% !important;
-    }
-
-    html body.dashboard-body .summary-cards {
-        grid-template-columns: 1fr !important;
-    }
-
-    html body.dashboard-body .summary-card {
-        min-height: 142px !important;
-        border-radius: 18px !important;
-    }
-
-    html body.dashboard-body .insight-card,
-    html body.dashboard-body .recent-transactions,
-    html body.dashboard-body .main-goal-container,
-    html body.dashboard-body .dashboard-hero {
-        border-radius: 18px !important;
-    }
-
-    html body.dashboard-body .recent-transactions .data-table {
         min-width: 520px !important;
-    }
-
-    html body.dashboard-body .recent-transactions .desc-text {
-        font-size: 14px !important;
-    }
-
-    html body.dashboard-body .recent-transactions .item-meta small {
-        font-size: 11px !important;
     }
 }
