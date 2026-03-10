@@ -59,7 +59,7 @@ html body.dashboard-body .sidebar-footer {
 }
 
 html body.dashboard-body .sidebar-profile {
-    display: none !important;
+    display: flex !important;
 }
 
 html body.dashboard-body .sidebar-header {
@@ -87,16 +87,22 @@ html body.dashboard-body .nav-item {
     border-left: none !important;
     font-weight: 600 !important;
     transition: background 0.2s ease, color 0.2s ease !important;
-    justify-content: center !important;
-    gap: 0 !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
 }
 
 html body.dashboard-body .nav-item span {
-    display: none !important;
+    display: inline !important;
 }
 
 html body.dashboard-body .nav-item i {
     font-size: 18px !important;
+}
+
+html body.dashboard-body .sidebar-profile .profile-info strong,
+html body.dashboard-body .sidebar-profile .profile-info span,
+html body.dashboard-body .nav-item span {
+    color: rgba(15, 23, 42, 0.95) !important;
 }
 
 html body.dashboard-body .sidebar-footer {
