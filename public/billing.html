@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assinatura - Horizonte Financeiro</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/dashboard-final.css?v=20260310-04">
+    <link rel="stylesheet" href="/app-final.css?v=20260310-01">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -51,36 +53,63 @@
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
     </script>
+    <div class="scenic-wall" aria-hidden="true"></div>
+    <div class="dashboard-shell">
 
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
-            <h2>Horizonte Financeiro</h2>
+        <div class="sidebar-profile">
+            <div class="profile-avatar">GM</div>
+            <div class="profile-info">
+                <strong>Gadiel Machado</strong>
+                <span>Designer</span>
+            </div>
         </div>
         <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="/investments" class="nav-item"><i class="fa-solid fa-wallet"></i> Investimentos</a>
-            <a href="/transactions" class="nav-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transações</a>
-            <a href="/history" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
-            <a href="/goals" class="nav-item"><i class="fa-solid fa-bullseye"></i> Metas</a>
-            <a href="/billing" class="nav-item active"><i class="fa-solid fa-credit-card"></i> Assinatura</a>
-            <a href="/settings" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+            <a href="/dashboard" class="nav-item" title="Dashboard"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a href="/transactions" class="nav-item" title="Transações"><i class="fa-solid fa-receipt"></i><span>Transações</span></a>
+            <a href="/investments" class="nav-item" title="Investimentos"><i class="fa-solid fa-wallet"></i><span>Investimentos</span></a>
+            <a href="/history" class="nav-item" title="Histórico"><i class="fa-solid fa-chart-line"></i><span>Histórico</span></a>
+            <a href="/goals" class="nav-item" title="Metas"><i class="fa-solid fa-bullseye"></i><span>Metas</span></a>
+            <a href="/cnpj" class="nav-item" title="CNPJ"><i class="fa-solid fa-building"></i><span>CNPJ</span></a>
+            <a href="/billing" class="nav-item active" title="Assinatura"><i class="fa-solid fa-credit-card"></i><span>Assinatura</span></a>
+            <a href="/settings" class="nav-item" title="Configurações"><i class="fa-solid fa-gear"></i><span>Configurações</span></a>
         </nav>
         <div class="sidebar-footer">
-            <a href="/login" class="nav-item logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+            <a href="/settings" class="nav-item" title="Ajuda"><i class="fa-regular fa-circle-question"></i><span>Ajuda</span></a>
+            <a href="/login" class="nav-item logout" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></a>
         </div>
     </aside>
 
     <main class="main-content">
         <header class="topbar">
             <button id="mobileMenuBtn" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-            <div class="search-bar">
-                <i class="fa-solid fa-crown"></i>
-                <input type="text" value="Gestão de assinatura mensal" readonly>
+            <div class="horizon-agent" aria-live="polite">
+                <div class="horizon-avatar">H</div>
+                <div class="horizon-content">
+                    <div class="horizon-title">
+                        <strong>Horizon</strong>
+                        <span>Agente de inteligência financeira</span>
+                    </div>
+                    <p id="horizonTip" class="horizon-tip">Acompanhe sua assinatura para manter o acesso premium sempre ativo.</p>
+                    <div class="horizon-meta">
+                        <span id="horizonBalance" class="horizon-pill">Saldo: R$ 0,00</span>
+                        <span id="horizonCashflow" class="horizon-pill">Fluxo: R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="horizon-actions">
+                    <button id="horizonVoiceBtn" class="horizon-cta horizon-cta--ghost" type="button" aria-label="Falar com Horizon">
+                        <i class="fa-solid fa-microphone"></i> Falar
+                    </button>
+                    <button id="horizonOpenBtn" class="horizon-cta" type="button" data-horizon-open="true">Perguntar</button>
+                </div>
             </div>
-            <div class="user-profile" style="display:flex;align-items:center;">
-                <span id="currentDateDisplay" class="date-display" style="margin-right:15px;font-weight:500;color:var(--text-muted);font-size:14px;display:flex;align-items:center;"></span>
-                <button id="darkModeToggle" class="notification-btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+            <div class="topbar-actions">
+                <button class="icon-btn" type="button" aria-label="Messages">
+                    <i class="fa-regular fa-comment-dots"></i>
+                </button>
+                <button class="icon-btn" type="button" aria-label="Notifications">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
             </div>
         </header>
 
@@ -158,6 +187,31 @@
             </section>
         </div>
     </main>
+    </div>
+    <div class="horizon-modal" id="horizonModal" aria-hidden="true">
+        <div class="horizon-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="horizonModalTitle">
+            <div class="horizon-modal-header">
+                <div>
+                    <h2 id="horizonModalTitle">Horizon</h2>
+                    <p>Seu agente de inteligência financeira para conta, metas e mercado, incluindo bolsa.</p>
+                </div>
+                <button class="horizon-close" id="horizonCloseBtn" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="horizon-chat" id="horizonChat">
+                <div class="horizon-message horizon-message--agent">
+                    <strong>Horizon</strong>
+                    <p>Olá! Posso analisar sua conta atual, sugerir ajustes e explicar movimentos do mercado.</p>
+                </div>
+            </div>
+            <form class="horizon-input" id="horizonForm">
+                <input id="horizonInput" type="text" placeholder="Pergunte sobre sua conta, renda fixa, bolsa ou estratégia..." autocomplete="off">
+                <button type="submit">Enviar</button>
+            </form>
+            <p class="horizon-disclaimer">Conteúdo educativo. Para decisões reais, consulte um profissional certificado.</p>
+        </div>
+    </div>
 
     <script src="/script.js"></script>
     <script>
