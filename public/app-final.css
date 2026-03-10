@@ -150,6 +150,7 @@ html body.dashboard-body .entry-form-card {
 html body.dashboard-body .history-filters,
 html body.dashboard-body .month-card,
 html body.dashboard-body .timeline-day,
+html body.dashboard-body .timeline-item,
 html body.dashboard-body .category-card,
 html body.dashboard-body .business-row,
 html body.dashboard-body .billing-payment-item,
@@ -179,6 +180,7 @@ html body.dashboard-body .currency-field input {
 }
 
 html body.dashboard-body .stat-label,
+html body.dashboard-body .input-group label,
 html body.dashboard-body .stat-sub,
 html body.dashboard-body .settings-subtitle,
 html body.dashboard-body .billing-kicker,
@@ -273,6 +275,21 @@ html body.dashboard-body .pf-empty,
 html body.dashboard-body .billing-history-empty,
 html body.dashboard-body .empty-state {
     color: var(--app-muted) !important;
+}
+
+html body.dashboard-body .context-switcher {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid var(--app-border) !important;
+    box-shadow: none !important;
+}
+
+html body.dashboard-body .context-switch-link {
+    color: #64748b !important;
+}
+
+html body.dashboard-body .context-switch-link.active {
+    background: rgba(59, 130, 246, 0.16) !important;
+    color: var(--app-text) !important;
 }
 
 @media (max-width: 900px) {
