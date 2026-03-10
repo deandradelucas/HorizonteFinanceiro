@@ -99,6 +99,12 @@ html body.dashboard-body .nav-item i {
     font-size: 18px !important;
 }
 
+html body.dashboard-body .nav-item[title="PF"],
+html body.dashboard-body .nav-item[title="Pessoa Física"],
+html body.dashboard-body .nav-item span {
+    color: rgba(15, 23, 42, 0.95) !important;
+}
+
 html body.dashboard-body .sidebar-profile .profile-info strong,
 html body.dashboard-body .sidebar-profile .profile-info span,
 html body.dashboard-body .nav-item span {
@@ -350,6 +356,19 @@ html body.dashboard-body .dashboard-layout-editor {
         inset 0 1px 0 rgba(255, 255, 255, 0.08),
         0 16px 32px rgba(0, 0, 0, 0.24) !important;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+html body.dashboard-body.glass-mode .topbar,
+html body.dashboard-body.glass-mode .dashboard-hero,
+html body.dashboard-body.glass-mode .summary-card,
+html body.dashboard-body.glass-mode .insight-card,
+html body.dashboard-body.glass-mode .recent-transactions,
+html body.dashboard-body.glass-mode .main-goal-container,
+html body.dashboard-body.glass-mode .dashboard-layout-editor {
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.32) !important;
+    backdrop-filter: blur(22px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
 }
 
 html body.dashboard-body.glass-mode .topbar,
