@@ -338,8 +338,8 @@
       historyStartDate.value = '';
       historyEndDate.value = '';
       typeSelect.value = 'all';
-      historySearch.value = '';
-      historySearchTop.value = '';
+      if (historySearch) historySearch.value = '';
+      if (historySearchTop) historySearchTop.value = '';
       scopeSelect.value = 'all';
       dayFilter.value = '';
       currentMonth = null;
