@@ -88,6 +88,7 @@ html body.dashboard-body .nav-item {
     color: rgba(255, 255, 255, 0.7) !important;
     border-left: none !important;
     font-weight: 600 !important;
+    text-decoration: none !important;
     transition: background 0.2s ease, color 0.2s ease !important;
     justify-content: flex-start !important;
     gap: 12px !important;
@@ -112,16 +113,9 @@ html body.dashboard-body:not(.dark-mode) .pf-stat span {
     color: #475569 !important;
 }
 
-html body.dashboard-body .nav-item[title="PF"],
-html body.dashboard-body .nav-item[title="Pessoa Física"],
-html body.dashboard-body .nav-item span {
-    color: rgba(15, 23, 42, 0.95) !important;
-}
-
 html body.dashboard-body .sidebar-profile .profile-info strong,
-html body.dashboard-body .sidebar-profile .profile-info span,
-html body.dashboard-body .nav-item span {
-    color: rgba(15, 23, 42, 0.95) !important;
+html body.dashboard-body .sidebar-profile .profile-info span {
+    color: var(--sidebar-text) !important;
 }
 
 html body.dashboard-body .sidebar-footer {
@@ -131,7 +125,7 @@ html body.dashboard-body .sidebar-footer {
 html body.dashboard-body.dark-mode .nav-item:hover,
 html body.dashboard-body.dark-mode .nav-item.active {
     background: rgba(255, 255, 255, 0.06) !important;
-    color: #ffffff !important;
+    color: var(--primary-color) !important;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -149,6 +143,7 @@ html body.dashboard-body .nav-item:hover i {
 html body.dashboard-body .nav-item span {
     font-family: "Manrope", Inter, sans-serif !important;
     font-weight: 600 !important;
+    color: inherit !important;
 }
 
 html body.dashboard-body .main-content {
@@ -159,9 +154,6 @@ html body.dashboard-body .main-content {
     padding: 18px 20px 24px !important;
 }
 
-html body.dashboard-body .nav-item {
-    justify-content: center !important;
-}
 
 html body.dashboard-body .topbar {
     position: relative !important;
