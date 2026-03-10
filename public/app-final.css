@@ -36,6 +36,26 @@ html body.dashboard-body .page-header-actions {
     flex-wrap: wrap;
 }
 
+html body.dashboard-body .page-search {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+html body.dashboard-body .search-bar--inline {
+    max-width: 420px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid var(--app-border) !important;
+    border-radius: 999px !important;
+    padding: 6px 14px !important;
+}
+
+html body.dashboard-body .search-bar--inline input {
+    background: transparent !important;
+    color: var(--app-text) !important;
+}
+
 html body.dashboard-body .app-surface,
 html body.dashboard-body .history-filters,
 html body.dashboard-body .history-card,
