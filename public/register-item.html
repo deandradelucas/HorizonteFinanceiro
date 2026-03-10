@@ -530,8 +530,9 @@
             const submitBtn = document.querySelector('button[type=\"submit\"]');
             const normalizeScope = (value) => value === 'pj' ? 'pj' : 'pf';
             const isPjRoute = window.location.pathname === '/register-item-pj' || window.location.pathname === '/register-item-pj.html';
-            const initialScopeParam = isPjRoute ? 'pj' : normalizeScope(pageParams.get('scope'));
-            const lockedScope = !transactionId && (pageParams.get('locked') === '1' || isPjRoute || !pageParams.get('scope'));
+            const isPfRoute = window.location.pathname === '/register-item-pf' || window.location.pathname === '/register-item-pf.html';
+            const initialScopeParam = isPjRoute ? 'pj' : (isPfRoute ? 'pf' : normalizeScope(pageParams.get('scope')));
+            const lockedScope = !transactionId && (pageParams.get('locked') === '1' || isPjRoute || isPfRoute || !pageParams.get('scope'));
             const normalizeType = (value) => ['expense', 'income', 'investment'].includes(value) ? value : 'expense';
             const parseCurrencyValue = (value) => { const normalized = String(value || '').replace(/\s/g, '').replace('R$', '').replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, ''); const parsed = parseFloat(normalized); return Number.isFinite(parsed) ? parsed : 0; };
             const formatCurrencyValue = (value) => parseCurrencyValue(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

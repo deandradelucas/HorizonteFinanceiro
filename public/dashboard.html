@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="dashboard-hero-actions">
-                    <a href="/register-item" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo lançamento PF</a>
+                    <a href="/register-item-pf" class="btn-primary btn-action"><i class="fa-solid fa-plus"></i> Novo lançamento PF</a>
                     <a href="/register-item-pj" class="btn-secondary btn-action"><i class="fa-solid fa-building"></i> Novo lançamento PJ</a>
                 </div>
             </div>
@@ -182,6 +182,15 @@
                     </div>
                     <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
                     <div id="subcategoryChartBars" class="insight-bars"></div>
+                </div>
+
+                <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="recurring-chart">
+                    <div class="section-header">
+                        <h3>Recorrentes do Mês</h3>
+                        <span id="recurringChartPeriod" class="insight-caption">Mês atual</span>
+                    </div>
+                    <div id="recurringChartEmpty" class="insight-empty" hidden>Nenhuma transação recorrente no mês.</div>
+                    <div id="recurringChartBars" class="insight-bars"></div>
                 </div>
 
                 <div class="recent-transactions dashboard-widget" data-widget-key="recent">

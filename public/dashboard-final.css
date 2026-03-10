@@ -301,7 +301,8 @@ html body.dashboard-body .dashboard-widget[data-widget-key="recent"] {
 }
 
 html body.dashboard-body .dashboard-widget[data-widget-key="category-chart"],
-html body.dashboard-body .dashboard-widget[data-widget-key="subcategory-chart"] {
+html body.dashboard-body .dashboard-widget[data-widget-key="subcategory-chart"],
+html body.dashboard-body .dashboard-widget[data-widget-key="recurring-chart"] {
     grid-column: span 6 !important;
 }
 
@@ -478,7 +479,8 @@ html body.dashboard-body .milestone-track {
     }
 
     html body.dashboard-body .dashboard-widget[data-widget-key="category-chart"],
-    html body.dashboard-body .dashboard-widget[data-widget-key="subcategory-chart"] {
+    html body.dashboard-body .dashboard-widget[data-widget-key="subcategory-chart"],
+    html body.dashboard-body .dashboard-widget[data-widget-key="recurring-chart"] {
         grid-column: 1 / -1 !important;
     }
 }

@@ -770,6 +770,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 };
 
+                const renderRecurringChart = (items) => {
+                    const container = document.getElementById('recurringChartBars');
+                    const empty = document.getElementById('recurringChartEmpty');
+                    if (!container || !empty) return;
+
+                    container.innerHTML = '';
+                    empty.hidden = items.length > 0;
+                    if (!items.length) return;
+
+                    const maxValue = Math.max(...items.map((item) => item.total), 1);
+                    items.forEach((item, idx) => {
+                        const row = document.createElement('div');
+                        row.className = 'insight-bar-item';
+                        const pct = (item.total / maxValue) * 100;
+                        const color = idx % 2 === 0
+                            ? 'linear-gradient(90deg, #8b5cf6 0%, #a855f7 100%)'
+                            : 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)';
+                        row.innerHTML = `
+                            <div class="insight-bar-head">
+                                <strong>${normalizeLabel(item.label)}</strong>
+                                <span>${formatMoney(item.total)}</span>
+                            </div>
+                            <div class="insight-bar-track">
+                                <div class="insight-bar-fill" style="width: ${pct}%; background: ${color};"></div>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    });
+                };
+
                 const renderMonthRadar = (items, categoryData, subcategoryData) => {
                     const caption = document.getElementById('subcategoryChartPeriod');
                     const subcategoryContainer = document.getElementById('subcategoryChartBars');
@@ -859,6 +889,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     .sort((a, b) => b.total - a.total)
                     .slice(0, 6);
 
+                const isRecurringFlag = (transaction) => {
+                    const raw = transaction?.isRecurring ?? transaction?.is_recurring ?? transaction?.recurring ?? transaction?.is_recorrente;
+                    return raw === true || raw === 1 || raw === '1';
+                };
+
+                const currentMonthRecurring = transactions
+                    .filter((t) => isRecurringFlag(t) && String(t.date || '').startsWith(currentMonthKey))
+                    .map((t) => ({
+                        ...t,
+                        value: toSafeNumber(t.value),
+                        category: String(t.category || 'Sem categoria')
+                    }));
+
+                const recurringChartData = aggregateByField(currentMonthRecurring, 'category');
+
                 const currentBalance = toSafeNumber(totalIncomes - totalExpenses);
                 const investedTotal = transactions
                     .filter((t) => String(t.category || '').toLowerCase() === 'investimentos')
@@ -875,14 +920,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const categoryPeriod = document.getElementById('categoryChartPeriod');
                 const subcategoryPeriod = document.getElementById('subcategoryChartPeriod');
+                const recurringPeriod = document.getElementById('recurringChartPeriod');
                 if (categoryPeriod) categoryPeriod.textContent = currentMonthLabel;
                 if (subcategoryPeriod) subcategoryPeriod.textContent = currentMonthLabel;
+                if (recurringPeriod) {
+                    const recurringCount = currentMonthRecurring.length;
+                    recurringPeriod.textContent = `${currentMonthLabel} • ${recurringCount} recorrente${recurringCount === 1 ? '' : 's'}`;
+                }
 
                 const categoryTitle = document.getElementById('categoryChartBars')?.parentElement?.querySelector('.section-header h3');
                 if (categoryTitle) categoryTitle.textContent = 'Mapa de Gastos do Mês';
 
                 renderSpendingMap('categoryChartBars', 'categoryChartEmpty', combinedSpendingData);
                 renderMonthRadar(currentMonthExpenses, categoryChartData, subcategoryChartData);
+                renderRecurringChart(recurringChartData);
 
                 // 2. Meta em Destaque no Dashboard
                 const goalContainer = document.getElementById('mainGoalContainer');
