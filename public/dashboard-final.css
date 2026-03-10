@@ -84,7 +84,7 @@ html body.dashboard-body .topbar {
     align-items: center !important;
     gap: 14px !important;
     min-height: 66px !important;
-    margin: 0 0 22px !important;
+    margin: 0 0 18px !important;
     padding: 12px 22px !important;
     border-radius: 24px !important;
     background: rgba(255, 255, 255, 0.05) !important;
@@ -146,7 +146,7 @@ html body.dashboard-body .dashboard-content {
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 18px !important;
+    gap: 16px !important;
 }
 
 html body.dashboard-body .dashboard-actions {
@@ -186,14 +186,14 @@ html body.dashboard-body .dashboard-hero {
     display: grid !important;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) !important;
     align-items: center !important;
-    gap: 26px !important;
-    padding: 32px 36px !important;
+    gap: 22px !important;
+    padding: 28px 32px !important;
     margin: 0 !important;
     overflow: hidden !important;
     background:
-        radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 24%),
-        radial-gradient(circle at bottom right, rgba(20, 201, 123, 0.07), transparent 22%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.07)) !important;
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.06), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(20, 201, 123, 0.06), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06)) !important;
 }
 
 html body.dashboard-body .dashboard-hero-copy {
@@ -205,7 +205,7 @@ html body.dashboard-body .dashboard-hero-head {
     align-items: center !important;
     gap: 12px !important;
     flex-wrap: wrap !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
 }
 
 html body.dashboard-body .dashboard-hero-head h1,
@@ -219,13 +219,13 @@ html body.dashboard-body .goal-main-title {
 }
 
 html body.dashboard-body .dashboard-hero-head h1 {
-    font-size: clamp(42px, 5vw, 62px) !important;
-    line-height: 0.95 !important;
+    font-size: clamp(38px, 4.6vw, 56px) !important;
+    line-height: 0.98 !important;
 }
 
 html body.dashboard-body .subtitle {
-    max-width: 720px !important;
-    font-size: 18px !important;
+    max-width: 640px !important;
+    font-size: 17px !important;
     line-height: 1.55 !important;
 }
 
@@ -235,12 +235,13 @@ html body.dashboard-body .card-kicker,
 html body.dashboard-body .goal-label {
     display: inline-flex !important;
     align-items: center !important;
-    min-height: 34px !important;
-    padding: 0 12px !important;
+    min-height: 30px !important;
+    padding: 0 10px !important;
     border-radius: 999px !important;
     background: rgba(255, 255, 255, 0.06) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     color: rgba(255, 255, 255, 0.74) !important;
+    font-size: 12.5px !important;
 }
 
 html body.dashboard-body .dashboard-hero-links,
@@ -249,7 +250,7 @@ html body.dashboard-body .dashboard-hero-actions {
     align-items: center !important;
     gap: 12px !important;
     flex-wrap: wrap !important;
-    margin-top: 22px !important;
+    margin-top: 16px !important;
 }
 
 html body.dashboard-body .dashboard-hero-actions {
@@ -273,7 +274,7 @@ html body.dashboard-body .btn-secondary {
 html body.dashboard-body .dashboard-layout {
     display: grid !important;
     grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-    gap: 18px !important;
+    gap: 16px !important;
     align-items: start !important;
 }
 
@@ -296,29 +297,34 @@ html body.dashboard-body .summary-cards {
 }
 
 html body.dashboard-body .summary-card {
-    min-height: 196px !important;
-    padding: 24px !important;
+    min-height: 182px !important;
+    padding: 22px !important;
     display: flex !important;
     gap: 16px !important;
     align-items: flex-start !important;
     position: relative !important;
     overflow: hidden !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 18px 38px rgba(0, 0, 0, 0.16) !important;
 }
 
 html body.dashboard-body .summary-card::after {
     content: '' !important;
     position: absolute !important;
     inset: auto -12% -42% 38% !important;
-    height: 160px !important;
-    opacity: 0.38 !important;
+    height: 150px !important;
+    opacity: 0.32 !important;
     filter: blur(24px) !important;
     pointer-events: none !important;
 }
 
 html body.dashboard-body .card-icon {
-    width: 56px !important;
-    height: 56px !important;
-    border-radius: 18px !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
     flex-shrink: 0 !important;
 }
 
@@ -339,11 +345,12 @@ html body.dashboard-body .summary-card.tone-investment::after {
 }
 
 html body.dashboard-body .summary-card .amount {
-    margin: 12px 0 10px !important;
-    font-size: clamp(30px, 3vw, 36px) !important;
+    margin: 10px 0 8px !important;
+    font-size: clamp(30px, 3.2vw, 38px) !important;
     line-height: 0.95 !important;
     color: #ffffff !important;
-    letter-spacing: -0.05em !important;
+    letter-spacing: -0.045em !important;
+    font-weight: 700 !important;
     font-family: "Manrope", Inter, sans-serif !important;
 }
 
@@ -351,7 +358,7 @@ html body.dashboard-body .insight-card,
 html body.dashboard-body .recent-transactions,
 html body.dashboard-body .main-goal-container,
 html body.dashboard-body .dashboard-layout-editor {
-    padding: 26px !important;
+    padding: 24px !important;
 }
 
 html body.dashboard-body .section-header {
@@ -359,7 +366,7 @@ html body.dashboard-body .section-header {
     align-items: center !important;
     justify-content: space-between !important;
     gap: 12px !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 16px !important;
 }
 
 html body.dashboard-body .insight-bars {
@@ -371,8 +378,8 @@ html body.dashboard-body .insight-bars {
 html body.dashboard-body .insight-bar-item,
 html body.dashboard-body .spending-map-row,
 html body.dashboard-body .recent-transactions .table-container {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
     box-shadow: none !important;
 }
 
@@ -420,7 +427,7 @@ html body.dashboard-body .goal-progress-wrapper {
 }
 
 html body.dashboard-body .progress-bar-container {
-    height: 14px !important;
+    height: 12px !important;
     border-radius: 999px !important;
     background: rgba(255, 255, 255, 0.08) !important;
 }
