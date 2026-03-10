@@ -100,6 +100,16 @@ html body.dashboard-body .nav-item i {
     color: currentColor !important;
 }
 
+html body.dashboard-body:not(.dark-mode) .pf-stat strong,
+html body.dashboard-body:not(.dark-mode) .pf-stat p,
+html body.dashboard-body:not(.dark-mode) .page-header .subtitle {
+    color: #0f172a !important;
+}
+
+html body.dashboard-body:not(.dark-mode) .pf-stat span {
+    color: #475569 !important;
+}
+
 html body.dashboard-body .nav-item[title="PF"],
 html body.dashboard-body .nav-item[title="Pessoa Física"],
 html body.dashboard-body .nav-item span {
