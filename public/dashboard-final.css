@@ -1761,6 +1761,16 @@ html body.dashboard-body .recent-transactions .item-icon {
     color: #1f2937 !important;
 }
 
+html body.dashboard-body .recent-transactions .item-icon.green-bg {
+    background: rgba(34, 197, 94, 0.16) !important;
+    color: #16a34a !important;
+}
+
+html body.dashboard-body .recent-transactions .item-icon.red-bg {
+    background: rgba(239, 68, 68, 0.16) !important;
+    color: #ef4444 !important;
+}
+
 html body.dashboard-body .recent-transactions .desc-text {
     color: #1f2937 !important;
 }

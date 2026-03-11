@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Horizonte Financeiro</title>
     <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="dashboard-final.css?v=20260310-08">
+  <link rel="stylesheet" href="dashboard-final.css?v=20260310-09">
     <link rel="stylesheet" href="app-final.css?v=20260310-01">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
@@ -174,27 +174,6 @@
 
             <div id="dashboardLayout" class="dashboard-layout">
                 <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal" style="display: none;">
-                    <div class="payables-card">
-                        <div class="section-header">
-                            <h3>Payables</h3>
-                        </div>
-                        <ul class="mini-list">
-                            <li>
-                                <div class="mini-icon"><i class="fa-regular fa-file-lines"></i></div>
-                                <div>
-                                    <p>$202.98</p>
-                                    <span>Electricity Bill</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="mini-icon"><i class="fa-regular fa-file-lines"></i></div>
-                                <div>
-                                    <p>$3,030.98</p>
-                                    <span>Rent or Mortgage</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
                     <div class="goal-legacy">
                         <div class="goal-info-header">
                             <div class="goal-text">
@@ -272,55 +251,6 @@
                     </div>
                     <div id="categoryChartEmpty" class="insight-empty" hidden>Nenhuma despesa no mês para exibir.</div>
                     <div id="categoryChartBars" class="insight-bars" hidden></div>
-                </div>
-
-                <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="subcategory-chart">
-                    <div class="section-header">
-                        <h3>Earnings</h3>
-                        <span id="subcategoryChartPeriod" class="insight-caption">Monthly</span>
-                    </div>
-                    <div class="earnings-donut">
-                        <svg viewBox="0 0 160 160" aria-hidden="true">
-                            <circle cx="80" cy="80" r="54" fill="none" stroke="#e5e7eb" stroke-width="10" />
-                            <circle cx="80" cy="80" r="54" fill="none" stroke="#1f2937" stroke-width="10" stroke-linecap="round" stroke-dasharray="220 340" transform="rotate(-90 80 80)" />
-                            <text x="80" y="78" text-anchor="middle" font-size="16" fill="#111827">$4,523.98</text>
-                            <text x="80" y="98" text-anchor="middle" font-size="11" fill="#10b981">+25%</text>
-                        </svg>
-                    </div>
-                    <div id="subcategoryChartEmpty" class="insight-empty" hidden>Nenhuma subcategoria no mês para exibir.</div>
-                    <div id="subcategoryChartBars" class="insight-bars" hidden></div>
-                </div>
-
-                <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="recurring-chart">
-                    <div class="section-header">
-                        <h3>Receipts</h3>
-                        <span id="recurringChartPeriod" class="insight-caption">Últimos lançamentos</span>
-                    </div>
-                    <ul class="mini-list">
-                        <li>
-                            <div class="mini-icon"><i class="fa-solid fa-arrow-up"></i></div>
-                            <div>
-                                <p>$5,000.00</p>
-                                <span>Salary</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="mini-icon"><i class="fa-solid fa-arrow-up"></i></div>
-                            <div>
-                                <p>$593.00</p>
-                                <span>Service</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="mini-icon"><i class="fa-solid fa-arrow-up"></i></div>
-                            <div>
-                                <p>$3,030.98</p>
-                                <span>Rent or Mortgage</span>
-                            </div>
-                        </li>
-                    </ul>
-                    <div id="recurringChartEmpty" class="insight-empty" hidden>Nenhuma transação recorrente no mês.</div>
-                    <div id="recurringChartBars" class="insight-bars" hidden></div>
                 </div>
 
                 <div class="recent-transactions dashboard-widget" data-widget-key="recent">
