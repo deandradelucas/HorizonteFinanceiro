@@ -1771,6 +1771,129 @@ html body.dashboard-body .recent-transactions .item-icon.red-bg {
     color: #ef4444 !important;
 }
 
+/* =========================
+   Mobile: each dashboard element
+   ========================= */
+@media (max-width: 900px) {
+    html body.dashboard-body .dashboard-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        min-height: 100vh !important;
+    }
+
+    html body.dashboard-body .dashboard-content,
+    html body.dashboard-body .dashboard-hero,
+    html body.dashboard-body .summary-cards,
+    html body.dashboard-body .insight-card,
+    html body.dashboard-body .recent-transactions,
+    html body.dashboard-body .dashboard-layout-editor,
+    html body.dashboard-body .dashboard-layout {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    html body.dashboard-body .dashboard-hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-actions,
+    html body.dashboard-body .dashboard-hero-links {
+        justify-content: flex-start !important;
+    }
+
+    html body.dashboard-body .dashboard-hero-actions > *,
+    html body.dashboard-body .dashboard-hero-links > * {
+        flex: 1 1 100% !important;
+    }
+
+    html body.dashboard-body .dashboard-layout {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    html body.dashboard-body .dashboard-layout > * {
+        grid-column: 1 / -1 !important;
+    }
+
+    html body.dashboard-body .summary-cards {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.dashboard-body .summary-card {
+        min-height: 132px !important;
+    }
+
+    html body.dashboard-body .recent-transactions .table-container {
+        overflow-x: auto !important;
+    }
+
+    html body.dashboard-body .recent-transactions .data-table {
+        min-width: 100% !important;
+    }
+
+    html body.dashboard-body .spending-map-row,
+    html body.dashboard-body .insight-bar-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    html body.dashboard-body .topbar {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    html body.dashboard-body .mobile-menu-btn {
+        align-self: flex-start !important;
+    }
+
+    html body.dashboard-body .topbar-actions {
+        align-self: flex-end !important;
+    }
+
+    html body.dashboard-body .horizon-agent {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    html body.dashboard-body .horizon-actions {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+    }
+
+    html body.dashboard-body .horizon-actions > * {
+        flex: 1 1 140px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    html body.dashboard-body .main-content {
+        padding: 10px !important;
+    }
+
+    html body.dashboard-body .summary-card .amount {
+        font-size: clamp(22px, 8vw, 26px) !important;
+    }
+
+    html body.dashboard-body .recent-transactions .item-desc {
+        flex-wrap: wrap !important;
+    }
+
+    html body.dashboard-body .recent-transactions .item-meta {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+}
+
 html body.dashboard-body .recent-transactions .desc-text {
     color: #1f2937 !important;
 }
