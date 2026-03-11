@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Horizonte Financeiro</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard-core.css?v=20260310-01">
-    <link rel="stylesheet" href="app-final.css?v=20260310-01">
-    <link rel="stylesheet" href="dashboard-reference.css?v=20260311-01">
+    <link rel="stylesheet" href="dashboard-sidebar-exact.css?v=20260311-01">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -20,7 +17,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="dashboard-body">
+<body class="dashboard-body dashboard-profile-static">
     <script>
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
@@ -30,272 +27,46 @@
 
     <div class="scenic-wall" aria-hidden="true"></div>
     <div class="dashboard-shell">
-    <aside class="sidebar">
-        <div class="sidebar-profile">
-            <div class="profile-avatar" id="sidebarUserInitials">HF</div>
-            <div class="profile-info">
-                <strong id="sidebarUserName">Horizonte User</strong>
-                <span id="sidebarUserRole">Finance Manager</span>
+        <aside class="sidebar">
+            <div class="sidebar-profile">
+                <div class="profile-avatar" id="sidebarUserInitials">GM</div>
+                <div class="profile-info">
+                    <strong id="sidebarUserName">Gadiel Machado</strong>
+                    <span id="sidebarUserRole">Designer</span>
+                </div>
             </div>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="/dashboard" class="nav-item active" title="Dashboard" data-keep-label="true"><i class="fa-solid fa-table-cells-large"></i><span>Dashboard</span></a>
-            <a href="/investments" class="nav-item" title="Wallet" data-keep-label="true"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-            <a href="/transactions" class="nav-item" title="Transactions" data-keep-label="true"><i class="fa-solid fa-layer-group"></i><span>Transactions</span></a>
-            <a href="/history" class="nav-item" title="Revenue analytics" data-keep-label="true"><i class="fa-solid fa-chart-simple"></i><span>Revenue analytics</span></a>
-            <a href="#dashboardSearch" class="nav-item" title="Search" data-keep-label="true"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
-        </nav>
-        <div class="sidebar-divider" aria-hidden="true"></div>
-        <div class="sidebar-footer">
-            <a href="/settings" class="nav-item" title="Settings" data-keep-label="true"><i class="fa-solid fa-gear"></i><span>Setting</span></a>
-            <a href="/settings" class="nav-item" title="Help" data-keep-label="true"><i class="fa-regular fa-circle-question"></i><span>Help</span></a>
-            <a href="/login" class="nav-item logout" title="Log out" data-keep-label="true"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Log Out</span></a>
-        </div>
-    </aside>
 
-    <main class="main-content">
-        <header class="topbar">
-            <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Abrir menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <label class="dashboard-search" for="dashboardSearch">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="dashboardSearch" type="search" placeholder="Search" autocomplete="off">
-            </label>
-            <div class="topbar-actions">
-                <button id="horizonOpenBtn" class="icon-btn icon-btn-alert" type="button" aria-label="Messages">
-                    <i class="fa-regular fa-comment-dots"></i>
-                    <span class="icon-btn-dot" aria-hidden="true"></span>
+            <nav class="sidebar-nav">
+                <a href="/dashboard" class="nav-item active" title="Dashboard" data-keep-label="true"><i class="fa-solid fa-table-cells-large"></i><span>Dashboard</span></a>
+                <a href="/investments" class="nav-item" title="Wallet" data-keep-label="true"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+                <a href="/transactions" class="nav-item" title="Transactions" data-keep-label="true"><i class="fa-solid fa-layer-group"></i><span>Transactions</span></a>
+                <a href="/history" class="nav-item" title="Revenue analytics" data-keep-label="true"><i class="fa-regular fa-rectangle-list"></i><span>Revenue analytics</span></a>
+                <a href="#" class="nav-item" title="Search" data-keep-label="true"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
+            </nav>
+
+            <div class="sidebar-divider" aria-hidden="true"></div>
+
+            <div class="sidebar-footer">
+                <a href="/settings" class="nav-item" title="Settings" data-keep-label="true"><i class="fa-solid fa-gear"></i><span>Setting</span></a>
+                <a href="/settings" class="nav-item" title="Help" data-keep-label="true"><i class="fa-regular fa-circle-question"></i><span>Help</span></a>
+                <a href="/login" class="nav-item logout" title="Log out" data-keep-label="true"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Log Out</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="mobile-topbar">
+                <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
-                <button class="icon-btn icon-btn-alert" type="button" aria-label="Notifications">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="icon-btn-dot" aria-hidden="true"></span>
-                </button>
-            </div>
-        </header>
+                <span class="mobile-topbar-title">Dashboard</span>
+                <div class="mobile-topbar-avatar" aria-hidden="true"></div>
+            </header>
 
-        <div class="dashboard-content">
-            <div class="page-header dashboard-hero simple-hero">
-                <div class="dashboard-title-row">
-                    <h1>Dashboard</h1>
-                    <span id="billingStatusPill" class="dashboard-status-pill" hidden>Carregando vencimento</span>
-                </div>
-            </div>
-
-            <div id="dashboardLayoutEditor" class="dashboard-layout-editor" hidden>
-                <div class="dashboard-layout-editor-header">
-                    <div>
-                        <h3>Personalizar dashboard</h3>
-                        <p>Organize a ordem dos blocos e esconda o que não quiser ver na tela inicial.</p>
-                    </div>
-                    <div class="dashboard-actions">
-                        <button type="button" id="dashboardLayoutCloseBtn" class="btn-secondary">Fechar</button>
-                        <button type="button" id="dashboardLayoutSaveBtn" class="btn-primary">Salvar layout</button>
-                    </div>
-                </div>
-                <div id="dashboardLayoutControls" class="dashboard-layout-controls"></div>
-                <div class="dashboard-layout-editor-actions">
-                    <button type="button" id="dashboardLayoutResetBtn" class="btn-secondary">Restaurar padrão</button>
-                </div>
-            </div>
-
-            <div class="dashboard-actions dashboard-actions-mobile">
-                <button type="button" id="dashboardLayoutEditBtn" class="btn-secondary dashboard-layout-trigger">
-                    <i class="fa-solid fa-pen-to-square"></i> Editar layout
-                </button>
-            </div>
-
-            <div id="dashboardLayout" class="dashboard-layout dashboard-reference-layout">
-                <div class="summary-cards dashboard-widget" data-widget-key="summary">
-                    <div class="summary-card summary-card--bank summary-balance" data-summary-key="balance">
-                        <span class="card-kicker">Available balance</span>
-                        <p class="amount">R$ 0,00</p>
-                        <div class="bank-card-number">4328 4388 4161 8183</div>
-                        <div class="bank-card-footer">
-                            <div>
-                                <span class="bank-card-label">Card holder</span>
-                                <strong id="bankCardHolderName">Horizonte Financeiro</strong>
-                            </div>
-                            <div>
-                                <span class="bank-card-label">Expires</span>
-                                <strong>12/31</strong>
-                            </div>
-                            <div class="bank-card-brand" aria-hidden="true">
-                                <span class="bank-card-brand-dot bank-card-brand-dot--red"></span>
-                                <span class="bank-card-brand-dot bank-card-brand-dot--gold"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="summary-card summary-card--wallet" data-summary-key="balance">
-                        <span class="card-kicker">Wallet</span>
-                        <p class="amount">R$ 0,00</p>
-                        <div class="wallet-summary-split">
-                            <div class="wallet-summary-item wallet-summary-item--income">
-                                <span class="wallet-summary-icon"><i class="fa-solid fa-arrow-up-right"></i></span>
-                                <div class="wallet-summary-copy">
-                                    <strong id="walletIncomeAmount">R$ 0,00</strong>
-                                    <span>Income</span>
-                                </div>
-                            </div>
-                            <div class="wallet-summary-item wallet-summary-item--expense">
-                                <span class="wallet-summary-icon"><i class="fa-solid fa-arrow-down-right"></i></span>
-                                <div class="wallet-summary-copy">
-                                    <strong id="walletExpenseAmount">R$ 0,00</strong>
-                                    <span>Expenses</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <section class="dashboard-side-panel dashboard-widget dashboard-chart-card" data-widget-key="recurring-chart">
-                    <div class="side-section side-section--progress">
-                        <h3>Payable Accounts</h3>
-                        <p>Keep your accounts up to date to avoid issues.</p>
-                        <div id="payableProgressCount" class="side-progress-copy">0 OUT OF 16</div>
-                        <div class="side-progress-bar" aria-hidden="true">
-                            <span id="payableProgressFill"></span>
-                        </div>
-                    </div>
-
-                    <div class="side-section">
-                        <div class="section-header section-header--stacked">
-                            <h3>Receipts</h3>
-                        </div>
-                        <div id="dashboardReceiptsList" class="compact-list">
-                            <div class="compact-list-empty">No income entries yet.</div>
-                        </div>
-                    </div>
-
-                    <div class="side-section">
-                        <div class="section-header section-header--stacked">
-                            <h3>Payables</h3>
-                        </div>
-                        <div id="dashboardPayablesList" class="compact-list compact-list--small">
-                            <div class="compact-list-empty">No expense entries yet.</div>
-                        </div>
-                    </div>
-
-                    <span id="recurringChartPeriod" class="sr-only"></span>
-                    <div id="recurringChartBars" class="insight-bars recurring-fallback" hidden></div>
-                    <div id="recurringChartEmpty" class="insight-empty" hidden>Nenhuma recorrência no período.</div>
-                </section>
-
-                <div class="recent-transactions dashboard-widget" data-widget-key="recent">
-                    <div class="section-header">
-                        <h3>Transactions</h3>
-                        <a href="/transactions" class="view-all">View all</a>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th style="text-align: right;">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="2" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                                        <div style="font-size: 32px; margin-bottom: 12px;"><i class="fa-solid fa-receipt"></i></div>
-                                        <h3 style="color: var(--text-main); font-weight: 500; font-size: 16px;">Nenhuma transação encontrada</h3>
-                                        <p style="font-size: 14px; margin-top: 4px;">Clique em "Novo Lançamento" para adicionar sua primeira transação.</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="insight-card dashboard-widget dashboard-chart-card" data-widget-key="category-chart">
-                    <div class="section-header">
-                        <div>
-                            <h3>Monthly earnings</h3>
-                            <span class="insight-caption">Income overview</span>
-                        </div>
-                        <strong id="earningsLineValue" class="chart-highlight-value">R$ 0,00</strong>
-                    </div>
-                    <div class="earnings-chart-body">
-                        <div class="earnings-chart-surface">
-                            <svg viewBox="0 0 320 180" aria-hidden="true" class="earnings-chart">
-                                <path id="earningsLinePath" d="M 18 122 Q 52 88 82 96 T 146 90 T 210 84 T 274 72 T 302 66" fill="none" stroke="#171717" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <g id="earningsLineDots"></g>
-                            </svg>
-                        </div>
-                        <div id="earningsLineLabels" class="earnings-line-labels">
-                            <span>Jan</span>
-                            <span>Feb</span>
-                            <span>Mar</span>
-                            <span>Apr</span>
-                            <span>May</span>
-                            <span>Jun</span>
-                        </div>
-                    </div>
-                    <span id="categoryChartPeriod" class="sr-only">Mês atual</span>
-                    <div id="categoryChartEmpty" class="insight-empty" hidden>Sem receitas para exibir no período.</div>
-                    <div id="categoryChartBars" class="insight-bars spending-map" hidden></div>
-                </div>
-
-                <div id="mainGoalContainer" class="main-goal-container dashboard-widget" data-widget-key="goal">
-                    <div class="section-header">
-                        <h3>Earnings</h3>
-                    </div>
-                    <div class="earnings-donut-panel">
-                        <div class="earnings-donut">
-                            <svg viewBox="0 0 180 180" class="earnings-donut-chart" aria-hidden="true">
-                                <circle class="earnings-donut-track" cx="90" cy="90" r="62"></circle>
-                                <circle id="earningsRingProgress" class="earnings-donut-progress" cx="90" cy="90" r="62"></circle>
-                            </svg>
-                            <div class="earnings-donut-center">
-                                <strong id="earningsCenterValue">R$ 0,00</strong>
-                                <span id="earningsCenterDelta">+0%</span>
-                            </div>
-                        </div>
-                        <div class="earnings-donut-footer">
-                            <span class="legend-item"><i class="legend-swatch legend-swatch--dark"></i><span id="earningsLegendPrimary">Earnings</span></span>
-                            <span class="legend-item"><i class="legend-swatch legend-swatch--light"></i><span id="earningsLegendSecondary">Goals</span></span>
-                        </div>
-                    </div>
-                    <div class="goal-legacy" hidden aria-hidden="true">
-                        <div id="mainGoalTitle"></div>
-                        <div id="mainGoalBar"></div>
-                        <div id="mainGoalValues"></div>
-                        <div id="mainGoalPct"></div>
-                        <div id="motivationPhrase"></div>
-                        <div id="milestoneTrack"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+            <section class="dashboard-canvas" aria-label="Área principal do dashboard"></section>
+        </main>
     </div>
 
     <script src="script.js?v=20260310-04"></script>
-    <div class="horizon-modal" id="horizonModal" aria-hidden="true">
-        <div class="horizon-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="horizonModalTitle">
-            <div class="horizon-modal-header">
-                <div>
-                    <h2 id="horizonModalTitle">Horizon</h2>
-                    <p>Seu agente de inteligência financeira para conta, metas e mercado, incluindo bolsa.</p>
-                </div>
-                <button class="horizon-close" id="horizonCloseBtn" aria-label="Fechar">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="horizon-chat" id="horizonChat">
-                <div class="horizon-message horizon-message--agent">
-                    <strong>Horizon</strong>
-                    <p>Olá! Posso analisar sua conta atual, sugerir ajustes e explicar movimentos do mercado.</p>
-                </div>
-            </div>
-            <form class="horizon-input" id="horizonForm">
-                <input id="horizonInput" type="text" placeholder="Pergunte sobre sua conta, renda fixa, bolsa ou estratégia..." autocomplete="off">
-                <button type="submit">Enviar</button>
-            </form>
-            <p class="horizon-disclaimer">Conteúdo educativo. Para decisões reais, consulte um profissional certificado.</p>
-        </div>
-    </div>
 </body>
 
 </html>

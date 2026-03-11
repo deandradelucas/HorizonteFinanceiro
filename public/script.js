@@ -27,14 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarUserInitials = document.getElementById('sidebarUserInitials');
     const bankCardHolderName = document.getElementById('bankCardHolderName');
     const sessionUserName = sessionStorage.getItem('userName');
-    if (sidebarUserName) sidebarUserName.textContent = sessionUserName || 'Usuário';
+    const keepStaticDashboardProfile = document.body.classList.contains('dashboard-profile-static');
+    if (sidebarUserName && !keepStaticDashboardProfile) sidebarUserName.textContent = sessionUserName || 'Usuário';
     if (bankCardHolderName) bankCardHolderName.textContent = sessionUserName || 'Horizonte Financeiro';
-    if (sidebarUserRole) {
+    if (sidebarUserRole && !keepStaticDashboardProfile) {
         const role = localStorage.getItem('userRole');
         const label = role === 'super_admin' ? 'Super Admin' : 'Usuário';
         sidebarUserRole.textContent = label;
     }
-    if (sidebarUserInitials) {
+    if (sidebarUserInitials && !keepStaticDashboardProfile) {
         const name = sessionUserName || 'Usuário';
         const parts = name.trim().split(/\s+/).filter(Boolean);
         const initials = parts.length === 1
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- PERMISSÕES GLOBAIS DE UI ---
     // Checa se o usuário logado é Super Admin e injeta o botão em qualquer página que tenha o sidebar
     const globalUserRole = localStorage.getItem('userRole');
-    if (globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
+    if (!keepStaticDashboardProfile && globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
         const nav = document.querySelector('.sidebar-nav');
         if (nav) {
             const adminLink = document.createElement('a');
@@ -155,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const sidebarNav = document.querySelector('.sidebar-nav');
-    if (sidebarNav) {
+    if (sidebarNav && !keepStaticDashboardProfile) {
         const businessLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
             .find((item) => (item.getAttribute('href') || '') === '/cnpj');
         const investmentsLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
