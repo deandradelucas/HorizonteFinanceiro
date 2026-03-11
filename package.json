@@ -2,10 +2,10 @@
   "name": "horizonte-financeiro",
   "version": "1.0.0",
   "description": "Projeto Express com hot reload",
-  "main": "api/index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "node startup.js && nodemon api/index.js",
-    "start": "node startup.js && node api/index.js",
+    "dev": "node startup.js && nodemon server.js",
+    "start": "node startup.js && node server.js",
     "vercel-build": "node -e \"console.log('No build step required for Horizonte Financeiro')\""
   },
   "engines": {
