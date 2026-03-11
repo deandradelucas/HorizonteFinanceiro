@@ -1358,10 +1358,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             const valueText = isIncome ? `+ ${formatMoney(t.value)}` : `- ${formatMoney(t.value)}`;
                             const valueClass = isIncome ? 'text-green' : 'text-red';
 
-                            let categoryText = t.category.charAt(0).toUpperCase() + t.category.slice(1);
+                            const category = String(t.category || 'geral');
+                            let categoryText = category.charAt(0).toUpperCase() + category.slice(1);
                             let tagClass = 'tag-blue';
-                            if (t.category === 'alimentacao') tagClass = 'tag-orange';
-                            if (t.category === 'contas') tagClass = 'tag-purple';
+                            if (category === 'alimentacao') tagClass = 'tag-orange';
+                            if (category === 'contas') tagClass = 'tag-purple';
 
                             const dateObj = new Date(t.date);
                             dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset());
