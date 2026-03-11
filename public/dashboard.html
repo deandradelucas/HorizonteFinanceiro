@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Horizonte Financeiro</title>
-    <link rel="stylesheet" href="dashboard-sidebar-exact.css?v=20260311-01">
+    <link rel="stylesheet" href="dashboard.css?v=20260311-01">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -156,85 +156,19 @@
         </aside>
 
         <main class="main-content">
-            <header class="app-topbar">
-                <div class="topbar-main">
-                    <button
-                        id="mobileMenuBtn"
-                        class="topbar-icon-btn"
-                        type="button"
-                        data-sidebar-toggle
-                        aria-label="Abrir menu lateral"
-                        aria-expanded="false"
-                        aria-controls="appSidebar"
-                    >
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+            <button
+                id="mobileMenuBtn"
+                class="topbar-icon-btn mobile-sidebar-trigger"
+                type="button"
+                data-sidebar-toggle
+                aria-label="Abrir menu lateral"
+                aria-expanded="false"
+                aria-controls="appSidebar"
+            >
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-                    <button
-                        type="button"
-                        class="topbar-icon-btn topbar-icon-btn--desktop"
-                        data-sidebar-collapse
-                        aria-label="Alternar largura do menu lateral"
-                        aria-pressed="false"
-                    >
-                        <i class="fa-solid fa-sidebar"></i>
-                    </button>
-
-                    <div class="topbar-heading">
-                        <span class="topbar-kicker">Finance workspace</span>
-                        <h1>Dashboard Navigation</h1>
-                    </div>
-                </div>
-
-                <div class="topbar-actions">
-                    <label class="topbar-search" for="sidebarSearchInput">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input id="sidebarSearchInput" type="search" placeholder="Buscar no menu ou páginas">
-                    </label>
-
-                    <button type="button" class="topbar-icon-btn" aria-label="Notificações">
-                        <i class="fa-regular fa-bell"></i>
-                    </button>
-                </div>
-            </header>
-
-            <section class="dashboard-canvas" aria-label="Área principal do dashboard">
-                <div class="canvas-hero">
-                    <div>
-                        <span class="canvas-kicker">UI/UX Premium Sidebar</span>
-                        <h2>Navegação lateral pensada para produtividade, clareza e escala.</h2>
-                        <p>
-                            A barra lateral agora se adapta ao dispositivo: fixa no desktop,
-                            recolhível no tablet e em formato drawer no celular, com foco em acessibilidade
-                            e hierarquia visual consistente.
-                        </p>
-                    </div>
-                    <div class="canvas-hero-badge">
-                        <strong>Modern SaaS</strong>
-                        <span>Responsivo, acessível e pronto para crescer</span>
-                    </div>
-                </div>
-
-                <div class="canvas-grid">
-                    <article class="canvas-card">
-                        <span class="canvas-card-kicker">States</span>
-                        <h3>Desktop, tablet e mobile</h3>
-                        <p>O componente ajusta largura, visibilidade de rótulos e comportamento de abertura conforme o breakpoint.</p>
-                    </article>
-
-                    <article class="canvas-card">
-                        <span class="canvas-card-kicker">Interaction</span>
-                        <h3>Hover, foco e animação</h3>
-                        <p>Estados suaves, foco visível por teclado e overlay no mobile para reforçar contexto e usabilidade.</p>
-                    </article>
-
-                    <article class="canvas-card">
-                        <span class="canvas-card-kicker">Scalability</span>
-                        <h3>Submenus expansíveis</h3>
-                        <p>A estrutura suporta múltiplos grupos com expansão acessível e comportamento elegante mesmo em sidebar recolhida.</p>
-                    </article>
-                </div>
-            </section>
+            <section class="dashboard-canvas dashboard-canvas--empty" aria-label="Área principal do dashboard"></section>
         </main>
     </div>
 
