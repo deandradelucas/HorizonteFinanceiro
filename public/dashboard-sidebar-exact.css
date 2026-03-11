@@ -571,50 +571,6 @@ html body.dashboard-body.sidebar-collapsed .sidebar-user-card {
 }
 
 @media (max-width: 1180px) {
-    html body.dashboard-body:not(.sidebar-drawer-open) .dashboard-shell {
-        grid-template-columns: var(--sidebar-collapsed-width) minmax(0, 1fr) !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) {
-        --sidebar-width: var(--sidebar-collapsed-width);
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar {
-        padding-inline: 12px !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar-brand-copy,
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar-section-label,
-    html body.dashboard-body:not(.sidebar-drawer-open) .nav-item-copy,
-    html body.dashboard-body:not(.sidebar-drawer-open) .nav-item-arrow,
-    html body.dashboard-body:not(.sidebar-drawer-open) .nav-submenu,
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar-user-copy {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar-header {
-        justify-content: center !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar-brand {
-        justify-content: center !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .nav-item {
-        justify-content: center !important;
-        padding-inline: 8px !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .nav-item-main {
-        justify-content: center !important;
-    }
-
-    html body.dashboard-body:not(.sidebar-drawer-open) .sidebar-user-card {
-        justify-content: center !important;
-    }
-
     html body.dashboard-body .topbar-icon-btn[data-sidebar-toggle] {
         display: inline-grid !important;
     }
