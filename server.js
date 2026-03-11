@@ -1,9 +1,9 @@
 const os = require('os');
 const dotenv = require('dotenv');
-const app = require('./api/index');
 
 dotenv.config();
 
+const app = require('./api/index');
 const PORT = Number(process.env.PORT || 3000);
 
 function getLocalIP() {
