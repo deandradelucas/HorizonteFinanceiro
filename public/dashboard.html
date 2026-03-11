@@ -17,7 +17,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="dashboard-body dashboard-profile-static">
+<body class="dashboard-body dashboard-premium-sidebar">
     <script>
         const siteTheme = localStorage.getItem('siteTheme');
         if (siteTheme && siteTheme !== 'default') document.body.dataset.theme = siteTheme;
@@ -25,44 +25,216 @@
         if (localStorage.getItem('glassMode') === 'enabled') document.body.classList.add('glass-mode');
     </script>
 
-    <div class="scenic-wall" aria-hidden="true"></div>
+    <button class="sidebar-overlay" id="sidebarOverlay" type="button" aria-label="Fechar menu lateral" hidden></button>
+
     <div class="dashboard-shell">
-        <aside class="sidebar">
-            <div class="sidebar-profile">
-                <div class="profile-avatar" id="sidebarUserInitials">GM</div>
-                <div class="profile-info">
-                    <strong id="sidebarUserName">Gadiel Machado</strong>
-                    <span id="sidebarUserRole">Designer</span>
-                </div>
+        <aside class="sidebar" id="appSidebar" aria-label="Menu principal">
+            <div class="sidebar-header">
+                <a href="/dashboard" class="sidebar-brand" aria-label="Horizonte Financeiro">
+                    <span class="sidebar-brand-mark">HF</span>
+                    <span class="sidebar-brand-copy">
+                        <strong>Horizonte</strong>
+                        <small>Finance Suite</small>
+                    </span>
+                </a>
+
+                <button
+                    type="button"
+                    class="sidebar-icon-btn sidebar-collapse-btn"
+                    id="sidebarCollapseBtn"
+                    data-sidebar-collapse
+                    aria-label="Recolher menu lateral"
+                    aria-pressed="false"
+                >
+                    <i class="fa-solid fa-panel-left"></i>
+                </button>
             </div>
 
-            <nav class="sidebar-nav">
-                <a href="/dashboard" class="nav-item active" title="Dashboard" data-keep-label="true"><i class="fa-solid fa-table-cells-large"></i><span>Dashboard</span></a>
-                <a href="/investments" class="nav-item" title="Wallet" data-keep-label="true"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-                <a href="/transactions" class="nav-item" title="Transactions" data-keep-label="true"><i class="fa-solid fa-layer-group"></i><span>Transactions</span></a>
-                <a href="/history" class="nav-item" title="Revenue analytics" data-keep-label="true"><i class="fa-regular fa-rectangle-list"></i><span>Revenue analytics</span></a>
-                <a href="#" class="nav-item" title="Search" data-keep-label="true"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></a>
-            </nav>
+            <div class="sidebar-body">
+                <div class="sidebar-section-label">Workspace</div>
 
-            <div class="sidebar-divider" aria-hidden="true"></div>
+                <nav class="sidebar-nav" aria-label="Navegação principal">
+                    <a href="/dashboard" class="nav-item active" title="Dashboard" data-keep-label="true" data-nav-primary="true">
+                        <span class="nav-item-main">
+                            <span class="nav-item-icon"><i class="fa-solid fa-table-columns"></i></span>
+                            <span class="nav-item-copy">
+                                <span>Dashboard</span>
+                                <small>Visão geral financeira</small>
+                            </span>
+                        </span>
+                    </a>
+
+                    <div class="nav-group">
+                        <button
+                            type="button"
+                            class="nav-item nav-item--button nav-submenu-toggle"
+                            data-submenu-toggle
+                            aria-expanded="true"
+                            aria-controls="financeSubmenu"
+                        >
+                            <span class="nav-item-main">
+                                <span class="nav-item-icon"><i class="fa-solid fa-wallet"></i></span>
+                                <span class="nav-item-copy">
+                                    <span>Finance</span>
+                                    <small>Carteira e fluxo</small>
+                                </span>
+                            </span>
+                            <span class="nav-item-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="nav-submenu" id="financeSubmenu">
+                            <a href="/investments" class="nav-subitem">Wallet</a>
+                            <a href="/transactions" class="nav-subitem">Transactions</a>
+                            <a href="/goals" class="nav-subitem">Goals</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-group">
+                        <button
+                            type="button"
+                            class="nav-item nav-item--button nav-submenu-toggle"
+                            data-submenu-toggle
+                            aria-expanded="false"
+                            aria-controls="analyticsSubmenu"
+                        >
+                            <span class="nav-item-main">
+                                <span class="nav-item-icon"><i class="fa-solid fa-chart-line"></i></span>
+                                <span class="nav-item-copy">
+                                    <span>Analytics</span>
+                                    <small>Relatórios e desempenho</small>
+                                </span>
+                            </span>
+                            <span class="nav-item-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="nav-submenu" id="analyticsSubmenu" hidden>
+                            <a href="/history" class="nav-subitem">Revenue analytics</a>
+                            <a href="/billing" class="nav-subitem">Billing</a>
+                            <a href="/cnpj" class="nav-subitem">Business</a>
+                        </div>
+                    </div>
+
+                    <a href="/settings" class="nav-item" title="Settings" data-keep-label="true">
+                        <span class="nav-item-main">
+                            <span class="nav-item-icon"><i class="fa-solid fa-sliders"></i></span>
+                            <span class="nav-item-copy">
+                                <span>Preferences</span>
+                                <small>Personalização do sistema</small>
+                            </span>
+                        </span>
+                    </a>
+
+                    <a href="/settings" class="nav-item" title="Support" data-keep-label="true">
+                        <span class="nav-item-main">
+                            <span class="nav-item-icon"><i class="fa-regular fa-life-ring"></i></span>
+                            <span class="nav-item-copy">
+                                <span>Support</span>
+                                <small>Ajuda e documentação</small>
+                            </span>
+                        </span>
+                    </a>
+                </nav>
+            </div>
 
             <div class="sidebar-footer">
-                <a href="/settings" class="nav-item" title="Settings" data-keep-label="true"><i class="fa-solid fa-gear"></i><span>Setting</span></a>
-                <a href="/settings" class="nav-item" title="Help" data-keep-label="true"><i class="fa-regular fa-circle-question"></i><span>Help</span></a>
-                <a href="/login" class="nav-item logout" title="Log out" data-keep-label="true"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Log Out</span></a>
+                <div class="sidebar-user-card" tabindex="0">
+                    <div class="sidebar-user-avatar" id="sidebarUserInitials">HF</div>
+                    <div class="sidebar-user-copy">
+                        <strong id="sidebarUserName">Usuário</strong>
+                        <span id="sidebarUserRole">Workspace owner</span>
+                    </div>
+                </div>
+
+                <a href="/login" class="nav-item nav-item--ghost logout" title="Sair" data-keep-label="true">
+                    <span class="nav-item-main">
+                        <span class="nav-item-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                        <span class="nav-item-copy">
+                            <span>Log out</span>
+                            <small>Encerrar sessão atual</small>
+                        </span>
+                    </span>
+                </a>
             </div>
         </aside>
 
         <main class="main-content">
-            <header class="mobile-topbar">
-                <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Abrir menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <span class="mobile-topbar-title">Dashboard</span>
-                <div class="mobile-topbar-avatar" aria-hidden="true"></div>
+            <header class="app-topbar">
+                <div class="topbar-main">
+                    <button
+                        id="mobileMenuBtn"
+                        class="topbar-icon-btn"
+                        type="button"
+                        data-sidebar-toggle
+                        aria-label="Abrir menu lateral"
+                        aria-expanded="false"
+                        aria-controls="appSidebar"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="topbar-icon-btn topbar-icon-btn--desktop"
+                        data-sidebar-collapse
+                        aria-label="Alternar largura do menu lateral"
+                        aria-pressed="false"
+                    >
+                        <i class="fa-solid fa-sidebar"></i>
+                    </button>
+
+                    <div class="topbar-heading">
+                        <span class="topbar-kicker">Finance workspace</span>
+                        <h1>Dashboard Navigation</h1>
+                    </div>
+                </div>
+
+                <div class="topbar-actions">
+                    <label class="topbar-search" for="sidebarSearchInput">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="sidebarSearchInput" type="search" placeholder="Buscar no menu ou páginas">
+                    </label>
+
+                    <button type="button" class="topbar-icon-btn" aria-label="Notificações">
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+                </div>
             </header>
 
-            <section class="dashboard-canvas" aria-label="Área principal do dashboard"></section>
+            <section class="dashboard-canvas" aria-label="Área principal do dashboard">
+                <div class="canvas-hero">
+                    <div>
+                        <span class="canvas-kicker">UI/UX Premium Sidebar</span>
+                        <h2>Navegação lateral pensada para produtividade, clareza e escala.</h2>
+                        <p>
+                            A barra lateral agora se adapta ao dispositivo: fixa no desktop,
+                            recolhível no tablet e em formato drawer no celular, com foco em acessibilidade
+                            e hierarquia visual consistente.
+                        </p>
+                    </div>
+                    <div class="canvas-hero-badge">
+                        <strong>Modern SaaS</strong>
+                        <span>Responsivo, acessível e pronto para crescer</span>
+                    </div>
+                </div>
+
+                <div class="canvas-grid">
+                    <article class="canvas-card">
+                        <span class="canvas-card-kicker">States</span>
+                        <h3>Desktop, tablet e mobile</h3>
+                        <p>O componente ajusta largura, visibilidade de rótulos e comportamento de abertura conforme o breakpoint.</p>
+                    </article>
+
+                    <article class="canvas-card">
+                        <span class="canvas-card-kicker">Interaction</span>
+                        <h3>Hover, foco e animação</h3>
+                        <p>Estados suaves, foco visível por teclado e overlay no mobile para reforçar contexto e usabilidade.</p>
+                    </article>
+
+                    <article class="canvas-card">
+                        <span class="canvas-card-kicker">Scalability</span>
+                        <h3>Submenus expansíveis</h3>
+                        <p>A estrutura suporta múltiplos grupos com expansão acessível e comportamento elegante mesmo em sidebar recolhida.</p>
+                    </article>
+                </div>
+            </section>
         </main>
     </div>
 

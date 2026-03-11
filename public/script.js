@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bankCardHolderName = document.getElementById('bankCardHolderName');
     const sessionUserName = sessionStorage.getItem('userName');
     const keepStaticDashboardProfile = document.body.classList.contains('dashboard-profile-static');
+    const preservePremiumSidebar = document.body.classList.contains('dashboard-premium-sidebar');
     if (sidebarUserName && !keepStaticDashboardProfile) sidebarUserName.textContent = sessionUserName || 'Usuário';
     if (bankCardHolderName) bankCardHolderName.textContent = sessionUserName || 'Horizonte Financeiro';
     if (sidebarUserRole && !keepStaticDashboardProfile) {
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- PERMISSÕES GLOBAIS DE UI ---
     // Checa se o usuário logado é Super Admin e injeta o botão em qualquer página que tenha o sidebar
     const globalUserRole = localStorage.getItem('userRole');
-    if (!keepStaticDashboardProfile && globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
+    if (!keepStaticDashboardProfile && !preservePremiumSidebar && globalUserRole === 'super_admin' && !document.getElementById('superAdminLink')) {
         const nav = document.querySelector('.sidebar-nav');
         if (nav) {
             const adminLink = document.createElement('a');
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const sidebarNav = document.querySelector('.sidebar-nav');
-    if (sidebarNav && !keepStaticDashboardProfile) {
+    if (sidebarNav && !keepStaticDashboardProfile && !preservePremiumSidebar) {
         const businessLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
             .find((item) => (item.getAttribute('href') || '') === '/cnpj');
         const investmentsLink = Array.from(sidebarNav.querySelectorAll('.nav-item'))
@@ -1662,16 +1663,142 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- MENU MOBILE ---
+    // --- SIDEBAR / MENU MOBILE ---
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const sidebar = document.querySelector('.sidebar');
 
-    if (mobileMenuBtn && sidebar) {
+    if (sidebar && preservePremiumSidebar) {
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const collapseButtons = document.querySelectorAll('[data-sidebar-collapse]');
+        const submenuToggles = sidebar.querySelectorAll('[data-submenu-toggle]');
+        const navLinks = sidebar.querySelectorAll('a.nav-item, a.nav-subitem');
+        const mobileBreakpoint = window.matchMedia('(max-width: 920px)');
+        const tabletBreakpoint = window.matchMedia('(max-width: 1180px)');
+        const sidebarStateStorageKey = 'hf:sidebar-collapsed';
+
+        const getStoredCollapsedState = () => {
+            const stored = localStorage.getItem(sidebarStateStorageKey);
+            return stored === null ? null : stored === 'true';
+        };
+
+        const updateCollapseButtons = (collapsed) => {
+            collapseButtons.forEach((button) => {
+                button.setAttribute('aria-pressed', String(collapsed));
+                button.setAttribute('aria-label', collapsed ? 'Expandir menu lateral' : 'Recolher menu lateral');
+            });
+        };
+
+        const setDrawerOpen = (open) => {
+            const shouldOpen = Boolean(open) && mobileBreakpoint.matches;
+            document.body.classList.toggle('sidebar-drawer-open', shouldOpen);
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+                mobileMenuBtn.setAttribute('aria-label', shouldOpen ? 'Fechar menu lateral' : 'Abrir menu lateral');
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.hidden = !shouldOpen;
+            }
+        };
+
+        const setCollapsed = (collapsed, { persist = true } = {}) => {
+            const safeCollapsed = !mobileBreakpoint.matches && Boolean(collapsed);
+            document.body.classList.toggle('sidebar-collapsed', safeCollapsed);
+            updateCollapseButtons(safeCollapsed);
+            if (persist) {
+                localStorage.setItem(sidebarStateStorageKey, String(safeCollapsed));
+            }
+        };
+
+        const applyResponsiveSidebarState = () => {
+            const storedCollapsed = getStoredCollapsedState();
+
+            if (mobileBreakpoint.matches) {
+                document.body.classList.remove('sidebar-collapsed');
+                updateCollapseButtons(false);
+                setDrawerOpen(false);
+                return;
+            }
+
+            setDrawerOpen(false);
+
+            if (tabletBreakpoint.matches) {
+                setCollapsed(storedCollapsed ?? true, { persist: false });
+                return;
+            }
+
+            setCollapsed(storedCollapsed ?? false, { persist: false });
+        };
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                if (mobileBreakpoint.matches) {
+                    setDrawerOpen(!document.body.classList.contains('sidebar-drawer-open'));
+                    return;
+                }
+
+                const nextCollapsed = !document.body.classList.contains('sidebar-collapsed');
+                setCollapsed(nextCollapsed);
+            });
+        }
+
+        collapseButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                if (mobileBreakpoint.matches) {
+                    setDrawerOpen(!document.body.classList.contains('sidebar-drawer-open'));
+                    return;
+                }
+
+                const nextCollapsed = !document.body.classList.contains('sidebar-collapsed');
+                setCollapsed(nextCollapsed);
+            });
+        });
+
+        submenuToggles.forEach((toggle) => {
+            const targetId = toggle.getAttribute('aria-controls');
+            const submenu = targetId ? document.getElementById(targetId) : null;
+            if (!submenu) return;
+
+            toggle.addEventListener('click', () => {
+                if (!mobileBreakpoint.matches && document.body.classList.contains('sidebar-collapsed')) {
+                    setCollapsed(false);
+                }
+
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', String(!isExpanded));
+                submenu.hidden = isExpanded;
+            });
+        });
+
+        navLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                if (mobileBreakpoint.matches) {
+                    setDrawerOpen(false);
+                }
+            });
+        });
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => setDrawerOpen(false));
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && document.body.classList.contains('sidebar-drawer-open')) {
+                setDrawerOpen(false);
+                mobileMenuBtn?.focus();
+            }
+        });
+
+        const handleBreakpointChange = () => applyResponsiveSidebarState();
+        mobileBreakpoint.addEventListener('change', handleBreakpointChange);
+        tabletBreakpoint.addEventListener('change', handleBreakpointChange);
+        applyResponsiveSidebarState();
+    } else if (mobileMenuBtn && sidebar) {
         mobileMenuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('active');
         });
 
-        // Fechar ao clicar em um link (útil no mobile)
         const navLinks = sidebar.querySelectorAll('.nav-item');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -1679,7 +1806,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Fechar ao clicar fora da sidebar (opcional, mas bom)
         document.addEventListener('click', (e) => {
             if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target) && sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
