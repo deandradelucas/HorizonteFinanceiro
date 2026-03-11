@@ -25,8 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarUserName = document.getElementById('sidebarUserName');
     const sidebarUserRole = document.getElementById('sidebarUserRole');
     const sidebarUserInitials = document.getElementById('sidebarUserInitials');
+    const bankCardHolderName = document.getElementById('bankCardHolderName');
     const sessionUserName = sessionStorage.getItem('userName');
     if (sidebarUserName) sidebarUserName.textContent = sessionUserName || 'Usuário';
+    if (bankCardHolderName) bankCardHolderName.textContent = sessionUserName || 'Horizonte Financeiro';
     if (sidebarUserRole) {
         const role = localStorage.getItem('userRole');
         const label = role === 'super_admin' ? 'Super Admin' : 'Usuário';
@@ -872,6 +874,168 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 };
 
+                const renderCompactList = (containerId, items, emptyMessage, iconClass) => {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
+
+                    if (!items.length) {
+                        container.innerHTML = `<div class="compact-list-empty">${emptyMessage}</div>`;
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    items.forEach((item) => {
+                        const row = document.createElement('div');
+                        row.className = 'compact-list-item';
+                        row.innerHTML = `
+                            <div class="compact-list-icon"><i class="fa-solid ${iconClass}"></i></div>
+                            <div class="compact-list-copy">
+                                <strong>${formatMoney(item.value)}</strong>
+                                <span>${item.label}</span>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    });
+                };
+
+                const renderMonthlyEarningsChart = (allTransactions) => {
+                    const path = document.getElementById('earningsLinePath');
+                    const dots = document.getElementById('earningsLineDots');
+                    const labels = document.getElementById('earningsLineLabels');
+                    const highlight = document.getElementById('earningsLineValue');
+                    if (!path || !dots || !labels || !highlight) return;
+
+                    const monthSeries = Array.from({ length: 6 }, (_, index) => {
+                        const date = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1);
+                        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                        const total = allTransactions
+                            .filter((transaction) => normalizeTransactionType(transaction.type) === 'income' && String(transaction.date || '').startsWith(key))
+                            .reduce((sum, transaction) => sum + toSafeNumber(transaction.value), 0);
+
+                        return {
+                            label: date.toLocaleDateString('en-US', { month: 'short' }),
+                            total
+                        };
+                    });
+
+                    const hasData = monthSeries.some((item) => item.total > 0);
+                    const displaySeries = hasData
+                        ? monthSeries
+                        : monthSeries.map((item, index) => ({ ...item, total: (index % 2 === 0 ? 1 : 0.6) * 100 }));
+                    const maxValue = Math.max(...displaySeries.map((item) => item.total), 1);
+                    const minValue = Math.min(...displaySeries.map((item) => item.total), 0);
+                    const width = 320;
+                    const height = 180;
+                    const paddingX = 18;
+                    const paddingY = 22;
+                    const plotHeight = height - (paddingY * 2);
+                    const stepX = displaySeries.length > 1 ? (width - (paddingX * 2)) / (displaySeries.length - 1) : 0;
+                    const range = Math.max(maxValue - minValue, 1);
+                    const points = displaySeries.map((item, index) => ({
+                        x: paddingX + (stepX * index),
+                        y: height - paddingY - (((item.total - minValue) / range) * plotHeight)
+                    }));
+
+                    const pathData = points.map((point, index, allPoints) => {
+                        if (index === 0) {
+                            return `M ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+                        }
+
+                        const previous = allPoints[index - 1];
+                        const controlX = ((previous.x + point.x) / 2).toFixed(1);
+                        return `Q ${controlX} ${previous.y.toFixed(1)} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+                    }).join(' ');
+
+                    path.setAttribute('d', pathData);
+                    dots.innerHTML = points.map((point, index) => {
+                        const isFocus = index === points.length - 1;
+                        const radius = isFocus ? 6 : 4;
+                        const className = isFocus ? 'earnings-line-dot earnings-line-dot--focus' : 'earnings-line-dot';
+                        return `<circle class="${className}" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${radius}"></circle>`;
+                    }).join('');
+                    labels.innerHTML = monthSeries.map((item) => `<span>${item.label}</span>`).join('');
+                    highlight.textContent = formatMoney(monthSeries[monthSeries.length - 1]?.total || 0);
+                };
+
+                const renderDashboardSidePanel = (expenseItems, recurringItems, allTransactions) => {
+                    const payableProgressCount = document.getElementById('payableProgressCount');
+                    const payableProgressFill = document.getElementById('payableProgressFill');
+                    const progressTotal = Math.max(expenseItems.length, 16);
+                    const progressValue = Math.min(expenseItems.length, progressTotal);
+                    const progressPct = progressTotal > 0 ? Math.min((progressValue / progressTotal) * 100, 100) : 0;
+
+                    if (payableProgressCount) {
+                        payableProgressCount.textContent = `${progressValue} OUT OF ${progressTotal}`;
+                    }
+
+                    if (payableProgressFill) {
+                        payableProgressFill.style.width = `${progressPct}%`;
+                    }
+
+                    const receipts = allTransactions
+                        .filter((transaction) => normalizeTransactionType(transaction.type) === 'income')
+                        .sort((left, right) => toSafeNumber(right.value) - toSafeNumber(left.value))
+                        .slice(0, 3)
+                        .map((transaction) => ({
+                            value: toSafeNumber(transaction.value),
+                            label: transaction.description || 'Income'
+                        }));
+
+                    const payablesSource = (recurringItems.length ? recurringItems : expenseItems)
+                        .slice()
+                        .sort((left, right) => toSafeNumber(right.value || right.total) - toSafeNumber(left.value || left.total));
+                    const payables = payablesSource.slice(0, 2).map((item) => ({
+                        value: toSafeNumber(item.value || item.total),
+                        label: item.description || item.category || item.label || 'Expense'
+                    }));
+
+                    renderCompactList('dashboardReceiptsList', receipts, 'No income entries yet.', 'fa-arrow-up-right');
+                    renderCompactList('dashboardPayablesList', payables, 'No expense entries yet.', 'fa-receipt');
+                };
+
+                const renderEarningsDonut = (goalData, currentBalanceValue, totalIncomeValue) => {
+                    const progressRing = document.getElementById('earningsRingProgress');
+                    const centerValue = document.getElementById('earningsCenterValue');
+                    const centerDelta = document.getElementById('earningsCenterDelta');
+                    const primaryLegend = document.getElementById('earningsLegendPrimary');
+                    const secondaryLegend = document.getElementById('earningsLegendSecondary');
+                    if (!progressRing || !centerValue || !centerDelta || !primaryLegend || !secondaryLegend) return;
+
+                    const radius = 62;
+                    const circumference = 2 * Math.PI * radius;
+                    let progressRatio = 0;
+                    let valueToShow = currentBalanceValue;
+                    let deltaText = '0% saved';
+                    let deltaColor = '#3aa55d';
+                    let primaryText = 'Balance';
+                    let secondaryText = 'Income';
+
+                    if (goalData && Number.isFinite(goalData.actualPct)) {
+                        progressRatio = Math.max(0, Math.min(goalData.actualPct, 1));
+                        valueToShow = goalData.actualCurrentValue;
+                        deltaText = `${Math.round(progressRatio * 100)}% goal`;
+                        primaryText = 'Saved';
+                        secondaryText = 'Goal';
+                    } else if (totalIncomeValue > 0) {
+                        const savingsRate = currentBalanceValue / totalIncomeValue;
+                        progressRatio = Math.max(0, Math.min(savingsRate, 1));
+                        deltaText = `${Math.round(savingsRate * 100)}% saved`;
+                        deltaColor = savingsRate >= 0 ? '#3aa55d' : '#d94b5b';
+                    } else if (currentBalanceValue !== 0) {
+                        progressRatio = currentBalanceValue > 0 ? 0.35 : 0.1;
+                        deltaText = currentBalanceValue > 0 ? 'Positive cash' : 'Negative cash';
+                        deltaColor = currentBalanceValue > 0 ? '#3aa55d' : '#d94b5b';
+                    }
+
+                    progressRing.style.strokeDasharray = `${circumference}`;
+                    progressRing.style.strokeDashoffset = `${circumference * (1 - progressRatio)}`;
+                    centerValue.textContent = formatMoney(valueToShow);
+                    centerDelta.textContent = deltaText;
+                    centerDelta.style.color = deltaColor;
+                    primaryLegend.textContent = primaryText;
+                    secondaryLegend.textContent = secondaryText;
+                };
+
                 const renderMonthRadar = (items, categoryData, subcategoryData) => {
                     const caption = document.getElementById('subcategoryChartPeriod');
                     const subcategoryContainer = document.getElementById('subcategoryChartBars');
@@ -997,6 +1161,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
+                const walletIncomeAmount = document.getElementById('walletIncomeAmount');
+                const walletExpenseAmount = document.getElementById('walletExpenseAmount');
+                if (walletIncomeAmount) walletIncomeAmount.textContent = formatMoney(totalIncomes);
+                if (walletExpenseAmount) walletExpenseAmount.textContent = formatMoney(totalExpenses);
+
                 const horizonBalance = document.getElementById('horizonBalance');
                 const horizonCashflow = document.getElementById('horizonCashflow');
                 const horizonTip = document.getElementById('horizonTip');
@@ -1042,15 +1211,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     recurringPeriod.textContent = `${currentMonthLabel} • ${recurringCount} recorrente${recurringCount === 1 ? '' : 's'}`;
                 }
 
-                const categoryTitle = document.getElementById('categoryChartBars')?.parentElement?.querySelector('.section-header h3');
-                if (categoryTitle) categoryTitle.textContent = 'Mapa de Gastos do Mês';
-
-                renderSpendingMap('categoryChartBars', 'categoryChartEmpty', combinedSpendingData);
-                renderMonthRadar(currentMonthExpenses, categoryChartData, subcategoryChartData);
-                renderRecurringChart(recurringChartData);
+                renderMonthlyEarningsChart(transactions);
+                renderDashboardSidePanel(currentMonthExpenses, currentMonthRecurring, transactions);
 
                 // 2. Meta em Destaque no Dashboard
                 const goalContainer = document.getElementById('mainGoalContainer');
+                let primaryGoalData = null;
                 if (goalContainer && goals.length > 0) {
                     goalContainer.style.display = 'block'; // Make it visible
                     // Pegar a meta com maior progresso que ainda não terminou, ou a primeira
@@ -1068,6 +1234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     const mainGoal = sortedGoals[0];
+                    primaryGoalData = mainGoal;
                     const pctInt = Math.min(Math.round(mainGoal.actualPct * 100), 100);
 
                     // Automatic color logic based on progress
@@ -1164,6 +1331,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     goalContainer.style.display = 'block';
                 }
 
+                renderEarningsDonut(primaryGoalData, currentBalance, totalIncomes);
+
                 // 3. Preencher a Tabela
                 const tbody = document.querySelector('.data-table tbody');
                 if (tbody) {
@@ -1180,10 +1349,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             </tr>
                         `;
                     } else {
-                        const recentTransactions = transactions.slice(0, 5);
+                        const recentTransactions = transactions.slice(0, 8);
                         recentTransactions.forEach(t => {
                             const tr = document.createElement('tr');
-                            const isIncome = t.type === 'income';
+                            const isIncome = normalizeTransactionType(t.type) === 'income';
                             const iconBg = isIncome ? 'green-bg' : 'red-bg';
                             const iconClass = isIncome ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
                             const valueText = isIncome ? `+ ${formatMoney(t.value)}` : `- ${formatMoney(t.value)}`;
